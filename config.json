@@ -1,0 +1,131 @@
+{
+  "siteName": {
+    "zh-hk": "BNC 籃球聯賽",
+    "zh-cn": "BNC 篮球联赛",
+    "en": "BNC Basketball League"
+  },
+  "logo": "/uploads/logo.png",
+  "favicon": "/uploads/favicon.png",
+  "defaultLang": "zh-hk",
+  "contact": {
+    "phone": "852 9213 3533",
+    "email": "bncsportshkg@gmail.com",
+    "address": {
+      "zh-hk": "香港九龍觀塘成業街華成工商中心10樓1006室",
+      "zh-cn": "香港九龙观塘成业街华成工商中心10楼1006室",
+      "en": "Room 1006, 10/F, Wah Shing Centre, Shing Yip Street, Kwun Tong, Kowloon, Hong Kong"
+    },
+    "googleMapEmbedUrl": "https://maps.google.com/maps?q=%E9%A6%99%E6%B8%AF%E4%B9%9D%E9%BE%8D%E8%A7%80%E5%A1%98%E6%88%90%E6%A5%AD%E8%A1%97%E8%8F%AF%E6%88%90%E5%B7%A5%E5%95%86%E4%B8%AD%E5%BF%8310%E6%A8%931006%E5%AE%A4&output=embed"
+  },
+  "socialLinks": {
+    "youtube": "https://www.youtube.com/@BNCChampion",
+    "facebook": "https://www.facebook.com/bnchk",
+    "instagram": "https://www.instagram.com/bncsportshkg",
+    "whatsapp": "https://wa.me/85292133533"
+  },
+  "nav": {
+    "home": { "zh-hk": "首頁", "zh-cn": "首页", "en": "Home" },
+    "about": { "zh-hk": "關於我們", "zh-cn": "关于我们", "en": "About" },
+    "matches": { "zh-hk": "比賽", "zh-cn": "比赛", "en": "Matches" }
+  },
+  "hero": {
+    "title": {
+      "zh-hk": "BNC 籃球聯賽",
+      "zh-cn": "BNC 篮球联赛",
+      "en": "BNC Basketball League"
+    },
+    "subtitle": {
+      "zh-hk": "香港本地籃球聯賽 — 激情對決，精彩呈現",
+      "zh-cn": "香港本地篮球联赛 — 激情对决，精彩呈现",
+      "en": "Hong Kong's Premier Local Basketball League"
+    },
+    "ctaText": {
+      "zh-hk": "查看賽程 →",
+      "zh-cn": "查看赛程 →",
+      "en": "View Schedule →"
+    },
+    "backgroundImage": "/uploads/hero-bg.png"
+  },
+  "about": {
+    "content": {
+      "zh-hk": "## 關於 BNC LEAGUE\n\nBNC LEAGUE 是香港知名運動管理平台 **SUPER LEARNING**（[suhksport.com](https://www.suhksport.com/)）主辦的專業運動賽事品牌，專注舉辦各類型香港本地及大灣區競技比賽。\n\n### 我們的賽事\n\n多年來，我們已成功舉辦多屆商會、學界及企業籃球賽事，包括：\n\n- **BNC 籃球挑戰聯賽**\n- **OCBC 華僑銀行邀請賽**\n- **2024 鬥波！三分神射手大賽**\n- **中港籃球交流賽**\n\n### 多元化運動服務\n\n除了籃球，我們亦與不同運動機構合作，舉辦多元化運動賽事，涵蓋排球、匹克球、桌球、體能挑戰賽及運動會等。\n\n### 大灣區影響力\n\n我們致力推動大灣區體育交流。2026年，很榮幸協辦「酷賽征途獅球聯盟五一大灣區青少年籃球邀請賽」，匯聚全國40支頂尖青少年籃球隊、超過1000名球員於佛山樂從共聚籃球盛宴。\n\n### 專業服務\n\n憑藉豐富經驗，配合現代化管理並引入科技元素，我們可為各大商會、企業、學校、團體及慈善機構舉辦各類型運動競技比賽及康樂文化活動。如有興趣了解，歡迎隨時與我們聯絡。",
+      "zh-cn": "## 关于 BNC LEAGUE\n\nBNC LEAGUE 是香港知名运动管理平台 **SUPER LEARNING**（[suhksport.com](https://www.suhksport.com/)）主办的专业运动赛事品牌，专注举办各类型香港本地及大湾区竞技比赛。\n\n### 我们的赛事\n\n多年来，我们已成功举办多届商会、学界及企业篮球赛事，包括：\n\n- **BNC 篮球挑战联赛**\n- **OCBC 华侨银行邀请赛**\n- **2024 斗波！三分神射手大赛**\n- **中港篮球交流赛**\n\n### 多元化运动服务\n\n除了篮球，我们亦与不同运动机构合作，举办多元化运动赛事，涵盖排球、匹克球、桌球、体能挑战赛及运动会等。\n\n### 大湾区影响力\n\n我们致力推动大湾区体育交流。2026年，很荣幸协办「酷赛征途狮球联盟五一大湾区青少年篮球邀请赛」，汇聚全国40支顶尖青少年篮球队、超过1000名球员于佛山乐从共聚篮球盛宴。\n\n### 专业服务\n\n凭借丰富经验，配合现代化管理并引入科技元素，我们可为各大商会、企业、学校、团体及慈善机构举办各类型运动竞技比赛及康乐文化活动。如有兴趣了解，欢迎随时与我们联络。",
+      "en": "## About BNC LEAGUE\n\nBNC LEAGUE is a professional sports event brand hosted by **SUPER LEARNING** ([suhksport.com](https://www.suhksport.com/)), a renowned sports management platform in Hong Kong, dedicated to organizing various local and Greater Bay Area competitive events.\n\n### Our Events\n\nOver the years, we have successfully hosted numerous chamber, school, and corporate basketball tournaments, including:\n\n- **BNC Basketball Challenge League**\n- **OCBC Wing Hang Bank Invitational**\n- **2024 Three-Point Shootout Championship**\n- **Hong Kong-Mainland Basketball Exchange**\n\n### Diverse Sports Services\n\nBeyond basketball, we collaborate with various sports organizations to host diverse events including volleyball, pickleball, table tennis, fitness challenges, and sports days.\n\n### Greater Bay Area Impact\n\nWe are committed to promoting sports exchange in the Greater Bay Area. In 2026, we are honored to co-organize the Greater Bay Area Youth Basketball Invitational, bringing together 40 top youth basketball teams and over 1,000 players in Foshan.\n\n### Professional Services\n\nWith extensive experience, modern management, and technology integration, we provide comprehensive sports competition and recreational event services for chambers, corporations, schools, organizations, and charities. Contact us to learn more."
+    }
+  },
+  "matches": {
+    "showArchive": true,
+    "defaultLeagueId": "bnc5",
+    "leagues": [
+      {
+        "id": "bnc5",
+        "league": "BNC",
+        "season": "BNC5",
+        "url": "https://www.scorelab.tech/season/69c0c7114a4ec7a9412c0648"
+      },
+      {
+        "id": "ocbc3",
+        "league": "OCBS",
+        "season": "OCBC3",
+        "url": "https://www.scorelab.tech/season/69ca60909e400495abff385c"
+      },
+      {
+        "id": "bncgb3",
+        "league": "BNCGB",
+        "season": "BNCGB3",
+        "url": "https://www.scorelab.tech/season/6a4cac72dfe1e787bd867510"
+      }
+    ],
+    "archiveLeagues": []
+  },
+  "footer": {
+    "copyright": {
+      "zh-hk": "© 2026 BNC 籃球聯賽。版權所有。",
+      "zh-cn": "© 2026 BNC 篮球联赛。版权所有。",
+      "en": "© 2026 BNC Basketball League. All rights reserved."
+    }
+  },
+  "seo": {
+    "home": {
+      "title": {
+        "zh-hk": "BNC 籃球聯賽 | 香港本地籃球聯賽",
+        "zh-cn": "BNC 篮球联赛 | 香港本地篮球联赛",
+        "en": "BNC Basketball League | Hong Kong Local Basketball"
+      },
+      "description": {
+        "zh-hk": "BNC 籃球聯賽官方網站 — 查看最新賽程、積分榜及比賽數據。香港本地籃球聯賽。",
+        "zh-cn": "BNC 篮球联赛官方网站 — 查看最新赛程、积分榜及比赛数据。香港本地篮球联赛。",
+        "en": "Official website of BNC Basketball League — view schedules, standings and match results. Hong Kong local basketball."
+      },
+      "keywords": {
+        "zh-hk": "BNC,籃球,聯賽,香港,本地籃球",
+        "zh-cn": "BNC,篮球,联赛,香港,本地篮球",
+        "en": "BNC,basketball,league,Hong Kong,local basketball"
+      }
+    },
+    "about": {
+      "title": {
+        "zh-hk": "關於我們 | BNC 籃球聯賽",
+        "zh-cn": "关于我们 | BNC 篮球联赛",
+        "en": "About Us | BNC Basketball League"
+      },
+      "description": {
+        "zh-hk": "了解 BNC 籃球聯賽的歷史、使命及聯絡方式。",
+        "zh-cn": "了解 BNC 篮球联赛的历史、使命及联络方式。",
+        "en": "Learn about BNC Basketball League history, mission and contact information."
+      }
+    },
+    "matches": {
+      "title": {
+        "zh-hk": "比賽 | BNC 籃球聯賽",
+        "zh-cn": "比赛 | BNC 篮球联赛",
+        "en": "Matches | BNC Basketball League"
+      },
+      "description": {
+        "zh-hk": "查看 BNC 籃球聯賽最新賽程、積分榜及比賽結果。",
+        "zh-cn": "查看 BNC 篮球联赛最新赛程、积分榜及比赛结果。",
+        "en": "View BNC Basketball League schedules, standings and match results."
+      }
+    }
+  }
+}

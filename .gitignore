@@ -34,3 +34,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ScoreLab 调试文件
+scorelab_sample.html
+scorelab_pageprops.json
