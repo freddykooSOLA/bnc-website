@@ -26,25 +26,46 @@ export default function LeagueSelector({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const fetchData = useCallback(async (leagueId: string) => {
-    setLoading(true);
-    setError(false);
+  const fetchData = useCallback(async (leagueId: string, silent = false) => {
+    if (!silent) {
+      setLoading(true);
+      setError(false);
+    }
     try {
-      const res = await fetch(`/api/scorelab?seasonId=${leagueId}`, {
+      const res = await fetch(`/api/scorelab?seasonId=${leagueId}&_=${Date.now()}`, {
         cache: 'no-store',
       });
       if (!res.ok) throw new Error('Failed');
       setData(await res.json());
     } catch {
-      setError(true);
-      setData(null);
+      if (!silent) {
+        setError(true);
+        setData(null);
+      }
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     fetchData(selectedId);
+  }, [selectedId, fetchData]);
+
+  // 页面可见时及每 5 分钟自动刷新数据
+  useEffect(() => {
+    const refresh = () => fetchData(selectedId, true);
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') refresh();
+    };
+
+    document.addEventListener('visibilitychange', onVisible);
+    const interval = setInterval(refresh, 5 * 60 * 1000);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      clearInterval(interval);
+    };
   }, [selectedId, fetchData]);
 
   const completedMatches = data?.matches.filter((m) => m.isMatchEnd).slice(0, 5) ?? [];

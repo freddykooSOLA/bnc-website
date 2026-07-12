@@ -63,11 +63,6 @@ export const UI_TEXT: Record<Lang, Record<string, string>> = {
     noVideos: '暫無影片',
     noPosts: '暫無貼文',
     facebookFeed: 'Facebook 動態',
-    viewOnScorelab: '在 ScoreLab 查看完整頁面',
-    iframeBlockedTitle: '完整功能請在 ScoreLab 查看',
-    iframeBlockedDesc:
-      'ScoreLab 不允許嵌入顯示。點擊下方按鈕可查看完整賽程、球隊詳情、球員數據及所有互動功能。下方表格中的球隊和比賽名稱可點擊跳轉至 ScoreLab。',
-    openScorelabSeason: '在 ScoreLab 打開賽季頁面',
   },
   'zh-cn': {
     loading: '加载中...',
@@ -108,11 +103,6 @@ export const UI_TEXT: Record<Lang, Record<string, string>> = {
     noVideos: '暂无视频',
     noPosts: '暂无贴文',
     facebookFeed: 'Facebook 动态',
-    viewOnScorelab: '在 ScoreLab 查看完整页面',
-    iframeBlockedTitle: '完整功能请在 ScoreLab 查看',
-    iframeBlockedDesc:
-      'ScoreLab 不允许嵌入显示。点击下方按钮可查看完整赛程、球队详情、球员数据及所有互动功能。下方表格中的球队和比赛名称可点击跳转至 ScoreLab。',
-    openScorelabSeason: '在 ScoreLab 打开赛季页面',
   },
   en: {
     loading: 'Loading...',
@@ -153,10 +143,5 @@ export const UI_TEXT: Record<Lang, Record<string, string>> = {
     noVideos: 'No videos available',
     noPosts: 'No posts available',
     facebookFeed: 'Facebook Feed',
-    viewOnScorelab: 'View full page on ScoreLab',
-    iframeBlockedTitle: 'View full features on ScoreLab',
-    iframeBlockedDesc:
-      'ScoreLab does not allow embedded display. Click below for the full schedule, team details, player stats, and all interactive features. Team and match names in the tables below link to ScoreLab.',
-    openScorelabSeason: 'Open season on ScoreLab',
   },
 };

@@ -14,7 +14,7 @@ interface MatchesContentProps {
   config: SiteConfig;
 }
 
-/** 比赛页面 — iframe 嵌入 ScoreLab，并提供带链接的数据预览 */
+/** 比赛页面 — 实时从 ScoreLab 获取数据并展示 */
 function MatchesContentInner({ lang, config }: MatchesContentProps) {
   const t = UI_TEXT[lang];
   const searchParams = useSearchParams();
@@ -50,20 +50,24 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
     }
   }, [leagues, selectedId]);
 
-  const fetchData = useCallback(async (leagueId: string) => {
-    setLoading(true);
-    setError(false);
+  const fetchData = useCallback(async (leagueId: string, silent = false) => {
+    if (!silent) {
+      setLoading(true);
+      setError(false);
+    }
     try {
-      const res = await fetch(`/api/scorelab?seasonId=${leagueId}`, {
+      const res = await fetch(`/api/scorelab?seasonId=${leagueId}&_=${Date.now()}`, {
         cache: 'no-store',
       });
       if (!res.ok) throw new Error('Failed');
       setSeasonData(await res.json());
     } catch {
-      setError(true);
-      setSeasonData(null);
+      if (!silent) {
+        setError(true);
+        setSeasonData(null);
+      }
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
@@ -83,6 +87,25 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
       setLoading(false);
       setSeasonData(null);
     }
+  }, [selectedLeague, fetchData]);
+
+  // 页面可见时及每 5 分钟自动刷新数据
+  useEffect(() => {
+    if (!selectedLeague) return;
+
+    const refresh = () => fetchData(selectedLeague.id, true);
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') refresh();
+    };
+
+    document.addEventListener('visibilitychange', onVisible);
+    const interval = setInterval(refresh, 5 * 60 * 1000);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      clearInterval(interval);
+    };
   }, [selectedLeague, fetchData]);
 
   return (
@@ -114,7 +137,7 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
 
       {leagues.length > 0 ? (
         <>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+          <div className="mb-6">
             <select
               id="league-select"
               value={selectedLeague?.id ?? ''}
@@ -127,35 +150,7 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
                 </option>
               ))}
             </select>
-
-            {selectedLeague && (
-              <a
-                href={selectedLeague.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary text-sm py-2 px-4"
-              >
-                {t.viewOnScorelab} ↗
-              </a>
-            )}
           </div>
-
-          {selectedLeague && (
-            <>
-              <div className="card mb-6 border-orange/20 bg-orange/5">
-                <p className="text-primary font-medium mb-2">{t.iframeBlockedTitle}</p>
-                <p className="text-gray-600 text-sm mb-4">{t.iframeBlockedDesc}</p>
-                <a
-                  href={selectedLeague.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary"
-                >
-                  {t.openScorelabSeason} ↗
-                </a>
-              </div>
-            </>
-          )}
 
           {loading ? (
             <LoadingSpinner lang={lang} />

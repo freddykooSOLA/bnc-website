@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getConfig } from '@/lib/config';
 import { fetchSeasonData } from '@/lib/scorelab';
 
-/** ScoreLab 数据 API */
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+/** ScoreLab 数据 API — 每次请求实时抓取 */
 export async function GET(request: NextRequest) {
   const seasonId = request.nextUrl.searchParams.get('seasonId');
   const url = request.nextUrl.searchParams.get('url');
@@ -33,7 +36,7 @@ export async function GET(request: NextRequest) {
     const data = await fetchSeasonData(seasonUrl);
     return NextResponse.json(data, {
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60',
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
       },
     });
   } catch (error) {
