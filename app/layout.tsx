@@ -20,10 +20,11 @@ export const metadata: Metadata = {
   description: 'BNC Basketball League Official Website',
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/uploads/favicon.png?v=20260715', type: 'image/png' },
+      { url: '/uploads/favicon-bnc.png', type: 'image/png', sizes: '32x32' },
+      { url: '/uploads/favicon-bnc.png', type: 'image/png', sizes: '192x192' },
     ],
-    apple: '/uploads/favicon.png?v=20260715',
+    shortcut: '/uploads/favicon-bnc.png',
+    apple: '/uploads/favicon-bnc.png',
   },
 };
 

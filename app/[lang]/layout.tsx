@@ -40,9 +40,10 @@ export default async function LangLayout({
 
   return (
     <>
-      <link rel="icon" href={`${config.favicon}?v=20260715`} type="image/png" />
-      <link rel="shortcut icon" href="/favicon.ico" />
-      <link rel="apple-touch-icon" href={`${config.favicon}?v=20260715`} />
+      <link rel="icon" href={config.favicon} type="image/png" sizes="32x32" />
+      <link rel="icon" href={config.favicon} type="image/png" sizes="192x192" />
+      <link rel="shortcut icon" href={config.favicon} type="image/png" />
+      <link rel="apple-touch-icon" href={config.favicon} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

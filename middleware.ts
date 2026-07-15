@@ -4,7 +4,14 @@ import { isValidLang } from '@/lib/i18n';
 import { detectLangFromHeader } from '@/lib/translate';
 
 /** 不需要语言前缀的路径 */
-const PUBLIC_PATHS = ['/admin', '/api', '/_next', '/uploads', '/favicon.ico'];
+const PUBLIC_PATHS = [
+  '/admin',
+  '/api',
+  '/_next',
+  '/uploads',
+  '/favicon.ico',
+  '/icon.png',
+];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
