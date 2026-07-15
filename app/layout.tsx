@@ -18,6 +18,13 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'BNC Basketball League',
   description: 'BNC Basketball League Official Website',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/uploads/favicon.png?v=20260715', type: 'image/png' },
+    ],
+    apple: '/uploads/favicon.png?v=20260715',
+  },
 };
 
 export default function RootLayout({
