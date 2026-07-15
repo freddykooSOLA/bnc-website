@@ -41,10 +41,16 @@ interface RawMatch {
 
 /** 从 ScoreLab 赛季页面获取并解析数据 */
 export async function fetchSeasonData(seasonUrl: string): Promise<SeasonData> {
-  const response = await fetch(seasonUrl, {
+  // 加时间戳尽量绕过 CDN 静态缓存（ScoreLab 为 SSG，页面仍可能滞后于站内即时更新）
+  const url = new URL(seasonUrl);
+  url.searchParams.set('_', String(Date.now()));
+
+  const response = await fetch(url.toString(), {
     headers: {
       'User-Agent': 'BNC-League-Website/1.0',
       Accept: 'text/html',
+      'Cache-Control': 'no-cache',
+      Pragma: 'no-cache',
     },
     cache: 'no-store',
   });

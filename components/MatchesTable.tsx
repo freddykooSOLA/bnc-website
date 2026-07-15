@@ -9,14 +9,18 @@ interface MatchesTableProps {
   matches: MatchRow[];
 }
 
-/** 格式化比赛日期 */
+/**
+ * 格式化比赛日期。
+ * ScoreLab 场次时间多为晚间（如 21:00Z），按香港本地时区会跨日；
+ * 使用 UTC 日历日以与 ScoreLab 页面显示一致。
+ */
 function formatDate(dateStr: string, lang: Lang): string {
   if (!dateStr) return '-';
   try {
     const date = new Date(dateStr);
     return date.toLocaleDateString(
       lang === 'en' ? 'en-HK' : lang === 'zh-cn' ? 'zh-CN' : 'zh-HK',
-      { month: 'short', day: 'numeric', year: 'numeric' }
+      { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }
     );
   } catch {
     return dateStr;

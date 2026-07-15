@@ -63,6 +63,11 @@ export const UI_TEXT: Record<Lang, Record<string, string>> = {
     noVideos: '暫無影片',
     noPosts: '暫無貼文',
     facebookFeed: 'Facebook 動態',
+    sortAsc: '順序',
+    sortDesc: '倒序',
+    sortByRank: '按排名排序',
+    openOnScorelab: '在 ScoreLab 開啟比賽頁面',
+    scorelabEmbedHint: '完整賽程、排名與比分由 ScoreLab 即時提供，請於下方開啟賽季頁面查看。',
   },
   'zh-cn': {
     loading: '加载中...',
@@ -103,6 +108,11 @@ export const UI_TEXT: Record<Lang, Record<string, string>> = {
     noVideos: '暂无视频',
     noPosts: '暂无贴文',
     facebookFeed: 'Facebook 动态',
+    sortAsc: '顺序',
+    sortDesc: '倒序',
+    sortByRank: '按排名排序',
+    openOnScorelab: '在 ScoreLab 打开比赛页面',
+    scorelabEmbedHint: '完整赛程、排名与比分由 ScoreLab 即时提供，请于下方打开赛季页面查看。',
   },
   en: {
     loading: 'Loading...',
@@ -143,5 +153,11 @@ export const UI_TEXT: Record<Lang, Record<string, string>> = {
     noVideos: 'No videos available',
     noPosts: 'No posts available',
     facebookFeed: 'Facebook Feed',
+    sortAsc: 'Ascending',
+    sortDesc: 'Descending',
+    sortByRank: 'Sort by rank',
+    openOnScorelab: 'Open season on ScoreLab',
+    scorelabEmbedHint:
+      'Full schedules, standings and scores are served live by ScoreLab. Open the season page below to view them.',
   },
 };

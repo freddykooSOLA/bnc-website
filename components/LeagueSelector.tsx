@@ -68,8 +68,19 @@ export default function LeagueSelector({
     };
   }, [selectedId, fetchData]);
 
-  const completedMatches = data?.matches.filter((m) => m.isMatchEnd).slice(0, 5) ?? [];
-  const upcomingMatches = data?.matches.filter((m) => !m.isMatchEnd).slice(0, 5) ?? [];
+  // 已完场：最新在前；未完场：最近开赛在前（勿沿用全表日期倒序）
+  const completedMatches =
+    data?.matches
+      .filter((m) => m.isMatchEnd)
+      .slice()
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5) ?? [];
+  const upcomingMatches =
+    data?.matches
+      .filter((m) => !m.isMatchEnd)
+      .slice()
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .slice(0, 5) ?? [];
 
   return (
     <section className="bg-light-bg py-12">
@@ -102,7 +113,12 @@ export default function LeagueSelector({
               <h2 className="font-heading text-lg font-bold text-primary mb-4">
                 {t.standings}
               </h2>
-              <StandingsTable lang={lang} standings={data?.standings ?? []} compact />
+              <StandingsTable
+                lang={lang}
+                standings={data?.standings ?? []}
+                compact
+                sortable
+              />
             </div>
             <div className="card">
               <h2 className="font-heading text-lg font-bold text-primary mb-4">

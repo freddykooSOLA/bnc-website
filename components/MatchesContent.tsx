@@ -1,20 +1,21 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import type { Lang, SeasonData, SiteConfig } from '@/types';
+import type { Lang, SiteConfig } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
-import StandingsTable from './StandingsTable';
-import MatchesTable from './MatchesTable';
 import LoadingSpinner from './LoadingSpinner';
-import ErrorMessage from './ErrorMessage';
 
 interface MatchesContentProps {
   lang: Lang;
   config: SiteConfig;
 }
 
-/** 比赛页面 — 实时从 ScoreLab 获取数据并展示 */
+/**
+ * 比赛页面 — 直接导向 ScoreLab 赛季页面，不再另行抓取重组数据。
+ * ScoreLab 回传 X-Frame-Options: DENY，无法在本站 iframe 嵌入其版面，
+ * 因此以联赛选择 + 开启对应赛季 URL 的方式显示其官方比赛版面。
+ */
 function MatchesContentInner({ lang, config }: MatchesContentProps) {
   const t = UI_TEXT[lang];
   const searchParams = useSearchParams();
@@ -31,9 +32,6 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
       : null) ?? config.matches.defaultLeagueId;
 
   const [selectedId, setSelectedId] = useState(initialLeagueId);
-  const [seasonData, setSeasonData] = useState<SeasonData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
   const selectedLeague =
     leagues.find((l) => l.id === selectedId) ?? leagues[0] ?? null;
@@ -50,27 +48,6 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
     }
   }, [leagues, selectedId]);
 
-  const fetchData = useCallback(async (leagueId: string, silent = false) => {
-    if (!silent) {
-      setLoading(true);
-      setError(false);
-    }
-    try {
-      const res = await fetch(`/api/scorelab?seasonId=${leagueId}&_=${Date.now()}`, {
-        cache: 'no-store',
-      });
-      if (!res.ok) throw new Error('Failed');
-      setSeasonData(await res.json());
-    } catch {
-      if (!silent) {
-        setError(true);
-        setSeasonData(null);
-      }
-    } finally {
-      if (!silent) setLoading(false);
-    }
-  }, []);
-
   const handleTabChange = (tab: 'latest' | 'archive') => {
     setActiveTab(tab);
     const list =
@@ -79,34 +56,6 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
       setSelectedId(list[0].id);
     }
   };
-
-  useEffect(() => {
-    if (selectedLeague) {
-      fetchData(selectedLeague.id);
-    } else {
-      setLoading(false);
-      setSeasonData(null);
-    }
-  }, [selectedLeague, fetchData]);
-
-  // 页面可见时及每 5 分钟自动刷新数据
-  useEffect(() => {
-    if (!selectedLeague) return;
-
-    const refresh = () => fetchData(selectedLeague.id, true);
-
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') refresh();
-    };
-
-    document.addEventListener('visibilitychange', onVisible);
-    const interval = setInterval(refresh, 5 * 60 * 1000);
-
-    return () => {
-      document.removeEventListener('visibilitychange', onVisible);
-      clearInterval(interval);
-    };
-  }, [selectedLeague, fetchData]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -152,27 +101,25 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
             </select>
           </div>
 
-          {loading ? (
-            <LoadingSpinner lang={lang} />
-          ) : error ? (
-            <ErrorMessage lang={lang} />
-          ) : (
-            <div className="space-y-8">
-              <div className="card">
-                <h2 className="font-heading text-xl font-bold text-primary mb-6">
-                  {t.standings}
-                </h2>
-                <StandingsTable
-                  lang={lang}
-                  standings={seasonData?.standings ?? []}
-                />
-              </div>
-
-              <div className="card">
-                <h2 className="font-heading text-xl font-bold text-primary mb-6">
-                  {t.schedule}
-                </h2>
-                <MatchesTable lang={lang} matches={seasonData?.matches ?? []} />
+          {selectedLeague && (
+            <div className="scorelab-iframe-container">
+              <div className="flex flex-col items-center justify-center gap-5 px-6 py-16 md:py-24 text-center min-h-[420px]">
+                <div>
+                  <p className="font-heading text-2xl font-bold text-primary mb-3">
+                    {selectedLeague.league} — {selectedLeague.season}
+                  </p>
+                  <p className="text-gray-500 text-sm max-w-lg mx-auto leading-relaxed">
+                    {t.scorelabEmbedHint}
+                  </p>
+                </div>
+                <a
+                  href={selectedLeague.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-8 py-3.5 bg-orange text-white font-semibold rounded-lg hover:bg-orange/90 transition-colors"
+                >
+                  {t.openOnScorelab}
+                </a>
               </div>
             </div>
           )}
