@@ -117,6 +117,9 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
       <header className="bg-primary text-white px-6 py-4 flex items-center justify-between">
         <h1 className="font-bold text-lg">BNC 管理後台</h1>
         <div className="flex items-center gap-4">
+          <a href="/admin/checkin" className="text-sm text-white/70 hover:text-white">
+            活動簽到
+          </a>
           <a href="/zh-hk" target="_blank" className="text-sm text-white/70 hover:text-white">
             預覽網站 ↗
           </a>

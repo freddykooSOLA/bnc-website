@@ -71,3 +71,18 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 800px;
   height: 80vh;
 }
+
+.input-field {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  outline: none;
+  background: #fff;
+}
+
+.input-field:focus {
+  border-color: #f7931e;
+  box-shadow: 0 0 0 2px rgba(247, 147, 30, 0.2);
+}

@@ -1,9 +1,20 @@
 import type { MetadataRoute } from 'next';
 import { LANGUAGES } from '@/lib/i18n';
+import { SHOP_CATEGORIES, SHOP_PRODUCTS } from '@/lib/shop-catalog';
+import { LEAGUE_EVENTS } from '@/lib/events-catalog';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://bncleague.com';
 
-const PAGES = ['', '/about', '/matches'];
+const PAGES = [
+  '',
+  '/about',
+  '/matches',
+  '/shop',
+  '/events',
+  ...SHOP_CATEGORIES.map((category) => `/shop/${category.id}`),
+  ...SHOP_PRODUCTS.map((product) => `/shop/product/${product.slug}`),
+  ...LEAGUE_EVENTS.map((event) => `/events/${event.slug}`),
+];
 
 /** 自动生成 sitemap.xml */
 export default function sitemap(): MetadataRoute.Sitemap {

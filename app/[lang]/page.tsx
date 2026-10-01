@@ -1,6 +1,7 @@
 import { getConfig } from '@/lib/config';
 import type { Lang } from '@/types';
 import Hero from '@/components/Hero';
+import ShopEventsBand from '@/components/ShopEventsBand';
 import LeagueSelector from '@/components/LeagueSelector';
 import YoutubeFeed from '@/components/YoutubeFeed';
 import FacebookFeed from '@/components/FacebookFeed';
@@ -17,6 +18,7 @@ export default async function HomePage({ params }: HomePageProps) {
   return (
     <>
       <Hero lang={lang} config={config} />
+      <ShopEventsBand lang={lang} />
       <LeagueSelector
         lang={lang}
         leagues={config.matches.leagues}

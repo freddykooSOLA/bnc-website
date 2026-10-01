@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import type { Lang, SiteConfig } from '@/types';
+import { SECTION_COPY } from '@/lib/section-copy';
 import LanguageSwitcher from './LanguageSwitcher';
 
 interface HeaderProps {
@@ -17,10 +18,13 @@ export default function Header({ lang, config }: HeaderProps) {
   const pathname = usePathname();
   const [logoError, setLogoError] = useState(false);
 
+  const copy = SECTION_COPY[lang];
   const navItems = [
     { key: 'home', href: `/${lang}`, label: config.nav.home[lang] },
     { key: 'about', href: `/${lang}/about`, label: config.nav.about[lang] },
     { key: 'matches', href: `/${lang}/matches`, label: config.nav.matches[lang] },
+    { key: 'shop', href: `/${lang}/shop`, label: copy.shop },
+    { key: 'events', href: `/${lang}/events`, label: copy.events },
   ];
 
   return (

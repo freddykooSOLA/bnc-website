@@ -1,0 +1,186 @@
+import { get, put } from '@vercel/blob';
+import fs from 'fs';
+import path from 'path';
+
+const BLOB_PATH = 'bnc/ledger.json';
+const FILE_PATH = path.join(process.cwd(), 'data', 'runtime', 'ledger.json');
+const MAX_ROWS = 2000;
+
+export interface OrderLine {
+  slug: string;
+  name: string;
+  qty: number;
+  size: string;
+  color: string;
+  teamName: string;
+  samplePriceHkd: number;
+}
+
+export interface ShopOrder {
+  ref: string;
+  createdAt: string;
+  name: string;
+  phone: string;
+  email: string;
+  note: string;
+  lines: OrderLine[];
+  sampleTotalHkd: number;
+  status: 'mock_unpaid';
+}
+
+export interface EventRegistration {
+  ref: string;
+  eventSlug: string;
+  eventTitle: string;
+  name: string;
+  phone: string;
+  email: string;
+  team: string;
+  createdAt: string;
+  checkedInAt: string | null;
+}
+
+interface Ledger {
+  orders: ShopOrder[];
+  registrations: EventRegistration[];
+}
+
+function emptyLedger(): Ledger {
+  return { orders: [], registrations: [] };
+}
+
+function normalize(raw: unknown): Ledger {
+  const data = raw && typeof raw === 'object' ? (raw as Partial<Ledger>) : {};
+  return {
+    orders: Array.isArray(data.orders) ? data.orders : [],
+    registrations: Array.isArray(data.registrations) ? data.registrations : [],
+  };
+}
+
+async function readBlob(): Promise<{ ledger: Ledger; etag: string | null }> {
+  const result = await get(BLOB_PATH, { access: 'private', useCache: false });
+  if (!result || result.statusCode !== 200 || !result.stream) {
+    return { ledger: emptyLedger(), etag: null };
+  }
+  const text = await new Response(result.stream).text();
+  return { ledger: normalize(JSON.parse(text)), etag: result.blob.etag || null };
+}
+
+async function writeBlob(ledger: Ledger, etag: string | null) {
+  await put(BLOB_PATH, JSON.stringify(ledger), {
+    access: 'private',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: 'application/json',
+    cacheControlMaxAge: 60,
+    ...(etag ? { ifMatch: etag } : {}),
+  });
+}
+
+function readFile(): Ledger {
+  if (!fs.existsSync(FILE_PATH)) return emptyLedger();
+  return normalize(JSON.parse(fs.readFileSync(FILE_PATH, 'utf-8')));
+}
+
+function writeFile(ledger: Ledger) {
+  fs.mkdirSync(path.dirname(FILE_PATH), { recursive: true });
+  fs.writeFileSync(FILE_PATH, JSON.stringify(ledger, null, 2), 'utf-8');
+}
+
+function usesBlob() {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+}
+
+let queue: Promise<void> = Promise.resolve();
+
+async function mutate<T>(fn: (ledger: Ledger) => T): Promise<T> {
+  const run = async () => {
+    if (!usesBlob()) {
+      const ledger = readFile();
+      const result = fn(ledger);
+      ledger.orders = ledger.orders.slice(0, MAX_ROWS);
+      ledger.registrations = ledger.registrations.slice(0, MAX_ROWS);
+      writeFile(ledger);
+      return result;
+    }
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const { ledger, etag } = await readBlob();
+      const result = fn(ledger);
+      ledger.orders = ledger.orders.slice(0, MAX_ROWS);
+      ledger.registrations = ledger.registrations.slice(0, MAX_ROWS);
+      try {
+        await writeBlob(ledger, etag);
+        return result;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : '';
+        if (!/precondition|condition|412|etag/i.test(message) || attempt === 4) {
+          throw error;
+        }
+      }
+    }
+    throw new Error('ledger write failed');
+  };
+
+  const result = queue.then(run, run);
+  queue = result.then(
+    () => undefined,
+    () => undefined
+  );
+  return result;
+}
+
+export async function saveOrder(order: ShopOrder) {
+  return mutate((ledger) => {
+    ledger.orders.unshift(order);
+    return order;
+  });
+}
+
+export async function findOrder(ref: string) {
+  if (!usesBlob()) {
+    return readFile().orders.find((order) => order.ref === ref) || null;
+  }
+  const { ledger } = await readBlob();
+  return ledger.orders.find((order) => order.ref === ref) || null;
+}
+
+export async function saveRegistration(registration: EventRegistration) {
+  return mutate((ledger) => {
+    ledger.registrations.unshift(registration);
+    return registration;
+  });
+}
+
+export async function findRegistration(ref: string) {
+  if (!usesBlob()) {
+    return readFile().registrations.find((row) => row.ref === ref) || null;
+  }
+  const { ledger } = await readBlob();
+  return ledger.registrations.find((row) => row.ref === ref) || null;
+}
+
+export async function searchRegistrations(query: string) {
+  const needle = query.trim().toLowerCase();
+  const rows = usesBlob()
+    ? (await readBlob()).ledger.registrations
+    : readFile().registrations;
+  if (!needle) return rows.slice(0, 50);
+  return rows
+    .filter((row) =>
+      [row.ref, row.name, row.phone, row.team, row.eventTitle]
+        .join(' ')
+        .toLowerCase()
+        .includes(needle)
+    )
+    .slice(0, 50);
+}
+
+export async function checkIn(ref: string) {
+  return mutate((ledger) => {
+    const row = ledger.registrations.find((item) => item.ref === ref);
+    if (!row) return null;
+    if (!row.checkedInAt) row.checkedInAt = new Date().toISOString();
+    return row;
+  });
+}
