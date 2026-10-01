@@ -66,14 +66,13 @@ async function readBlob(): Promise<{ ledger: Ledger; etag: string | null }> {
   return { ledger: normalize(JSON.parse(text)), etag: result.blob.etag || null };
 }
 
-async function writeBlob(ledger: Ledger, etag: string | null) {
+async function writeBlob(ledger: Ledger) {
   await put(BLOB_PATH, JSON.stringify(ledger), {
     access: 'private',
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: 'application/json',
     cacheControlMaxAge: 60,
-    ...(etag ? { ifMatch: etag } : {}),
   });
 }
 
@@ -104,22 +103,20 @@ async function mutate<T>(fn: (ledger: Ledger) => T): Promise<T> {
       return result;
     }
 
+    let lastError: unknown;
     for (let attempt = 0; attempt < 5; attempt += 1) {
-      const { ledger, etag } = await readBlob();
-      const result = fn(ledger);
-      ledger.orders = ledger.orders.slice(0, MAX_ROWS);
-      ledger.registrations = ledger.registrations.slice(0, MAX_ROWS);
       try {
-        await writeBlob(ledger, etag);
+        const { ledger } = await readBlob();
+        const result = fn(ledger);
+        ledger.orders = ledger.orders.slice(0, MAX_ROWS);
+        ledger.registrations = ledger.registrations.slice(0, MAX_ROWS);
+        await writeBlob(ledger);
         return result;
       } catch (error) {
-        const message = error instanceof Error ? error.message : '';
-        if (!/precondition|condition|412|etag/i.test(message) || attempt === 4) {
-          throw error;
-        }
+        lastError = error;
       }
     }
-    throw new Error('ledger write failed');
+    throw lastError;
   };
 
   const result = queue.then(run, run);
