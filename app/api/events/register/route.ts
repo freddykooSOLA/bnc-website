@@ -39,18 +39,24 @@ export async function POST(request: Request) {
   }
 
   try {
-    const registration = await saveRegistration({
-      ref: makeRef('BNC-E'),
-      eventSlug: event.slug,
-      eventTitle: event.title[lang],
-      name,
-      phone,
-      email,
-      team,
-      createdAt: new Date().toISOString(),
-      checkedInAt: null,
-    });
-    return NextResponse.json({ registration });
+    const result = await saveRegistration(
+      {
+        ref: makeRef('BNC-E'),
+        eventSlug: event.slug,
+        eventTitle: event.title[lang],
+        name,
+        phone,
+        email,
+        team,
+        createdAt: new Date().toISOString(),
+        checkedInAt: null,
+      },
+      event.capacity != null ? { capacity: event.capacity } : undefined
+    );
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error }, { status: 409 });
+    }
+    return NextResponse.json({ registration: result.registration });
   } catch {
     return NextResponse.json({ error: 'store_unavailable' }, { status: 503 });
   }

@@ -29,6 +29,8 @@ export const SECTION_COPY: Record<Lang, {
   eventsBanner: string;
   registerBy: string;
   registrationClosed: string;
+  spotsRemaining: (remaining: number) => string;
+  eventFull: string;
   register: string;
   team: string;
   ticketTitle: string;
@@ -81,6 +83,8 @@ export const SECTION_COPY: Record<Lang, {
     eventsBanner: '以下是示例活動，用來先跑通報名與簽到。日期、場地、費用及名額都待確認，並非正式賽程。正式賽程仍在「比賽」頁。',
     registerBy: '報名截止',
     registrationClosed: '報名已截止',
+    spotsRemaining: (remaining) => `餘額 ${remaining}`,
+    eventFull: '已額滿',
     register: '報名',
     team: '球隊名稱',
     ticketTitle: '報名確認',
@@ -133,6 +137,8 @@ export const SECTION_COPY: Record<Lang, {
     eventsBanner: '以下是示例活动，用来先跑通报名与签到。日期、场地、费用及名额都待确认，并非正式赛程。正式赛程仍在「比赛」页。',
     registerBy: '报名截止',
     registrationClosed: '报名已截止',
+    spotsRemaining: (remaining) => `余额 ${remaining}`,
+    eventFull: '已额满',
     register: '报名',
     team: '球队名称',
     ticketTitle: '报名确认',
@@ -185,6 +191,8 @@ export const SECTION_COPY: Record<Lang, {
     eventsBanner: 'These sample activities exercise registration and check-in. Dates, venues, fees, and capacity are not confirmed and are not the official schedule. Live fixtures stay on the Matches page.',
     registerBy: 'Registration closes',
     registrationClosed: 'Registration closed',
+    spotsRemaining: (remaining) => `${remaining} spots left`,
+    eventFull: 'Full',
     register: 'Register',
     team: 'Team name',
     ticketTitle: 'Registration confirmed',

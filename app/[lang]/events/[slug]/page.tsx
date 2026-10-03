@@ -4,7 +4,9 @@ import { notFound } from 'next/navigation';
 import { getConfig } from '@/lib/config';
 import { isValidLang } from '@/lib/i18n';
 import { generatePageMetadata } from '@/lib/seo';
-import { getEvent, isRegistrationOpen } from '@/lib/events-catalog';
+import { getEvent, isEventFull, isRegistrationOpen } from '@/lib/events-catalog';
+import { eventCapacityLabel } from '@/lib/event-capacity-label';
+import { countRegistrationsForEvent } from '@/lib/ledger';
 import { SECTION_COPY } from '@/lib/section-copy';
 import type { Lang } from '@/types';
 import EventRegisterForm from '@/components/EventRegisterForm';
@@ -23,12 +25,15 @@ export async function generateMetadata({
   }, `/events/${event.slug}`);
 }
 
-export default function EventDetailPage({ params }: { params: { lang: string; slug: string } }) {
+export default async function EventDetailPage({ params }: { params: { lang: string; slug: string } }) {
   if (!isValidLang(params.lang)) notFound();
   const event = getEvent(params.slug);
   if (!event) notFound();
   const lang: Lang = params.lang;
   const copy = SECTION_COPY[lang];
+  const registeredCount = await countRegistrationsForEvent(event.slug);
+  const capacityLabel = eventCapacityLabel(event, registeredCount, lang);
+  const registrationOpen = isRegistrationOpen(event) && !isEventFull(event, registeredCount);
 
   return (
     <div className="bg-light-bg">
@@ -42,11 +47,14 @@ export default function EventDetailPage({ params }: { params: { lang: string; sl
           <p>{event.location[lang]}</p>
           <p>{event.feeNote[lang]}</p>
           <p>{copy.registerBy}：{event.registerBy.slice(0, 16).replace('T', ' ')}</p>
+          {capacityLabel && <p>{capacityLabel}</p>}
         </div>
-        {isRegistrationOpen(event) ? (
+        {registrationOpen ? (
           <EventRegisterForm lang={lang} slug={event.slug} />
         ) : (
-          <p className="card text-sm text-red-600">{copy.registrationClosed}</p>
+          <p className="card text-sm text-red-600">
+            {!isRegistrationOpen(event) ? copy.registrationClosed : copy.eventFull}
+          </p>
         )}
       </div>
     </div>

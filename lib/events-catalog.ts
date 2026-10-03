@@ -7,6 +7,8 @@ export interface LeagueEvent {
   summary: LocalizedString;
   startsAt: string;
   registerBy: string;
+  /** 示例名額，非正式公布。未設定則不限制。 */
+  capacity?: number;
   location: LocalizedString;
   feeNote: LocalizedString;
 }
@@ -26,6 +28,7 @@ export const LEAGUE_EVENTS: LeagueEvent[] = [
     },
     startsAt: '2026-10-18T14:00:00+08:00',
     registerBy: '2026-10-16T23:59:00+08:00',
+    capacity: 2,
     location: {
       'zh-hk': '場地待確認',
       'zh-cn': '场地待确认',
@@ -51,6 +54,7 @@ export const LEAGUE_EVENTS: LeagueEvent[] = [
     },
     startsAt: '2026-11-08T10:00:00+08:00',
     registerBy: '2026-11-05T23:59:00+08:00',
+    capacity: 16,
     location: {
       'zh-hk': '場地待確認',
       'zh-cn': '场地待确认',
@@ -76,6 +80,33 @@ export const LEAGUE_EVENTS: LeagueEvent[] = [
     },
     startsAt: '2026-12-05T09:30:00+08:00',
     registerBy: '2026-12-01T23:59:00+08:00',
+    capacity: 8,
+    location: {
+      'zh-hk': '場地待確認',
+      'zh-cn': '场地待确认',
+      en: 'Venue to be confirmed',
+    },
+    feeNote: {
+      'zh-hk': '費用待確認',
+      'zh-cn': '费用待确认',
+      en: 'Fee to be confirmed',
+    },
+  },
+  {
+    slug: 'registration-closed-sample',
+    title: {
+      'zh-hk': '已截止報名示例',
+      'zh-cn': '已截止报名示例',
+      en: 'Registration closed sample',
+    },
+    summary: {
+      'zh-hk': '示例：報名截止時間已過，用於展示截止後無法再報名。',
+      'zh-cn': '示例：报名截止时间已过，用于展示截止后无法再报名。',
+      en: 'Sample activity whose registration deadline has passed, for demonstrating closed sign-up.',
+    },
+    startsAt: '2026-10-10T10:00:00+08:00',
+    registerBy: '2026-10-01T23:59:00+08:00',
+    capacity: 4,
     location: {
       'zh-hk': '場地待確認',
       'zh-cn': '场地待确认',
@@ -95,4 +126,14 @@ export function getEvent(slug: string) {
 
 export function isRegistrationOpen(event: LeagueEvent, now: Date = new Date()) {
   return now.getTime() <= new Date(event.registerBy).getTime();
+}
+
+export function isEventFull(event: LeagueEvent, registeredCount: number) {
+  if (event.capacity == null) return false;
+  return registeredCount >= event.capacity;
+}
+
+export function spotsRemaining(event: LeagueEvent, registeredCount: number) {
+  if (event.capacity == null) return null;
+  return Math.max(0, event.capacity - registeredCount);
 }

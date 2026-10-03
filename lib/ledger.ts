@@ -142,10 +142,31 @@ export async function findOrder(ref: string) {
   return ledger.orders.find((order) => order.ref === ref) || null;
 }
 
-export async function saveRegistration(registration: EventRegistration) {
-  return mutate((ledger) => {
+export async function countRegistrationsForEvent(eventSlug: string) {
+  const rows = usesBlob()
+    ? (await readBlob()).ledger.registrations
+    : readFile().registrations;
+  return rows.filter((row) => row.eventSlug === eventSlug).length;
+}
+
+export type SaveRegistrationResult =
+  | { ok: true; registration: EventRegistration }
+  | { ok: false; error: 'event_full' };
+
+export async function saveRegistration(
+  registration: EventRegistration,
+  options?: { capacity?: number }
+): Promise<SaveRegistrationResult> {
+  const capacity = options?.capacity;
+  return mutate((ledger): SaveRegistrationResult => {
+    if (capacity != null && capacity >= 0) {
+      const count = ledger.registrations.filter((row) => row.eventSlug === registration.eventSlug).length;
+      if (count >= capacity) {
+        return { ok: false, error: 'event_full' };
+      }
+    }
     ledger.registrations.unshift(registration);
-    return registration;
+    return { ok: true, registration };
   });
 }
 
