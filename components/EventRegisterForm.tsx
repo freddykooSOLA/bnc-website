@@ -27,7 +27,7 @@ export default function EventRegisterForm({ lang, slug }: { lang: Lang; slug: st
       });
       const data = await response.json();
       if (!response.ok) {
-        setError(data.error === 'store_unavailable' ? data.error : copy.required);
+        setError(data.error === 'registration_closed' ? copy.registrationClosed : copy.required);
         return;
       }
       router.push(`/${lang}/events/ticket/${data.registration.ref}`);

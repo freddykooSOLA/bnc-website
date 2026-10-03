@@ -6,6 +6,7 @@ export interface LeagueEvent {
   title: LocalizedString;
   summary: LocalizedString;
   startsAt: string;
+  registerBy: string;
   location: LocalizedString;
   feeNote: LocalizedString;
 }
@@ -24,6 +25,7 @@ export const LEAGUE_EVENTS: LeagueEvent[] = [
       en: 'A sample session so players can try registration and check-in. This is not a published fixture.',
     },
     startsAt: '2026-10-18T14:00:00+08:00',
+    registerBy: '2026-10-16T23:59:00+08:00',
     location: {
       'zh-hk': '場地待確認',
       'zh-cn': '场地待确认',
@@ -48,6 +50,7 @@ export const LEAGUE_EVENTS: LeagueEvent[] = [
       en: 'Shows team-name registration for a BNC-related activity. The live schedule stays on the matches page via ScoreLab.',
     },
     startsAt: '2026-11-08T10:00:00+08:00',
+    registerBy: '2026-11-05T23:59:00+08:00',
     location: {
       'zh-hk': '場地待確認',
       'zh-cn': '场地待确认',
@@ -72,6 +75,7 @@ export const LEAGUE_EVENTS: LeagueEvent[] = [
       en: 'Sample invitational form. Official teams, dates, and venues replace this only after the operator confirms them.',
     },
     startsAt: '2026-12-05T09:30:00+08:00',
+    registerBy: '2026-12-01T23:59:00+08:00',
     location: {
       'zh-hk': '場地待確認',
       'zh-cn': '场地待确认',
@@ -87,4 +91,8 @@ export const LEAGUE_EVENTS: LeagueEvent[] = [
 
 export function getEvent(slug: string) {
   return LEAGUE_EVENTS.find((event) => event.slug === slug) || null;
+}
+
+export function isRegistrationOpen(event: LeagueEvent, now: Date = new Date()) {
+  return now.getTime() <= new Date(event.registerBy).getTime();
 }

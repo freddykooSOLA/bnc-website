@@ -27,6 +27,8 @@ export const SECTION_COPY: Record<Lang, {
   orderTitle: string;
   orderMock: string;
   eventsBanner: string;
+  registerBy: string;
+  registrationClosed: string;
   register: string;
   team: string;
   ticketTitle: string;
@@ -77,6 +79,8 @@ export const SECTION_COPY: Record<Lang, {
     orderTitle: '示例訂單',
     orderMock: '訂單已記錄，狀態為待支付示例。沒有收款。',
     eventsBanner: '以下是示例活動，用來先跑通報名與簽到。日期、場地、費用及名額都待確認，並非正式賽程。正式賽程仍在「比賽」頁。',
+    registerBy: '報名截止',
+    registrationClosed: '報名已截止',
     register: '報名',
     team: '球隊名稱',
     ticketTitle: '報名確認',
@@ -127,6 +131,8 @@ export const SECTION_COPY: Record<Lang, {
     orderTitle: '示例订单',
     orderMock: '订单已记录，状态为待支付示例。没有收款。',
     eventsBanner: '以下是示例活动，用来先跑通报名与签到。日期、场地、费用及名额都待确认，并非正式赛程。正式赛程仍在「比赛」页。',
+    registerBy: '报名截止',
+    registrationClosed: '报名已截止',
     register: '报名',
     team: '球队名称',
     ticketTitle: '报名确认',
@@ -177,6 +183,8 @@ export const SECTION_COPY: Record<Lang, {
     orderTitle: 'Sample order',
     orderMock: 'The order is recorded as an unpaid sample. No payment was taken.',
     eventsBanner: 'These sample activities exercise registration and check-in. Dates, venues, fees, and capacity are not confirmed and are not the official schedule. Live fixtures stay on the Matches page.',
+    registerBy: 'Registration closes',
+    registrationClosed: 'Registration closed',
     register: 'Register',
     team: 'Team name',
     ticketTitle: 'Registration confirmed',

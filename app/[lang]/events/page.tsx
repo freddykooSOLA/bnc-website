@@ -5,7 +5,7 @@ import { getConfig } from '@/lib/config';
 import { isValidLang } from '@/lib/i18n';
 import { generatePageMetadata } from '@/lib/seo';
 import { SECTION_COPY } from '@/lib/section-copy';
-import { LEAGUE_EVENTS } from '@/lib/events-catalog';
+import { LEAGUE_EVENTS, isRegistrationOpen } from '@/lib/events-catalog';
 import type { Lang } from '@/types';
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
@@ -40,6 +40,9 @@ export default function EventsPage({ params }: { params: { lang: string } }) {
               <h2 className="font-heading text-xl font-bold text-primary mt-1">{event.title[lang]}</h2>
               <p className="text-sm text-gray-600 mt-2">{event.summary[lang]}</p>
               <p className="text-sm mt-3 text-primary">{event.startsAt.slice(0, 16).replace('T', ' ')} · {event.location[lang]}</p>
+              <p className="text-sm mt-1 text-gray-600">
+                {isRegistrationOpen(event) ? `${copy.registerBy}：${event.registerBy.slice(0, 16).replace('T', ' ')}` : copy.registrationClosed}
+              </p>
             </Link>
           ))}
         </div>

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getConfig } from '@/lib/config';
 import { isValidLang } from '@/lib/i18n';
 import { generatePageMetadata } from '@/lib/seo';
-import { getEvent } from '@/lib/events-catalog';
+import { getEvent, isRegistrationOpen } from '@/lib/events-catalog';
 import { SECTION_COPY } from '@/lib/section-copy';
 import type { Lang } from '@/types';
 import EventRegisterForm from '@/components/EventRegisterForm';
@@ -41,8 +41,13 @@ export default function EventDetailPage({ params }: { params: { lang: string; sl
           <p>{event.startsAt.slice(0, 16).replace('T', ' ')}</p>
           <p>{event.location[lang]}</p>
           <p>{event.feeNote[lang]}</p>
+          <p>{copy.registerBy}：{event.registerBy.slice(0, 16).replace('T', ' ')}</p>
         </div>
-        <EventRegisterForm lang={lang} slug={event.slug} />
+        {isRegistrationOpen(event) ? (
+          <EventRegisterForm lang={lang} slug={event.slug} />
+        ) : (
+          <p className="card text-sm text-red-600">{copy.registrationClosed}</p>
+        )}
       </div>
     </div>
   );

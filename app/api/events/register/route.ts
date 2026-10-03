@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getEvent } from '@/lib/events-catalog';
+import { getEvent, isRegistrationOpen } from '@/lib/events-catalog';
 import { saveRegistration } from '@/lib/ledger';
 import { clip, hasAtLeastDigits, makeRef } from '@/lib/codes';
 import type { Lang } from '@/types';
@@ -23,6 +23,7 @@ export async function POST(request: Request) {
 
   const event = getEvent(String(body.slug || ''));
   if (!event) return NextResponse.json({ error: 'unknown_event' }, { status: 400 });
+  if (!isRegistrationOpen(event)) return NextResponse.json({ error: 'registration_closed' }, { status: 409 });
 
   const lang: Lang = body.lang === 'en' || body.lang === 'zh-cn' ? body.lang : 'zh-hk';
   const name = clip(body.name, 80);
