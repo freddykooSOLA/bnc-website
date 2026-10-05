@@ -54,6 +54,19 @@ export const SECTION_COPY: Record<Lang, {
   back: string;
   required: string;
   contactOptional: string;
+  teamOptional: string;
+  needsJersey: string;
+  needsJerseyNo: string;
+  sessionNote: string;
+  eventTimeRange: (start: string, end: string) => string;
+  eventPaymentTitle: string;
+  eventPaymentIntro: string;
+  eventPaymentFps: string;
+  eventPaymentAlipay: string;
+  eventPaymentAccount: string;
+  eventPaymentPayee: string;
+  eventPaymentReceipt: string;
+  eventPaymentWhatsApp: string;
 }> = {
   'zh-hk': {
     shop: '商店',
@@ -87,6 +100,19 @@ export const SECTION_COPY: Record<Lang, {
     eventFull: '已額滿',
     register: '報名',
     team: '球隊名稱',
+    teamOptional: '隊名（可選）',
+    needsJersey: '是否需要球衣（可選）',
+    needsJerseyNo: '不需要',
+    sessionNote: '場次備註',
+    eventTimeRange: (start, end) => `${start} – ${end}`,
+    eventPaymentTitle: '付款指示',
+    eventPaymentIntro: '每位 HK$50。只接受 FPS 轉數快或 Alipay 香港。',
+    eventPaymentFps: 'FPS 轉數快：收款號碼 852 90944252',
+    eventPaymentAlipay: 'Alipay 香港：收款號碼 852 90944252',
+    eventPaymentAccount: '收款號碼：852 90944252',
+    eventPaymentPayee: '收款人：K*L*L*',
+    eventPaymentReceipt: '完成付款後，請把入數收據經 WhatsApp 發送給我們，以便核對。',
+    eventPaymentWhatsApp: '以 WhatsApp 發送收據',
     ticketTitle: '報名確認',
     ticketHint: '請保存參考編號或二維碼。工作人員可在後台掃碼或手動輸入此編號簽到。',
     ref: '參考編號',
@@ -141,6 +167,19 @@ export const SECTION_COPY: Record<Lang, {
     eventFull: '已额满',
     register: '报名',
     team: '球队名称',
+    teamOptional: '队名（可选）',
+    needsJersey: '是否需要球衣（可选）',
+    needsJerseyNo: '不需要',
+    sessionNote: '场次备注',
+    eventTimeRange: (start, end) => `${start} – ${end}`,
+    eventPaymentTitle: '付款指示',
+    eventPaymentIntro: '每位 HK$50。只接受 FPS 转数快或 Alipay 香港。',
+    eventPaymentFps: 'FPS 转数快：收款号码 852 90944252',
+    eventPaymentAlipay: 'Alipay 香港：收款号码 852 90944252',
+    eventPaymentAccount: '收款号码：852 90944252',
+    eventPaymentPayee: '收款人：K*L*L*',
+    eventPaymentReceipt: '完成付款后，请把入数收据经 WhatsApp 发送给我们，以便核对。',
+    eventPaymentWhatsApp: '以 WhatsApp 发送收据',
     ticketTitle: '报名确认',
     ticketHint: '请保存参考编号或二维码。工作人员可在后台扫码或手动输入此编号签到。',
     ref: '参考编号',
@@ -195,6 +234,19 @@ export const SECTION_COPY: Record<Lang, {
     eventFull: 'Full',
     register: 'Register',
     team: 'Team name',
+    teamOptional: 'Team name (optional)',
+    needsJersey: 'Need a jersey? (optional)',
+    needsJerseyNo: 'No jersey needed',
+    sessionNote: 'Session notes',
+    eventTimeRange: (start, end) => `${start} – ${end}`,
+    eventPaymentTitle: 'Payment instructions',
+    eventPaymentIntro: 'HK$50 per person. We accept FPS and Alipay HK only.',
+    eventPaymentFps: 'FPS: pay to 852 90944252',
+    eventPaymentAlipay: 'Alipay HK: pay to 852 90944252',
+    eventPaymentAccount: 'Account / mobile: 852 90944252',
+    eventPaymentPayee: 'Payee: K*L*L*',
+    eventPaymentReceipt: 'After paying, please send your transfer receipt on WhatsApp so we can match your registration.',
+    eventPaymentWhatsApp: 'Send receipt on WhatsApp',
     ticketTitle: 'Registration confirmed',
     ticketHint: 'Keep the reference or QR code. Staff can scan it or type the reference in the admin check-in desk.',
     ref: 'Reference',

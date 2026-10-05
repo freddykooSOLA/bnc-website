@@ -12,6 +12,7 @@ export default function EventRegisterForm({ lang, slug }: { lang: Lang; slug: st
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [team, setTeam] = useState('');
+  const [needsJersey, setNeedsJersey] = useState('');
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
 
@@ -23,7 +24,7 @@ export default function EventRegisterForm({ lang, slug }: { lang: Lang; slug: st
       const response = await fetch('/api/events/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, name, phone, email, team, lang }),
+        body: JSON.stringify({ slug, name, phone, email, team, needsJersey, lang }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -56,8 +57,12 @@ export default function EventRegisterForm({ lang, slug }: { lang: Lang; slug: st
         <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="input-field mt-1" />
       </label>
       <label className="block text-sm">
-        <span className="font-medium text-primary">{copy.team}</span>
-        <input required value={team} onChange={(event) => setTeam(event.target.value)} className="input-field mt-1" />
+        <span className="font-medium text-primary">{copy.teamOptional}</span>
+        <input value={team} onChange={(event) => setTeam(event.target.value)} className="input-field mt-1" />
+      </label>
+      <label className="block text-sm">
+        <span className="font-medium text-primary">{copy.needsJersey}</span>
+        <input value={needsJersey} onChange={(event) => setNeedsJersey(event.target.value)} className="input-field mt-1" placeholder={copy.needsJerseyNo} />
       </label>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button type="submit" className="btn-primary" disabled={pending}>

@@ -41,7 +41,7 @@ export default async function EventsPage({ params }: { params: { lang: string } 
         <div className="space-y-4">
           {LEAGUE_EVENTS.map((event, index) => (
             <Link key={event.slug} href={`/${lang}/events/${event.slug}`} className="card block hover:border-orange">
-              <p className="text-xs uppercase tracking-widest text-orange">Sample</p>
+              {!event.published && <p className="text-xs uppercase tracking-widest text-orange">Sample</p>}
               <h2 className="font-heading text-xl font-bold text-primary mt-1">{event.title[lang]}</h2>
               <p className="text-sm text-gray-600 mt-2">{event.summary[lang]}</p>
               <p className="text-sm mt-3 text-primary">{event.startsAt.slice(0, 16).replace('T', ' ')} · {event.location[lang]}</p>

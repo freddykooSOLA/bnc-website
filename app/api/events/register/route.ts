@@ -13,6 +13,7 @@ export async function POST(request: Request) {
     phone?: string;
     email?: string;
     team?: string;
+    needsJersey?: string;
     lang?: Lang;
   };
   try {
@@ -30,8 +31,9 @@ export async function POST(request: Request) {
   const phone = clip(body.phone, 40);
   const email = clip(body.email, 120);
   const team = clip(body.team, 60);
+  const needsJersey = clip(body.needsJersey, 40);
 
-  if (name.length < 2 || !hasAtLeastDigits(phone, 6) || team.length < 2) {
+  if (name.length < 2 || !hasAtLeastDigits(phone, 6)) {
     return NextResponse.json({ error: 'invalid_contact' }, { status: 400 });
   }
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -48,6 +50,7 @@ export async function POST(request: Request) {
         phone,
         email,
         team,
+        needsJersey,
         createdAt: new Date().toISOString(),
         checkedInAt: null,
       },

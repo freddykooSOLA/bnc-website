@@ -11,6 +11,11 @@ export interface LeagueEvent {
   capacity?: number;
   location: LocalizedString;
   feeNote: LocalizedString;
+  /** Listed as a real activity (not the sample banner). */
+  published?: boolean;
+  /** Show FPS / Alipay instructions on the detail and ticket pages. */
+  collectPayment?: boolean;
+  operatorNote?: LocalizedString;
 }
 
 export const LEAGUE_EVENTS: LeagueEvent[] = [
@@ -116,6 +121,118 @@ export const LEAGUE_EVENTS: LeagueEvent[] = [
       'zh-hk': '費用待確認',
       'zh-cn': '费用待确认',
       en: 'Fee to be confirmed',
+    },
+  },
+  {
+    slug: 'basketball-meetup-2026-10-09',
+    published: true,
+    collectPayment: true,
+    title: {
+      'zh-hk': 'BNC 籃球聚會',
+      'zh-cn': 'BNC 篮球聚会',
+      en: 'BNC basketball meetup',
+    },
+    summary: {
+      'zh-hk': '歡迎球友一起打波。每場名額 20 人，費用 HK$50／位。',
+      'zh-cn': '欢迎球友一起打球。每场名额 20 人，费用 HK$50／位。',
+      en: 'Open run for players. 20 spots per session, HK$50 per person.',
+    },
+    startsAt: '2026-10-09T19:00:00+08:00',
+    registerBy: '2026-10-09T18:30:00+08:00',
+    capacity: 20,
+    location: {
+      'zh-hk': '調景嶺體育館 B 場',
+      'zh-cn': '调景岭体育馆 B 场',
+      en: 'Tiu Keng Leng Sports Centre — Court B',
+    },
+    feeNote: {
+      'zh-hk': 'HK$50／位（FPS 或 Alipay）',
+      'zh-cn': 'HK$50／位（FPS 或 Alipay）',
+      en: 'HK$50 per person (FPS or Alipay)',
+    },
+  },
+  {
+    slug: 'basketball-meetup-2026-10-19',
+    published: true,
+    collectPayment: true,
+    title: {
+      'zh-hk': 'BNC 籃球聚會',
+      'zh-cn': 'BNC 篮球聚会',
+      en: 'BNC basketball meetup',
+    },
+    summary: {
+      'zh-hk': '歡迎球友一起打波。每場名額 20 人，費用 HK$50／位。',
+      'zh-cn': '欢迎球友一起打球。每场名额 20 人，费用 HK$50／位。',
+      en: 'Open run for players. 20 spots per session, HK$50 per person.',
+    },
+    startsAt: '2026-10-19T19:00:00+08:00',
+    registerBy: '2026-10-19T18:30:00+08:00',
+    capacity: 20,
+    location: {
+      'zh-hk': '林士德體育館 A 場',
+      'zh-cn': '林士德体育馆 A 场',
+      en: 'Lam Shek Te Sports Centre — Court A',
+    },
+    feeNote: {
+      'zh-hk': 'HK$50／位（FPS 或 Alipay）',
+      'zh-cn': 'HK$50／位（FPS 或 Alipay）',
+      en: 'HK$50 per person (FPS or Alipay)',
+    },
+  },
+  {
+    slug: 'basketball-meetup-2026-10-23',
+    published: true,
+    collectPayment: true,
+    title: {
+      'zh-hk': 'BNC 籃球聚會',
+      'zh-cn': 'BNC 篮球聚会',
+      en: 'BNC basketball meetup',
+    },
+    summary: {
+      'zh-hk': '歡迎球友一起打波。每場名額 20 人，費用 HK$50／位。',
+      'zh-cn': '欢迎球友一起打球。每场名额 20 人，费用 HK$50／位。',
+      en: 'Open run for players. 20 spots per session, HK$50 per person.',
+    },
+    startsAt: '2026-10-23T19:00:00+08:00',
+    registerBy: '2026-10-23T18:30:00+08:00',
+    capacity: 20,
+    location: {
+      'zh-hk': '調景嶺體育館 B 場',
+      'zh-cn': '调景岭体育馆 B 场',
+      en: 'Tiu Keng Leng Sports Centre — Court B',
+    },
+    feeNote: {
+      'zh-hk': 'HK$50／位（FPS 或 Alipay）',
+      'zh-cn': 'HK$50／位（FPS 或 Alipay）',
+      en: 'HK$50 per person (FPS or Alipay)',
+    },
+  },
+  {
+    slug: 'basketball-meetup-2026-10-26',
+    published: true,
+    collectPayment: true,
+    title: {
+      'zh-hk': 'BNC 籃球聚會',
+      'zh-cn': 'BNC 篮球聚会',
+      en: 'BNC basketball meetup',
+    },
+    summary: {
+      'zh-hk': '歡迎球友一起打波。每場名額 20 人，費用 HK$50／位。',
+      'zh-cn': '欢迎球友一起打球。每场名额 20 人，费用 HK$50／位。',
+      en: 'Open run for players. 20 spots per session, HK$50 per person.',
+    },
+    startsAt: '2026-10-26T19:00:00+08:00',
+    registerBy: '2026-10-26T18:30:00+08:00',
+    capacity: 20,
+    location: {
+      'zh-hk': '九龍灣體育館 B 場',
+      'zh-cn': '九龙湾体育馆 B 场',
+      en: 'Kowloon Bay Sports Centre — Court B',
+    },
+    feeNote: {
+      'zh-hk': 'HK$50／位（FPS 或 Alipay）',
+      'zh-cn': 'HK$50／位（FPS 或 Alipay）',
+      en: 'HK$50 per person (FPS or Alipay)',
     },
   },
 ];

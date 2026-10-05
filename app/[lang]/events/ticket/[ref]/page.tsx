@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { isValidLang } from '@/lib/i18n';
 import { SECTION_COPY } from '@/lib/section-copy';
 import { findRegistration } from '@/lib/ledger';
+import { getEvent } from '@/lib/events-catalog';
+import EventPaymentInstructions from '@/components/EventPaymentInstructions';
 import { isRef } from '@/lib/codes';
 import type { Lang } from '@/types';
 
@@ -20,6 +22,7 @@ export default async function TicketPage({ params }: { params: { lang: string; r
   if (!registration) notFound();
   const lang: Lang = params.lang;
   const copy = SECTION_COPY[lang];
+  const catalogEvent = getEvent(registration.eventSlug);
   const checkinUrl = `${BASE_URL}/admin/checkin?code=${registration.ref}`;
   const svg = await QRCode.toString(checkinUrl, { type: 'svg', margin: 1, width: 240 });
 
@@ -39,6 +42,11 @@ export default async function TicketPage({ params }: { params: { lang: string; r
           <p className="text-sm text-gray-600">{registration.eventTitle}</p>
           <p className="text-sm mt-2">{registration.checkedInAt ? copy.checkedIn : copy.notChecked}</p>
         </div>
+        {catalogEvent?.collectPayment && (
+          <div className="mt-6">
+            <EventPaymentInstructions lang={lang} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -10,6 +10,9 @@ import { countRegistrationsForEvent } from '@/lib/ledger';
 import { SECTION_COPY } from '@/lib/section-copy';
 import type { Lang } from '@/types';
 import EventRegisterForm from '@/components/EventRegisterForm';
+import EventPaymentInstructions from '@/components/EventPaymentInstructions';
+import { getEventOperatorNote } from '@/lib/event-operator-notes';
+import { eventSessionEndLabel } from '@/lib/event-session-time';
 
 export async function generateMetadata({
   params,
@@ -34,21 +37,30 @@ export default async function EventDetailPage({ params }: { params: { lang: stri
   const registeredCount = await countRegistrationsForEvent(event.slug);
   const capacityLabel = eventCapacityLabel(event, registeredCount, lang);
   const registrationOpen = isRegistrationOpen(event) && !isEventFull(event, registeredCount);
+  const operatorNote = getEventOperatorNote(event.slug, event.operatorNote);
+  const timeLabel = event.published ? eventSessionEndLabel(event.startsAt) : event.startsAt.slice(0, 16).replace('T', ' ');
 
   return (
     <div className="bg-light-bg">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-6">
         <Link href={`/${lang}/events`} className="text-sm text-orange">{copy.back}</Link>
-        <p className="text-xs uppercase tracking-widest text-orange">Sample</p>
+        {!event.published && <p className="text-xs uppercase tracking-widest text-orange">Sample</p>}
         <h1 className="font-heading text-3xl font-bold text-primary">{event.title[lang]}</h1>
         <p className="text-gray-600">{event.summary[lang]}</p>
         <div className="card text-sm space-y-1">
-          <p>{event.startsAt.slice(0, 16).replace('T', ' ')}</p>
+          <p>{timeLabel}</p>
           <p>{event.location[lang]}</p>
           <p>{event.feeNote[lang]}</p>
+          {operatorNote && (
+            <p>
+              <span className="font-medium text-primary">{copy.sessionNote}：</span>
+              {operatorNote[lang]}
+            </p>
+          )}
           <p>{copy.registerBy}：{event.registerBy.slice(0, 16).replace('T', ' ')}</p>
           {capacityLabel && <p>{capacityLabel}</p>}
         </div>
+        {event.collectPayment && <EventPaymentInstructions lang={lang} />}
         {registrationOpen ? (
           <EventRegisterForm lang={lang} slug={event.slug} />
         ) : (

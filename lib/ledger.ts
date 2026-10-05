@@ -36,6 +36,7 @@ export interface EventRegistration {
   phone: string;
   email: string;
   team: string;
+  needsJersey: string;
   createdAt: string;
   checkedInAt: string | null;
 }
