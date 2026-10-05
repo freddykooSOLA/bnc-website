@@ -32,7 +32,7 @@
 
 ## Commit
 
-- **Hash：** `07296ccbf3b63c6eb81b25f98928ff5801c4037a`
+- **Hash：** `919d0e4a9ae3dc6232d97659daebf8d1c67f108c`
 - **Message：** Add four basketball meetup events with FPS/Alipay payment instructions and capacity registration.
 
 ## 待操作員確認
