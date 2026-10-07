@@ -42,6 +42,20 @@
 3. **`ops/memory/hq/WORK_STANDARD_RESULT_FIRST.md`** 在本倉庫不存在；若 HQ 有更新版請 JT1 對照。
 4. 本機測試後 **`basketball-meetup-2026-10-09` ledger 已有 20 筆測試報名**；上線或再測前請清空該場 `data/runtime/ledger.json` 內對應紀錄或整檔重置（視部署環境而定）。
 
+## 生產 ledger 測試資料稽核（2026-10-07，A1 前）
+
+操作員已授權清除 BNC 活動測試報名。JT2 於部署前讀取 Vercel Blob `bnc/ledger.json` 核對：
+
+| slug | 筆數 | 判定 |
+|------|------|------|
+| `basketball-meetup-2026-10-09` | 20 | 測試：`Tester1`–`Tester20`，電話 `91234561`–`912345620` 序列，email 空，時間 `2026-10-05T09:38–09:39Z` |
+| `basketball-meetup-2026-10-19` | 1 | 測試：`SpotCheck` / `90000001`，同上日 |
+
+**結論：** 上述 21 筆均為 handoff 本機壓測殘留，非真實客人。其餘 9 筆為 `*-sample` 示例活動（示範報名／簽到示範等），**未刪除**。
+
+- 備份：`ops/memory/bnc-league/ledger-backup-2026-10-07-pre-basketball-cleanup.json`
+- 清除：自 blob 移除兩個 basketball slug 共 21 筆；清除後籃球剩餘 0、總報名 9。
+
 ## 刻意未做
 
 會員系統、Google 登入、雷達圖、商城；未 push、未改 `.env`。
