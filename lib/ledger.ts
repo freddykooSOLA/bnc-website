@@ -1,3 +1,8 @@
+import {
+  syncCheckInToDatabase,
+  syncRegistrationToDatabase,
+  syncShopOrderToDatabase,
+} from '@/lib/db-sync';
 import { get, put } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
@@ -129,10 +134,12 @@ async function mutate<T>(fn: (ledger: Ledger) => T): Promise<T> {
 }
 
 export async function saveOrder(order: ShopOrder) {
-  return mutate((ledger) => {
+  const saved = await mutate((ledger) => {
     ledger.orders.unshift(order);
     return order;
   });
+  await syncShopOrderToDatabase(saved);
+  return saved;
 }
 
 export async function findOrder(ref: string) {
@@ -159,7 +166,7 @@ export async function saveRegistration(
   options?: { capacity?: number }
 ): Promise<SaveRegistrationResult> {
   const capacity = options?.capacity;
-  return mutate((ledger): SaveRegistrationResult => {
+  const result = await mutate((ledger): SaveRegistrationResult => {
     if (capacity != null && capacity >= 0) {
       const count = ledger.registrations.filter((row) => row.eventSlug === registration.eventSlug).length;
       if (count >= capacity) {
@@ -169,6 +176,10 @@ export async function saveRegistration(
     ledger.registrations.unshift(registration);
     return { ok: true, registration };
   });
+  if (result.ok) {
+    await syncRegistrationToDatabase(result.registration);
+  }
+  return result;
 }
 
 export async function findRegistration(ref: string) {
@@ -196,10 +207,14 @@ export async function searchRegistrations(query: string) {
 }
 
 export async function checkIn(ref: string) {
-  return mutate((ledger) => {
-    const row = ledger.registrations.find((item) => item.ref === ref);
-    if (!row) return null;
-    if (!row.checkedInAt) row.checkedInAt = new Date().toISOString();
-    return row;
+  const row = await mutate((ledger) => {
+    const item = ledger.registrations.find((entry) => entry.ref === ref);
+    if (!item) return null;
+    if (!item.checkedInAt) item.checkedInAt = new Date().toISOString();
+    return item;
   });
+  if (row?.checkedInAt) {
+    await syncCheckInToDatabase(ref, row.checkedInAt);
+  }
+  return row;
 }

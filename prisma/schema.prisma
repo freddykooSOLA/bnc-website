@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Google OAuth `sub` — same id as Blob `bnc/users.json` MemberUser.id
+model Member {
+  id          String   @id
+  email       String
+  displayName String
+  image       String?
+  createdAt   DateTime
+  updatedAt   DateTime
+
+  merchantId String?
+  merchant   PartnerMerchant? @relation(fields: [merchantId], references: [id], onDelete: SetNull)
+
+  registrations EventRegistration[]
+  vouchers      Voucher[]
+  pointLedger   PointLedger[]
+  voucherSharesSent     VoucherShare[] @relation("VoucherShareSharer")
+  voucherSharesReceived VoucherShare[] @relation("VoucherShareClaimer")
+}
+
+/// Mirrors Blob ledger `registrations[]` (event signup rows).
+model EventRegistration {
+  ref          String    @id
+  eventSlug    String
+  eventTitle   String
+  name         String
+  phone        String
+  email        String
+  team         String
+  needsJersey  String
+  createdAt    DateTime
+  checkedInAt  DateTime?
+  memberId     String?
+  member       Member?   @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@index([eventSlug])
+  @@index([phone])
+  @@index([email])
+}
+
+/// Mirrors Blob ledger `orders[]` (mock shop checkout).
+model ShopOrder {
+  ref              String   @id
+  createdAt        DateTime
+  name             String
+  phone            String
+  email            String
+  note             String
+  linesJson        String
+  sampleTotalHkd   Int
+  status           String   @default("mock_unpaid")
+}
+
+// --- B1 §5 CRM / vouchers (phase 2; schema reserved, no app surface yet) ---
+
+model PartnerMerchant {
+  id              String              @id @default(cuid())
+  companyName     String
+  contactWhatsapp String?
+  address         String?
+  loginEmail      String              @unique
+  passwordHash    String
+  active          Boolean             @default(true)
+  createdAt       DateTime            @default(now())
+  voucherTypes    VoucherType[]
+  redemptions     VoucherRedemption[]
+  linkedMembers   Member[]
+}
+
+model VoucherType {
+  id                String           @id @default(cuid())
+  name              String
+  description       String?
+  discountText      String?
+  company           String?
+  address           String?
+  whatsapp          String?
+  notes             String?
+  validUntil        DateTime?
+  sharePointsReward Int?
+  merchantId        String?
+  merchant          PartnerMerchant? @relation(fields: [merchantId], references: [id])
+  vouchers          Voucher[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model Voucher {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  status    String   @default("issued")
+  typeId    String
+  type      VoucherType @relation(fields: [typeId], references: [id])
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  redemptions VoucherRedemption[]
+
+  @@unique([typeId, memberId])
+}
+
+model VoucherRedemption {
+  id         String          @id @default(cuid())
+  voucherId  String
+  voucher    Voucher         @relation(fields: [voucherId], references: [id])
+  merchantId String
+  merchant   PartnerMerchant @relation(fields: [merchantId], references: [id])
+  method     String          @default("qr")
+  redeemedAt DateTime        @default(now())
+  note       String?
+
+  @@index([merchantId, redeemedAt])
+}
+
+model VoucherShare {
+  id              String   @id @default(cuid())
+  sharerMemberId  String
+  sharer          Member   @relation("VoucherShareSharer", fields: [sharerMemberId], references: [id], onDelete: Cascade)
+  claimerMemberId String
+  claimer         Member   @relation("VoucherShareClaimer", fields: [claimerMemberId], references: [id], onDelete: Cascade)
+  voucherTypeId   String
+  createdAt       DateTime @default(now())
+}
+
+model PointLedger {
+  id        String   @id @default(cuid())
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  delta     Int
+  reason    String
+  createdAt DateTime @default(now())
+
+  @@index([memberId, createdAt])
+}

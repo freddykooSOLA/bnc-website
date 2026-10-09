@@ -1,3 +1,4 @@
+import { syncMemberToDatabase } from '@/lib/db-sync';
 import { get, put } from '@vercel/blob';
 import fs from 'fs';
 import path from 'path';
@@ -108,7 +109,7 @@ export interface OAuthMemberInput {
 /** 首次 Google 登入建立會員；之後更新顯示名稱與頭像。 */
 export async function upsertMemberFromOAuth(input: OAuthMemberInput): Promise<MemberUser> {
   const now = new Date().toISOString();
-  return mutate((store) => {
+  const user = await mutate((store) => {
     const existing = store.users.find((u) => u.id === input.id);
     if (existing) {
       existing.email = input.email;
@@ -128,6 +129,8 @@ export async function upsertMemberFromOAuth(input: OAuthMemberInput): Promise<Me
     store.users.unshift(user);
     return user;
   });
+  await syncMemberToDatabase(user);
+  return user;
 }
 
 export async function findMemberById(id: string): Promise<MemberUser | null> {
