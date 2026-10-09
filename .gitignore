@@ -41,3 +41,4 @@ scorelab_pageprops.json
 
 # 本地報名與訂單備份（線上寫入 Vercel Blob）
 /data/runtime
+.env*

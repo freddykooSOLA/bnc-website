@@ -6,6 +6,7 @@ import { generatePageMetadata, generateJsonLd } from '@/lib/seo';
 import type { Lang } from '@/types';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SessionProvider from '@/components/SessionProvider';
 
 interface LangLayoutProps {
   children: React.ReactNode;
@@ -48,11 +49,13 @@ export default async function LangLayout({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="flex flex-col min-h-screen">
-        <Header lang={lang} config={config} />
-        <main className="flex-1">{children}</main>
-        <Footer lang={lang} config={config} />
-      </div>
+      <SessionProvider>
+        <div className="flex flex-col min-h-screen">
+          <Header lang={lang} config={config} />
+          <main className="flex-1">{children}</main>
+          <Footer lang={lang} config={config} />
+        </div>
+      </SessionProvider>
     </>
   );
 }

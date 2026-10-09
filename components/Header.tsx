@@ -7,6 +7,7 @@ import { useState } from 'react';
 import type { Lang, SiteConfig } from '@/types';
 import { SECTION_COPY } from '@/lib/section-copy';
 import LanguageSwitcher from './LanguageSwitcher';
+import MemberAuthNav from './MemberAuthNav';
 
 interface HeaderProps {
   lang: Lang;
@@ -73,7 +74,10 @@ export default function Header({ lang, config }: HeaderProps) {
             })}
           </nav>
 
-          <LanguageSwitcher lang={lang} />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <MemberAuthNav lang={lang} />
+            <LanguageSwitcher lang={lang} />
+          </div>
         </div>
 
         <nav className="md:hidden flex overflow-x-auto gap-1 pb-3 -mx-4 px-4">
