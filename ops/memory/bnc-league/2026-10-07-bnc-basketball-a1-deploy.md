@@ -101,5 +101,11 @@ HTTP:409
 ## Watch outs
 
 - **生產再測後** `basketball-meetup-2026-10-09` 再次有 20 筆（含 `A1 Prod Test`、`Fill1`–`Fill19`）— 為 A1 線上驗證所留，**非**部署前那批 `Tester*`。若要在對外開放前清空名額，可再 filter 該 slug 或保留真實客人後續覆蓋。
+
+## 教訓（2026-10-07 緊急修復）
+
+- **問題：** A1 步驟 5 生產壓測（`A1 Prod Test` + `Fill1`–`Fill19`）未在驗收後清除，導致 2026-10-09 真實場次額滿（20/20），客人報名收到 `event_full`。
+- **修復：** 備份 `ops/memory/bnc-league/ledger-backup-2026-10-07-pre-a1-fill-cleanup.json` 後，自 Blob 移除上述 20 筆測試報名；清除後該場 **0/20 已報、餘額 20**。
+- **規則（強制）：** 任何**生產環境**驗證測試結束後，執行者**必須**在同一任務內刪除自己產生的測試報名（依姓名／電話模式辨識，有疑慮先列清單給操作員）。**禁止**用生產真實場次壓滿名額後留檔離開。驗證名額可用短暫 probe 後立即刪除，或只讀 Blob 計數，勿留佔位資料。
 - handoff 待操作員確認：WhatsApp/FPS 號碼、收款人顯示 `K*L*L*`。
 - `ledger-backup-2026-10-07-pre-basketball-cleanup.json` 含測試電話，勿 push 公開倉；復原時用本地備份 + blob `put`。

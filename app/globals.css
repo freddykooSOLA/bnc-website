@@ -18,6 +18,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-montserrat), var(--font-inter), sans-serif;
 }
 
+h1, h2 {
+  text-wrap: balance;
+}
+
 .prose-bnc h2 {
   @apply text-2xl font-bold text-primary mt-8 mb-4;
 }
