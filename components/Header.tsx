@@ -24,6 +24,11 @@ export default function Header({ lang, config }: HeaderProps) {
     { key: 'home', href: `/${lang}`, label: config.nav.home[lang] },
     { key: 'about', href: `/${lang}/about`, label: config.nav.about[lang] },
     { key: 'matches', href: `/${lang}/matches`, label: config.nav.matches[lang] },
+    {
+      key: 'hallOfFame',
+      href: `/${lang}/hall-of-fame`,
+      label: config.nav.hallOfFame[lang],
+    },
     { key: 'shop', href: `/${lang}/shop`, label: copy.shop },
     { key: 'events', href: `/${lang}/events`, label: copy.events },
   ];

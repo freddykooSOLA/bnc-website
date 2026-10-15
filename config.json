@@ -26,7 +26,8 @@
   "nav": {
     "home": { "zh-hk": "首頁", "zh-cn": "首页", "en": "Home" },
     "about": { "zh-hk": "關於我們", "zh-cn": "关于我们", "en": "About" },
-    "matches": { "zh-hk": "比賽", "zh-cn": "比赛", "en": "Matches" }
+    "matches": { "zh-hk": "比賽", "zh-cn": "比赛", "en": "Matches" },
+    "hallOfFame": { "zh-hk": "名人堂", "zh-cn": "名人堂", "en": "Hall of Fame" }
   },
   "hero": {
     "title": {

@@ -34,6 +34,7 @@ export interface SiteConfig {
     home: LocalizedString;
     about: LocalizedString;
     matches: LocalizedString;
+    hallOfFame: LocalizedString;
   };
   hero: {
     title: LocalizedString;

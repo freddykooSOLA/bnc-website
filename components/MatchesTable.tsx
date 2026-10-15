@@ -1,7 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import type { Lang, MatchRow, SeasonStage } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
+import { teamPagePath } from '@/lib/team-links';
 import {
   formatMatchDateHK,
   formatMatchDateTimeHK,
@@ -16,6 +18,8 @@ interface MatchesTableProps {
   seasonStages?: SeasonStage[];
   /** 首頁精簡列表不分段 */
   flat?: boolean;
+  /** 聯賽 config id — 有則隊名連到本站球隊頁 */
+  leagueId?: string;
 }
 
 function getStatusText(status: string, isMatchEnd: boolean, lang: Lang): string {
@@ -48,16 +52,33 @@ function ScoreCell({ match, lang }: { match: MatchRow; lang: Lang }) {
 }
 
 function TeamLink({
+  lang,
   name,
-  url,
+  teamId,
+  leagueId,
+  externalUrl,
 }: {
+  lang: Lang;
   name: string;
-  url?: string;
+  teamId?: string;
+  leagueId?: string;
+  externalUrl?: string;
 }) {
-  if (!url) return <>{name}</>;
+  if (leagueId && teamId) {
+    return (
+      <Link
+        href={teamPagePath(lang, leagueId, teamId)}
+        className="text-primary hover:text-orange transition-colors underline-offset-2 hover:underline"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {name}
+      </Link>
+    );
+  }
+  if (!externalUrl) return <>{name}</>;
   return (
     <a
-      href={url}
+      href={externalUrl}
       target="_blank"
       rel="noopener noreferrer"
       className="text-primary hover:text-orange transition-colors underline-offset-2 hover:underline"
@@ -68,7 +89,15 @@ function TeamLink({
   );
 }
 
-function MatchCard({ match, lang }: { match: MatchRow; lang: Lang }) {
+function MatchCard({
+  match,
+  lang,
+  leagueId,
+}: {
+  match: MatchRow;
+  lang: Lang;
+  leagueId?: string;
+}) {
   const rowClick = match.matchUrl
     ? () => window.open(match.matchUrl, '_blank', 'noopener,noreferrer')
     : undefined;
@@ -96,13 +125,25 @@ function MatchCard({ match, lang }: { match: MatchRow; lang: Lang }) {
           size={36}
         />
         <div className="min-w-0 flex-1 text-sm font-medium text-gray-800 truncate">
-          <TeamLink name={match.homeTeam} url={match.homeTeamUrl} />
+          <TeamLink
+            lang={lang}
+            name={match.homeTeam}
+            teamId={match.homeTeamId}
+            leagueId={leagueId}
+            externalUrl={match.homeTeamUrl}
+          />
         </div>
         <div className="shrink-0 px-2">
           <ScoreCell match={match} lang={lang} />
         </div>
         <div className="min-w-0 flex-1 text-sm font-medium text-gray-800 truncate text-right">
-          <TeamLink name={match.awayTeam} url={match.awayTeamUrl} />
+          <TeamLink
+            lang={lang}
+            name={match.awayTeam}
+            teamId={match.awayTeamId}
+            leagueId={leagueId}
+            externalUrl={match.awayTeamUrl}
+          />
         </div>
         <TeamLogo
           name={match.awayTeam}
@@ -127,7 +168,15 @@ function MatchCard({ match, lang }: { match: MatchRow; lang: Lang }) {
   );
 }
 
-function MatchTableRow({ match, lang }: { match: MatchRow; lang: Lang }) {
+function MatchTableRow({
+  match,
+  lang,
+  leagueId,
+}: {
+  match: MatchRow;
+  lang: Lang;
+  leagueId?: string;
+}) {
   const rowContent = (
     <>
       <td className="py-3 px-2 text-gray-500 whitespace-nowrap">
@@ -141,7 +190,13 @@ function MatchTableRow({ match, lang }: { match: MatchRow; lang: Lang }) {
             abbreviation={match.homeTeamAbbreviation}
             size={24}
           />
-          <TeamLink name={match.homeTeam} url={match.homeTeamUrl} />
+          <TeamLink
+            lang={lang}
+            name={match.homeTeam}
+            teamId={match.homeTeamId}
+            leagueId={leagueId}
+            externalUrl={match.homeTeamUrl}
+          />
         </div>
         <div className="text-gray-400 text-xs my-0.5">vs</div>
         <div className="flex items-center gap-2 font-medium text-gray-700">
@@ -151,7 +206,13 @@ function MatchTableRow({ match, lang }: { match: MatchRow; lang: Lang }) {
             abbreviation={match.awayTeamAbbreviation}
             size={24}
           />
-          <TeamLink name={match.awayTeam} url={match.awayTeamUrl} />
+          <TeamLink
+            lang={lang}
+            name={match.awayTeam}
+            teamId={match.awayTeamId}
+            leagueId={leagueId}
+            externalUrl={match.awayTeamUrl}
+          />
         </div>
       </td>
       <td className="py-3 px-2 text-center">
@@ -206,9 +267,11 @@ function MatchTableRow({ match, lang }: { match: MatchRow; lang: Lang }) {
 function MatchesTableDesktop({
   lang,
   matches,
+  leagueId,
 }: {
   lang: Lang;
   matches: MatchRow[];
+  leagueId?: string;
 }) {
   const t = UI_TEXT[lang];
 
@@ -238,7 +301,12 @@ function MatchesTableDesktop({
       </thead>
       <tbody>
         {matches.map((match) => (
-          <MatchTableRow key={match.id} match={match} lang={lang} />
+          <MatchTableRow
+            key={match.id}
+            match={match}
+            lang={lang}
+            leagueId={leagueId}
+          />
         ))}
       </tbody>
     </table>
@@ -251,6 +319,7 @@ export default function MatchesTable({
   matches,
   seasonStages,
   flat = false,
+  leagueId,
 }: MatchesTableProps) {
   const t = UI_TEXT[lang];
 
@@ -273,11 +342,20 @@ export default function MatchesTable({
           )}
           <div className="md:hidden space-y-3">
             {group.matches.map((match) => (
-              <MatchCard key={match.id} match={match} lang={lang} />
+              <MatchCard
+                key={match.id}
+                match={match}
+                lang={lang}
+                leagueId={leagueId}
+              />
             ))}
           </div>
           <div className="hidden md:block table-scroll">
-            <MatchesTableDesktop lang={lang} matches={group.matches} />
+            <MatchesTableDesktop
+              lang={lang}
+              matches={group.matches}
+              leagueId={leagueId}
+            />
           </div>
         </div>
       ))}

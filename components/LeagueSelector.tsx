@@ -136,7 +136,12 @@ export default function LeagueSelector({
 
             <MatchHighlights lang={lang} matches={data?.matches ?? []} />
 
-            <StatLeaders lang={lang} topPlayers={data?.topPlayers} compact />
+            <StatLeaders
+              lang={lang}
+              topPlayers={data?.topPlayers}
+              compact
+              leagueId={selectedId}
+            />
 
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="card">
@@ -148,19 +153,30 @@ export default function LeagueSelector({
                   standings={data?.standings ?? []}
                   compact
                   sortable
+                  leagueId={selectedId}
                 />
               </div>
               <div className="card">
                 <h2 className="font-heading text-lg font-bold text-primary mb-4">
                   {t.recentResults}
                 </h2>
-                <MatchesTable lang={lang} matches={completedForTable} flat />
+                <MatchesTable
+                  lang={lang}
+                  matches={completedForTable}
+                  flat
+                  leagueId={selectedId}
+                />
               </div>
               <div className="card">
                 <h2 className="font-heading text-lg font-bold text-primary mb-4">
                   {t.upcoming}
                 </h2>
-                <MatchesTable lang={lang} matches={upcomingMatches} flat />
+                <MatchesTable
+                  lang={lang}
+                  matches={upcomingMatches}
+                  flat
+                  leagueId={selectedId}
+                />
               </div>
             </div>
           </div>

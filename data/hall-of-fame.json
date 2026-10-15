@@ -1,0 +1,144 @@
+{
+  "seasons": [
+    {
+      "id": "bnc4",
+      "title": "BNC4 籃球挑戰賽 2025-2026",
+      "published": true,
+      "placements": [
+        { "award": "冠軍", "teamName": "THURSDAY" },
+        { "award": "亞軍", "teamName": "SUMMITERS" },
+        { "award": "季軍", "teamName": "HEAT" }
+      ],
+      "individualAwards": [
+        {
+          "award": "得分王",
+          "teamName": "THURSDAY",
+          "playerName": "LAW HO CHUN",
+          "number": "1"
+        },
+        {
+          "award": "三分王",
+          "teamName": "THURSDAY",
+          "playerName": "LAW HO CHUN",
+          "number": "1"
+        },
+        {
+          "award": "籃板王",
+          "teamName": "DYNASTY",
+          "playerName": "YU TAK LIM JOSEPH",
+          "number": "24"
+        },
+        {
+          "award": "封阻王",
+          "teamName": "HEAT",
+          "playerName": "CHAN DING YOU",
+          "number": "12"
+        },
+        {
+          "award": "助攻王",
+          "teamName": "NIL",
+          "playerName": "MA KIN WAH",
+          "number": "12"
+        },
+        {
+          "award": "盜球王",
+          "teamName": "悅和飛豬",
+          "playerName": "CHIK WAN TO",
+          "number": "88"
+        }
+      ]
+    },
+    {
+      "id": "bnc5",
+      "title": "BNC5 籃球挑戰賽 2026",
+      "published": false,
+      "placements": [
+        { "award": "冠軍", "teamName": "思傑牙科醫療 SUMMITERS" },
+        { "award": "亞軍", "teamName": "HEAT" },
+        { "award": "季軍", "teamName": "只攻與防" }
+      ],
+      "individualAwards": [
+        {
+          "award": "得分王",
+          "teamName": "HEAT",
+          "playerName": "Ethan",
+          "number": "14"
+        },
+        {
+          "award": "三分王",
+          "teamName": "CAMELLIA WARRIORS",
+          "playerName": "Luigi",
+          "number": "6"
+        },
+        {
+          "award": "籃板王",
+          "teamName": "NEWLIFE 盈籃SUMMIT",
+          "playerName": "Michael",
+          "number": "20"
+        },
+        {
+          "award": "封阻王",
+          "teamName": "HEAT",
+          "playerName": "Daniel",
+          "number": "23"
+        },
+        {
+          "award": "助攻王",
+          "teamName": "HEAT",
+          "playerName": "Ethan",
+          "number": "14"
+        },
+        {
+          "award": "盜球王",
+          "teamName": "NIL",
+          "playerName": "KENNY",
+          "number": "23"
+        }
+      ]
+    },
+    {
+      "id": "ocbc3",
+      "title": "OCBC 第三屆華僑銀行籃球邀請賽",
+      "published": true,
+      "placements": [],
+      "individualAwards": [
+        {
+          "award": "得分王",
+          "teamName": "南洋商業銀行",
+          "playerName": "Kyle Wong",
+          "number": "40"
+        },
+        {
+          "award": "助攻王",
+          "teamName": "南洋商業銀行",
+          "playerName": "Kyle Wong",
+          "number": "40"
+        },
+        {
+          "award": "抄截王",
+          "teamName": "南洋商業銀行",
+          "playerName": "Kyle Wong",
+          "number": "40"
+        },
+        {
+          "award": "籃板王",
+          "teamName": "招商永隆銀行",
+          "playerName": "Andy",
+          "number": "11"
+        },
+        {
+          "award": "封阻王",
+          "teamName": "招商永隆銀行",
+          "playerName": "Andy",
+          "number": "11"
+        },
+        {
+          "award": "三分王",
+          "teamName": "中信銀行(國際)",
+          "playerName": "Frank Ho",
+          "number": "0"
+        }
+      ]
+    }
+  ]
+}

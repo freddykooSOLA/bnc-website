@@ -1,9 +1,11 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import type { Lang } from '@/types';
 import type { StandingRow } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
+import { teamPagePath } from '@/lib/team-links';
 import TeamLogo from './TeamLogo';
 
 interface StandingsTableProps {
@@ -12,6 +14,7 @@ interface StandingsTableProps {
   compact?: boolean;
   /** 显示正序/倒序切换（首页排名使用） */
   sortable?: boolean;
+  leagueId?: string;
 }
 
 type SortDir = 'asc' | 'desc';
@@ -22,6 +25,7 @@ export default function StandingsTable({
   standings,
   compact = false,
   sortable = false,
+  leagueId,
 }: StandingsTableProps) {
   const t = UI_TEXT[lang];
   const [sortDir, setSortDir] = useState<SortDir>('asc');
@@ -142,7 +146,14 @@ export default function StandingsTable({
                         abbreviation={row.teamAbbreviation}
                         size={28}
                       />
-                      {row.teamUrl ? (
+                      {leagueId && row.teamId ? (
+                        <Link
+                          href={teamPagePath(lang, leagueId, row.teamId)}
+                          className="text-primary hover:text-orange transition-colors underline-offset-2 hover:underline truncate"
+                        >
+                          {row.teamName}
+                        </Link>
+                      ) : row.teamUrl ? (
                         <a
                           href={row.teamUrl}
                           target="_blank"

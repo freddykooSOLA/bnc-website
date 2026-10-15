@@ -4,7 +4,7 @@ import { expandLocalized } from '@/lib/translate';
 /** 从繁体中文生成三语配置（无 fs 依赖，客户端可用） */
 export function buildConfigFromZhHk(input: {
   siteName: string;
-  nav: { home: string; about: string; matches: string };
+  nav: { home: string; about: string; matches: string; hallOfFame?: string };
   hero: { title: string; subtitle: string; ctaText: string; backgroundImage: string };
   about: { content: string };
   footer: { copyright: string };
@@ -36,6 +36,7 @@ export function buildConfigFromZhHk(input: {
       home: expandLocalized(input.nav.home),
       about: expandLocalized(input.nav.about),
       matches: expandLocalized(input.nav.matches),
+      hallOfFame: expandLocalized(input.nav.hallOfFame ?? '名人堂'),
     },
     hero: {
       title: expandLocalized(input.hero.title),

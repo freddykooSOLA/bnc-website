@@ -9,14 +9,16 @@ import MatchesTable from './MatchesTable';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import StatLeaders from './StatLeaders';
+import type { MatchesLeagueLists } from '@/lib/matches-leagues';
 
 interface MatchesContentProps {
   lang: Lang;
   config: SiteConfig;
+  leagueLists: MatchesLeagueLists;
 }
 
 /** 比赛页面 — 在本站直接展示赛季排名与赛程（实时从 ScoreLab 抓取） */
-function MatchesContentInner({ lang, config }: MatchesContentProps) {
+function MatchesContentInner({ lang, config, leagueLists }: MatchesContentProps) {
   const t = UI_TEXT[lang];
   const searchParams = useSearchParams();
   const seasonParam = searchParams.get('season');
@@ -24,7 +26,7 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
   const [activeTab, setActiveTab] = useState<'latest' | 'archive'>('latest');
 
   const leagues =
-    activeTab === 'latest' ? config.matches.leagues : config.matches.archiveLeagues;
+    activeTab === 'latest' ? leagueLists.latest : leagueLists.archive;
 
   const initialLeagueId =
     (seasonParam && leagues.some((l) => l.id === seasonParam)
@@ -74,8 +76,7 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
 
   const handleTabChange = (tab: 'latest' | 'archive') => {
     setActiveTab(tab);
-    const list =
-      tab === 'latest' ? config.matches.leagues : config.matches.archiveLeagues;
+    const list = tab === 'latest' ? leagueLists.latest : leagueLists.archive;
     if (list.length > 0) {
       setSelectedId(list[0].id);
     }
@@ -168,7 +169,11 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
             <ErrorMessage lang={lang} scorelabUrl={selectedLeague?.url} />
           ) : (
             <div className="space-y-8">
-              <StatLeaders lang={lang} topPlayers={seasonData?.topPlayers} />
+              <StatLeaders
+                lang={lang}
+                topPlayers={seasonData?.topPlayers}
+                leagueId={selectedLeague?.id}
+              />
 
               <div className="card">
                 <h2 className="font-heading text-xl font-bold text-primary mb-6">
@@ -178,6 +183,7 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
                   lang={lang}
                   standings={seasonData?.standings ?? []}
                   sortable
+                  leagueId={selectedLeague?.id}
                 />
               </div>
 
@@ -189,6 +195,7 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
                   lang={lang}
                   matches={seasonData?.matches ?? []}
                   seasonStages={seasonData?.seasonStages}
+                  leagueId={selectedLeague?.id}
                 />
               </div>
             </div>

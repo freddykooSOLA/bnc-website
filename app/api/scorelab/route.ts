@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getConfig } from '@/lib/config';
-import { fetchSeasonData } from '@/lib/scorelab';
+import { getCachedSeasonData } from '@/lib/scorelab-cache';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 300;
 
 /** ScoreLab 数据 API — 每次请求实时抓取 */
 export async function GET(request: NextRequest) {
@@ -33,10 +33,10 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const data = await fetchSeasonData(seasonUrl);
+    const data = await getCachedSeasonData(seasonUrl);
     return NextResponse.json(data, {
       headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60',
       },
     });
   } catch (error) {

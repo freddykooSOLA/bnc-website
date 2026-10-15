@@ -48,6 +48,24 @@ export function formatMatchDateTimeHK(dateStr: string, lang: Lang): string {
 }
 
 /** Wall-clock date only (table date column). */
+/** Schema.org SportsEvent startDate：牆鐘分量 +08:00（勿用 Asia/Hong_Kong 轉換） */
+export function toHktIsoOffset(dateStr: string): string {
+  if (!dateStr) return '';
+  try {
+    const date = new Date(dateStr);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const y = date.getUTCFullYear();
+    const m = pad(date.getUTCMonth() + 1);
+    const d = pad(date.getUTCDate());
+    const h = pad(date.getUTCHours());
+    const min = pad(date.getUTCMinutes());
+    const sec = pad(date.getUTCSeconds());
+    return `${y}-${m}-${d}T${h}:${min}:${sec}+08:00`;
+  } catch {
+    return dateStr;
+  }
+}
+
 export function formatMatchDateHK(dateStr: string, lang: Lang): string {
   if (!dateStr) return '-';
   try {

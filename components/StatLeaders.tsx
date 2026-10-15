@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { Lang, TopPlayerEntry } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
+import { teamPagePath } from '@/lib/team-links';
 import {
   STAT_LEADER_CATEGORIES,
   type StatLeaderCategory,
@@ -14,6 +16,7 @@ interface StatLeadersProps {
   lang: Lang;
   topPlayers: Partial<Record<string, TopPlayerEntry[]>> | undefined;
   compact?: boolean;
+  leagueId?: string;
 }
 
 function formatAvg(total: number, games: number): string {
@@ -25,10 +28,12 @@ function LeadersList({
   lang,
   entries,
   limit,
+  leagueId,
 }: {
   lang: Lang;
   entries: TopPlayerEntry[];
   limit: number;
+  leagueId?: string;
 }) {
   const t = UI_TEXT[lang];
   const list = entries.slice(0, limit);
@@ -54,7 +59,18 @@ function LeadersList({
               {p.number != null && p.number !== '' ? `#${p.number} ` : ''}
               {p.name}
             </div>
-            <div className="text-xs text-gray-500 truncate">{p.teamName}</div>
+            <div className="text-xs text-gray-500 truncate">
+              {leagueId && p.teamId ? (
+                <Link
+                  href={teamPagePath(lang, leagueId, p.teamId)}
+                  className="hover:text-orange transition-colors"
+                >
+                  {p.teamName}
+                </Link>
+              ) : (
+                p.teamName
+              )}
+            </div>
           </div>
           <div className="text-right shrink-0">
             <div className="font-bold text-primary">{p.value}</div>
@@ -69,7 +85,12 @@ function LeadersList({
 }
 
 /** 數據王排行榜 */
-export default function StatLeaders({ lang, topPlayers, compact = false }: StatLeadersProps) {
+export default function StatLeaders({
+  lang,
+  topPlayers,
+  compact = false,
+  leagueId,
+}: StatLeadersProps) {
   const t = UI_TEXT[lang];
   const [category, setCategory] = useState<StatLeaderCategory>('PTS');
 
@@ -101,6 +122,7 @@ export default function StatLeaders({ lang, topPlayers, compact = false }: StatL
                 lang={lang}
                 entries={topPlayers![cat] ?? []}
                 limit={3}
+                leagueId={leagueId}
               />
             </div>
           ))}
@@ -132,7 +154,12 @@ export default function StatLeaders({ lang, topPlayers, compact = false }: StatL
           </button>
         ))}
       </div>
-      <LeadersList lang={lang} entries={topPlayers![active] ?? []} limit={5} />
+      <LeadersList
+        lang={lang}
+        entries={topPlayers![active] ?? []}
+        limit={5}
+        leagueId={leagueId}
+      />
     </div>
   );
 }
