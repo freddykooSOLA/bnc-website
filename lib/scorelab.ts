@@ -73,7 +73,8 @@ function parseNextData(html: string): SeasonData | null {
 
   try {
     const data = JSON.parse(scriptContent);
-    const season = data?.props?.pageProps?.initialSeasonData;
+    const pageProps = data?.props?.pageProps;
+    const season = pageProps?.seasonData ?? pageProps?.initialSeasonData;
     if (!season) return null;
     return transformSeasonData(season);
   } catch {
@@ -156,6 +157,11 @@ function parseHtmlTables(html: string, seasonUrl: string): SeasonData {
   });
 
   const seasonId = seasonUrl.split('/').pop() || 'unknown';
+  if (matches.length === 0) {
+    console.warn(
+      `[scorelab] HTML fallback parsed 0 matches for season "${seasonId}" — __NEXT_DATA__ may have changed`
+    );
+  }
   return {
     seasonId,
     seasonName: $('title').text() || 'Season',
