@@ -16,7 +16,8 @@ export default function TeamCalendarLinks({
   const base =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '') ||
     'https://bncleague.com';
-  const httpsUrl = `${base}/api/calendar/${leagueId}/${teamId}.ics`;
+  // Vercel 上帶 `.ics` 後綴的動態段解析與本機不一致；路由仍回 text/calendar
+  const httpsUrl = `${base}/api/calendar/${leagueId}/${teamId}`;
   const webcalUrl = httpsUrl.replace(/^https:/, 'webcal:');
 
   return (

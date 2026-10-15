@@ -25,6 +25,7 @@ async function withFollowsDb<T>(fn: () => Promise<T>): Promise<T | NextResponse>
 
 export async function GET() {
   const result = await withFollowsDb(async () => {
+    await prisma.teamFollow.findFirst({ select: { id: true } });
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ follows: [] });

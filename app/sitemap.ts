@@ -7,7 +7,8 @@ import { getCachedSeasonData } from '@/lib/scorelab-cache';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://bncleague.com';
 
-/** ScoreLab 資料在 build 時可能不可用；請求時重新生成並 ISR 快取 */
+/** ScoreLab 資料在 build 時可能不可用；請求時生成 */
+export const dynamic = 'force-dynamic';
 export const revalidate = 300;
 
 const STATIC_PAGES = [
