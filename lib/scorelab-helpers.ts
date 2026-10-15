@@ -47,26 +47,13 @@ export function getStageDisplayName(stageName: string, lang: Lang): string {
   return stageName;
 }
 
-/** 香港時區開賽時間 */
-export function formatMatchDateTimeHK(dateStr: string, lang: Lang): string {
-  if (!dateStr) return '';
-  try {
-    const date = new Date(dateStr);
-    const locale =
-      lang === 'en' ? 'en-HK' : lang === 'zh-cn' ? 'zh-CN' : 'zh-HK';
-    return date.toLocaleString(locale, {
-      timeZone: 'Asia/Hong_Kong',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: lang === 'en',
-    });
-  } catch {
-    return dateStr;
-  }
-}
+export {
+  formatMatchDateHK,
+  formatMatchDateTimeHK,
+  toRealEpoch,
+  compareMatchDateAsc,
+  compareMatchDateDesc,
+} from '@/lib/scorelab-time';
 
 /** 季後賽段在上，其餘按 order */
 export function sortSeasonStages(stages: SeasonStage[]): SeasonStage[] {

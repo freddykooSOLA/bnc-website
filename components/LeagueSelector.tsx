@@ -11,6 +11,7 @@ import StatLeaders from './StatLeaders';
 import NextMatchCard from './NextMatchCard';
 import RecentResultsStrip from './RecentResultsStrip';
 import MatchHighlights from './MatchHighlights';
+import { compareMatchDateAsc, compareMatchDateDesc } from '@/lib/scorelab-time';
 
 interface LeagueSelectorProps {
   lang: Lang;
@@ -78,7 +79,7 @@ export default function LeagueSelector({
       data?.matches
         .filter((m) => m.isMatchEnd)
         .slice()
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) ?? [],
+        .sort((a, b) => compareMatchDateDesc(a.date, b.date)) ?? [],
     [data?.matches]
   );
 
@@ -88,7 +89,7 @@ export default function LeagueSelector({
     data?.matches
       .filter((m) => !m.isMatchEnd)
       .slice()
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .sort((a, b) => compareMatchDateAsc(a.date, b.date))
       .slice(0, 5) ?? [];
 
   const nextUpcoming = useMemo(() => {
@@ -96,7 +97,7 @@ export default function LeagueSelector({
       data?.matches
         .filter((m) => !m.isMatchEnd)
         .slice()
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) ?? [];
+        .sort((a, b) => compareMatchDateAsc(a.date, b.date)) ?? [];
     return list[0] ?? null;
   }, [data?.matches]);
 

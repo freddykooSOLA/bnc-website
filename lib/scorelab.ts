@@ -8,6 +8,7 @@ import type {
 } from '@/types';
 import type { StatLeaderCategory } from '@/lib/scorelab-helpers';
 import { STAT_LEADER_CATEGORIES, getPlayerStatValue } from '@/lib/scorelab-helpers';
+import { compareMatchDateDesc } from '@/lib/scorelab-time';
 
 const SCORELAB_BASE =
   process.env.NEXT_PUBLIC_SCORELAB_BASE_URL || 'https://www.scorelab.tech';
@@ -215,7 +216,7 @@ function transformSeasonData(season: {
         isForfeit: m.isForfeit,
       };
     })
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a, b) => compareMatchDateDesc(a.date, b.date));
 
   const seasonStages: SeasonStage[] | undefined = season.seasonStages?.length
     ? season.seasonStages.map((s) => ({

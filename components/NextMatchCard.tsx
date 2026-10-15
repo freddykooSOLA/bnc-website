@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 import type { Lang, MatchRow } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 import { formatMatchDateTimeHK } from '@/lib/scorelab-helpers';
+import { toRealEpoch } from '@/lib/scorelab-time';
 import TeamLogo from './TeamLogo';
 
-function getCountdown(target: Date): { days: number; hours: number; minutes: number } | null {
-  const diff = target.getTime() - Date.now();
+function getCountdown(targetEpochMs: number): { days: number; hours: number; minutes: number } | null {
+  const diff = targetEpochMs - Date.now();
   if (diff <= 0) return null;
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -29,8 +30,7 @@ export default function NextMatchCard({ lang, match }: NextMatchCardProps) {
     if (!match?.date) return;
 
     const tick = () => {
-      const target = new Date(match.date);
-      const parts = getCountdown(target);
+      const parts = getCountdown(toRealEpoch(match.date));
       if (!parts) {
         setCountdown('');
         return;

@@ -3,6 +3,7 @@
 import type { Lang, MatchRow } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 import { parseYoutubeVideoId, youtubeThumbnail } from '@/lib/scorelab-helpers';
+import { compareMatchDateDesc } from '@/lib/scorelab-time';
 
 interface MatchHighlightsProps {
   lang: Lang;
@@ -15,7 +16,7 @@ export default function MatchHighlights({ lang, matches }: MatchHighlightsProps)
 
   const withVideo = matches
     .filter((m) => m.isMatchEnd && m.youtube)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort((a, b) => compareMatchDateDesc(a.date, b.date))
     .slice(0, 3);
 
   if (withVideo.length === 0) return null;

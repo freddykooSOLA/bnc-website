@@ -3,6 +3,7 @@
 import type { Lang, MatchRow, SeasonStage } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 import {
+  formatMatchDateHK,
   formatMatchDateTimeHK,
   groupMatchesByStage,
 } from '@/lib/scorelab-helpers';
@@ -15,19 +16,6 @@ interface MatchesTableProps {
   seasonStages?: SeasonStage[];
   /** 首頁精簡列表不分段 */
   flat?: boolean;
-}
-
-function formatDateUtc(dateStr: string, lang: Lang): string {
-  if (!dateStr) return '-';
-  try {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString(
-      lang === 'en' ? 'en-HK' : lang === 'zh-cn' ? 'zh-CN' : 'zh-HK',
-      { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }
-    );
-  } catch {
-    return dateStr;
-  }
 }
 
 function getStatusText(status: string, isMatchEnd: boolean, lang: Lang): string {
@@ -143,7 +131,7 @@ function MatchTableRow({ match, lang }: { match: MatchRow; lang: Lang }) {
   const rowContent = (
     <>
       <td className="py-3 px-2 text-gray-500 whitespace-nowrap">
-        {formatDateUtc(match.date, lang)}
+        {formatMatchDateHK(match.date, lang)}
       </td>
       <td className="py-3 px-2">
         <div className="flex items-center gap-2 font-medium text-gray-700">
