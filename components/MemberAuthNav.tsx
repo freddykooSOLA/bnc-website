@@ -6,24 +6,33 @@ import type { Lang } from '@/types';
 
 const COPY: Record<
   Lang,
-  { signIn: string; signOut: string; myRegistrations: string; loading: string }
+  {
+    signIn: string;
+    signOut: string;
+    myRegistrations: string;
+    myTeams: string;
+    loading: string;
+  }
 > = {
   'zh-hk': {
     signIn: '使用 Google 登入',
     signOut: '登出',
     myRegistrations: '我的報名',
+    myTeams: '我的球隊',
     loading: '載入中…',
   },
   'zh-cn': {
     signIn: '使用 Google 登录',
     signOut: '登出',
     myRegistrations: '我的报名',
+    myTeams: '我的球队',
     loading: '加载中…',
   },
   en: {
     signIn: 'Sign in with Google',
     signOut: 'Sign out',
     myRegistrations: 'My registrations',
+    myTeams: 'My teams',
     loading: 'Loading…',
   },
 };
@@ -55,8 +64,14 @@ export default function MemberAuthNav({ lang }: { lang: Lang }) {
   return (
     <div className="flex items-center gap-2 shrink-0">
       <Link
+        href={`/${lang}/my-teams`}
+        className="text-xs sm:text-sm text-white/90 hover:text-white hidden md:inline"
+      >
+        {copy.myTeams}
+      </Link>
+      <Link
         href={`/${lang}/my-registrations`}
-        className="text-xs sm:text-sm text-white/90 hover:text-white hidden sm:inline max-w-[8rem] truncate"
+        className="text-xs sm:text-sm text-white/90 hover:text-white hidden lg:inline max-w-[8rem] truncate"
         title={label}
       >
         {copy.myRegistrations}

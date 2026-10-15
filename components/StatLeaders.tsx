@@ -11,6 +11,7 @@ import {
   statCategoryLabel,
 } from '@/lib/scorelab-helpers';
 import TeamLogo from './TeamLogo';
+import PlayerNameLink from './PlayerNameLink';
 
 interface StatLeadersProps {
   lang: Lang;
@@ -57,7 +58,12 @@ function LeadersList({
           <div className="min-w-0 flex-1">
             <div className="font-medium text-gray-800 text-sm truncate">
               {p.number != null && p.number !== '' ? `#${p.number} ` : ''}
-              {p.name}
+              <PlayerNameLink
+                lang={lang}
+                leagueId={leagueId}
+                playerId={p.playerId}
+                name={p.name}
+              />
             </div>
             <div className="text-xs text-gray-500 truncate">
               {leagueId && p.teamId ? (

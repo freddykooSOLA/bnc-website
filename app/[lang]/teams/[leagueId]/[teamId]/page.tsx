@@ -10,6 +10,8 @@ import { UI_TEXT } from '@/lib/i18n';
 import TeamLogo from '@/components/TeamLogo';
 import MatchesTable from '@/components/MatchesTable';
 import TeamStatLeaders from '@/components/TeamStatLeaders';
+import FollowTeamButton from '@/components/FollowTeamButton';
+import TeamCalendarLinks from '@/components/TeamCalendarLinks';
 import JsonLd from '@/components/JsonLd';
 import { buildTeamSportsTeamJsonLd } from '@/lib/json-ld';
 
@@ -139,14 +141,27 @@ export default async function TeamPage({ params }: PageProps) {
                 </strong>
               </span>
             </div>
-            <a
-              href={scorelabTeamUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-4 text-sm text-primary hover:text-orange underline"
-            >
-              {t.viewOnScorelab}
-            </a>
+            <div className="flex flex-wrap items-center gap-3 mt-4">
+              <FollowTeamButton
+                lang={lang}
+                leagueId={params.leagueId}
+                teamId={params.teamId}
+                teamName={standing.teamName}
+              />
+              <a
+                href={scorelabTeamUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-primary hover:text-orange underline"
+              >
+                {t.viewOnScorelab}
+              </a>
+            </div>
+            <TeamCalendarLinks
+              lang={lang}
+              leagueId={params.leagueId}
+              teamId={params.teamId}
+            />
           </div>
         </div>
 
@@ -154,7 +169,7 @@ export default async function TeamPage({ params }: PageProps) {
           <h2 className="font-heading text-xl font-bold text-primary mb-6">
             {t.teamLeaders}
           </h2>
-          <TeamStatLeaders lang={lang} byCategory={leaders} />
+          <TeamStatLeaders lang={lang} leagueId={params.leagueId} byCategory={leaders} />
         </section>
 
         <section className="card">

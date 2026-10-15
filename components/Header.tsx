@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import type { Lang, SiteConfig } from '@/types';
 import { SECTION_COPY } from '@/lib/section-copy';
+import { UI_TEXT } from '@/lib/i18n';
 import LanguageSwitcher from './LanguageSwitcher';
 import MemberAuthNav from './MemberAuthNav';
 
@@ -20,6 +21,7 @@ export default function Header({ lang, config }: HeaderProps) {
   const [logoError, setLogoError] = useState(false);
 
   const copy = SECTION_COPY[lang];
+  const t = UI_TEXT[lang];
   const navItems = [
     { key: 'home', href: `/${lang}`, label: config.nav.home[lang] },
     { key: 'about', href: `/${lang}/about`, label: config.nav.about[lang] },
@@ -29,6 +31,7 @@ export default function Header({ lang, config }: HeaderProps) {
       href: `/${lang}/hall-of-fame`,
       label: config.nav.hallOfFame[lang],
     },
+    { key: 'news', href: `/${lang}/news`, label: t.navNews },
     { key: 'shop', href: `/${lang}/shop`, label: copy.shop },
     { key: 'events', href: `/${lang}/events`, label: copy.events },
   ];

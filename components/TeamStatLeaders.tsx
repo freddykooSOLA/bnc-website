@@ -2,6 +2,7 @@
 
 import type { Lang, TopPlayerEntry } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
+import PlayerNameLink from './PlayerNameLink';
 import {
   STAT_LEADER_CATEGORIES,
   type StatLeaderCategory,
@@ -10,6 +11,7 @@ import {
 
 interface TeamStatLeadersProps {
   lang: Lang;
+  leagueId: string;
   byCategory: Partial<Record<string, TopPlayerEntry[]>>;
 }
 
@@ -18,7 +20,11 @@ function formatAvg(total: number, games: number): string {
   return (total / games).toFixed(1);
 }
 
-export default function TeamStatLeaders({ lang, byCategory }: TeamStatLeadersProps) {
+export default function TeamStatLeaders({
+  lang,
+  leagueId,
+  byCategory,
+}: TeamStatLeadersProps) {
   const t = UI_TEXT[lang];
   const categories = STAT_LEADER_CATEGORIES.filter(
     (c) => (byCategory[c]?.length ?? 0) > 0
@@ -43,7 +49,12 @@ export default function TeamStatLeaders({ lang, byCategory }: TeamStatLeadersPro
                   <span className="text-gray-700 truncate">
                     <span className="text-gray-400 mr-1">{i + 1}.</span>
                     {p.number != null && p.number !== '' ? `#${p.number} ` : ''}
-                    {p.name}
+                    <PlayerNameLink
+                      lang={lang}
+                      leagueId={leagueId}
+                      playerId={p.playerId}
+                      name={p.name}
+                    />
                   </span>
                   <span className="font-bold text-primary shrink-0">
                     {p.value}{' '}

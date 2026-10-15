@@ -71,6 +71,7 @@ export interface SeasonStage {
 
 /** 數據王球員 */
 export interface TopPlayerEntry {
+  playerId?: string;
   name: string;
   number?: string | number;
   teamId?: string;
@@ -78,6 +79,23 @@ export interface TopPlayerEntry {
   teamImage?: string;
   gamesPlayed: number;
   value: number;
+}
+
+/** 球員本季統計（ScoreLab playerStats） */
+export interface PlayerSeasonStats {
+  playerId: string;
+  name: string;
+  number?: string | number;
+  teamId: string;
+  teamName: string;
+  gamesPlayed: number;
+  PTS: number;
+  REB: number;
+  AST: number;
+  STL: number;
+  BLK: number;
+  '3PM': number;
+  efficiency: number;
 }
 
 /** 积分榜行 */
@@ -133,6 +151,7 @@ export interface SeasonData {
   seasonStages?: SeasonStage[];
   isSeasonEnd?: boolean;
   topPlayers?: Partial<Record<string, TopPlayerEntry[]>>;
+  playerStats?: Record<string, PlayerSeasonStats>;
 }
 
 /** YouTube 视频 */

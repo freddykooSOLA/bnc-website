@@ -66,6 +66,24 @@ export function toHktIsoOffset(dateStr: string): string {
   }
 }
 
+/** ICS DTSTART local wall-clock (ScoreLab matchDate → Asia/Hong_Kong components). */
+export function scorelabDateToIcsLocal(dateStr: string): string {
+  if (!dateStr) return '';
+  try {
+    const date = new Date(dateStr);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const y = date.getUTCFullYear();
+    const m = pad(date.getUTCMonth() + 1);
+    const d = pad(date.getUTCDate());
+    const h = pad(date.getUTCHours());
+    const min = pad(date.getUTCMinutes());
+    const sec = pad(date.getUTCSeconds());
+    return `${y}${m}${d}T${h}${min}${sec}`;
+  } catch {
+    return '';
+  }
+}
+
 export function formatMatchDateHK(dateStr: string, lang: Lang): string {
   if (!dateStr) return '-';
   try {

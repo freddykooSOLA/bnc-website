@@ -24,6 +24,21 @@ model Member {
   pointLedger   PointLedger[]
   voucherSharesSent     VoucherShare[] @relation("VoucherShareSharer")
   voucherSharesReceived VoucherShare[] @relation("VoucherShareClaimer")
+  teamFollows           TeamFollow[]
+}
+
+model TeamFollow {
+  id        String   @id @default(cuid())
+  memberId  String
+  leagueId  String
+  teamId    String
+  teamName  String
+  createdAt DateTime @default(now())
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, leagueId, teamId])
+  @@index([memberId])
 }
 
 /// Mirrors Blob ledger `registrations[]` (event signup rows).

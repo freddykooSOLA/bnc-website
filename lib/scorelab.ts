@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 import type {
   MatchRow,
+  PlayerSeasonStats,
   SeasonData,
   SeasonStage,
   StandingRow,
@@ -121,7 +122,10 @@ function parseTopPlayers(
       const teamId = typeof p.teamId === 'string' ? p.teamId : undefined;
       const gamesPlayed =
         typeof p.gamesPlayed === 'number' ? p.gamesPlayed : 0;
+      const playerId =
+        typeof p.playerId === 'string' ? p.playerId : undefined;
       return {
+        playerId,
         name: String(p.name ?? ''),
         number: p.number as string | number | undefined,
         teamId,
@@ -138,6 +142,36 @@ function parseTopPlayers(
   return Object.keys(result).length > 0 ? result : undefined;
 }
 
+function parsePlayerStats(
+  raw: Record<string, unknown> | undefined
+): Record<string, PlayerSeasonStats> | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+
+  const result: Record<string, PlayerSeasonStats> = {};
+  for (const [key, val] of Object.entries(raw)) {
+    if (!val || typeof val !== 'object') continue;
+    const p = val as Record<string, unknown>;
+    const playerId = String(p.playerId ?? key);
+    result[playerId] = {
+      playerId,
+      name: String(p.name ?? ''),
+      number: p.number as string | number | undefined,
+      teamId: String(p.teamId ?? ''),
+      teamName: String(p.teamName ?? ''),
+      gamesPlayed: typeof p.gamesPlayed === 'number' ? p.gamesPlayed : 0,
+      PTS: getPlayerStatValue(p, 'PTS'),
+      REB: getPlayerStatValue(p, 'REB'),
+      AST: getPlayerStatValue(p, 'AST'),
+      STL: getPlayerStatValue(p, 'STL'),
+      BLK: getPlayerStatValue(p, 'BLK'),
+      '3PM': getPlayerStatValue(p, '3PM'),
+      efficiency: getPlayerStatValue(p, 'efficiency'),
+    };
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined;
+}
+
 function transformSeasonData(season: {
   _id: string;
   name: string;
@@ -146,6 +180,7 @@ function transformSeasonData(season: {
   seasonStages?: RawSeasonStage[];
   isSeasonEnd?: boolean;
   topPlayers?: Record<string, unknown[]>;
+  playerStats?: Record<string, unknown>;
 }): SeasonData {
   const teamMeta = new Map<
     string,
@@ -228,6 +263,7 @@ function transformSeasonData(season: {
     : undefined;
 
   const topPlayers = parseTopPlayers(season.topPlayers, teamImageById);
+  const playerStats = parsePlayerStats(season.playerStats);
 
   return {
     seasonId: season._id,
@@ -237,6 +273,7 @@ function transformSeasonData(season: {
     seasonStages,
     isSeasonEnd: season.isSeasonEnd,
     topPlayers,
+    playerStats,
   };
 }
 

@@ -1,7 +1,8 @@
-import type { Lang, MatchRow, SeasonData } from '@/types';
+import type { Lang, MatchRow, PlayerSeasonStats, SeasonData } from '@/types';
 import { toHktIsoOffset } from '@/lib/scorelab-time';
 import { compareMatchDateDesc } from '@/lib/scorelab-time';
 import type { HallOfFameData } from '@/lib/hall-of-fame-data';
+import { recapScoreTitle } from '@/lib/match-recap';
 
 const ORG_NAME = 'BNC League';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://bncleague.com';
@@ -80,6 +81,40 @@ export function buildTeamSportsTeamJsonLd(
     team.logo = logoUrl.startsWith('http') ? logoUrl : `${BASE_URL}${logoUrl}`;
   }
   return team;
+}
+
+export function buildPlayerPersonJsonLd(
+  player: PlayerSeasonStats,
+  lang: Lang,
+  leagueId: string
+): object {
+  const teamUrl = `${BASE_URL}/${lang}/teams/${leagueId}/${player.teamId}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: player.name,
+    memberOf: {
+      '@type': 'SportsTeam',
+      name: player.teamName,
+      url: teamUrl,
+    },
+  };
+}
+
+export function buildNewsArticleJsonLd(
+  item: { leagueId: string; match: MatchRow },
+  lang: Lang
+): object {
+  const headline = recapScoreTitle(item.match);
+  const url = `${BASE_URL}/${lang}/news/${item.leagueId}/${item.match.id}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline,
+    datePublished: toHktIsoOffset(item.match.date),
+    url,
+    about: sportsEventFromMatch(item.match),
+  };
 }
 
 export function buildHallOfFameItemListJsonLd(
