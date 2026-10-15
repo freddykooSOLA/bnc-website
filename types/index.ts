@@ -60,6 +60,25 @@ export interface SiteConfig {
   };
 }
 
+/** ScoreLab 賽季階段 */
+export interface SeasonStage {
+  id: string;
+  type: 'group' | 'playoff';
+  name: string;
+  order?: number;
+}
+
+/** 數據王球員 */
+export interface TopPlayerEntry {
+  name: string;
+  number?: string | number;
+  teamId?: string;
+  teamName: string;
+  teamImage?: string;
+  gamesPlayed: number;
+  value: number;
+}
+
 /** 积分榜行 */
 export interface StandingRow {
   rank: number;
@@ -67,6 +86,7 @@ export interface StandingRow {
   teamName: string;
   teamUrl?: string;
   teamImage?: string;
+  teamAbbreviation?: string;
   points: number;
   wins: number;
   losses: number;
@@ -93,6 +113,14 @@ export interface MatchRow {
   status: string;
   location: string;
   isMatchEnd: boolean;
+  youtube?: string;
+  stageId?: string;
+  isPlayoff?: boolean;
+  isForfeit?: boolean;
+  homeTeamImage?: string;
+  awayTeamImage?: string;
+  homeTeamAbbreviation?: string;
+  awayTeamAbbreviation?: string;
 }
 
 /** ScoreLab 赛季数据 */
@@ -101,6 +129,9 @@ export interface SeasonData {
   seasonName: string;
   standings: StandingRow[];
   matches: MatchRow[];
+  seasonStages?: SeasonStage[];
+  isSeasonEnd?: boolean;
+  topPlayers?: Partial<Record<string, TopPlayerEntry[]>>;
 }
 
 /** YouTube 视频 */

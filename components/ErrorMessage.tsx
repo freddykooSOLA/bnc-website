@@ -4,10 +4,14 @@ import { UI_TEXT } from '@/lib/i18n';
 interface ErrorMessageProps {
   lang: Lang;
   message?: string;
+  scorelabUrl?: string;
 }
 
 /** 错误提示组件 */
-export default function ErrorMessage({ lang, message }: ErrorMessageProps) {
+export default function ErrorMessage({ lang, message, scorelabUrl }: ErrorMessageProps) {
+  const t = UI_TEXT[lang];
+  const displayMessage = message ?? (scorelabUrl ? t.scorelabUnavailable : t.error);
+
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3">
       <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
@@ -25,9 +29,17 @@ export default function ErrorMessage({ lang, message }: ErrorMessageProps) {
           />
         </svg>
       </div>
-      <p className="text-gray-600 text-sm text-center max-w-md">
-        {message || UI_TEXT[lang].error}
-      </p>
+      <p className="text-gray-600 text-sm text-center max-w-md">{displayMessage}</p>
+      {scorelabUrl && (
+        <a
+          href={scorelabUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-orange font-semibold hover:underline"
+        >
+          {t.viewOnScorelab}
+        </a>
+      )}
     </div>
   );
 }

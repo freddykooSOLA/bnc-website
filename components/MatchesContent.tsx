@@ -8,6 +8,7 @@ import StandingsTable from './StandingsTable';
 import MatchesTable from './MatchesTable';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
+import StatLeaders from './StatLeaders';
 
 interface MatchesContentProps {
   lang: Lang;
@@ -164,9 +165,11 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
           {loading ? (
             <LoadingSpinner lang={lang} />
           ) : error ? (
-            <ErrorMessage lang={lang} />
+            <ErrorMessage lang={lang} scorelabUrl={selectedLeague?.url} />
           ) : (
             <div className="space-y-8">
+              <StatLeaders lang={lang} topPlayers={seasonData?.topPlayers} />
+
               <div className="card">
                 <h2 className="font-heading text-xl font-bold text-primary mb-6">
                   {t.standings}
@@ -182,7 +185,11 @@ function MatchesContentInner({ lang, config }: MatchesContentProps) {
                 <h2 className="font-heading text-xl font-bold text-primary mb-6">
                   {t.schedule}
                 </h2>
-                <MatchesTable lang={lang} matches={seasonData?.matches ?? []} />
+                <MatchesTable
+                  lang={lang}
+                  matches={seasonData?.matches ?? []}
+                  seasonStages={seasonData?.seasonStages}
+                />
               </div>
             </div>
           )}

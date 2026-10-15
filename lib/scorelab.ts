@@ -1,5 +1,13 @@
 import * as cheerio from 'cheerio';
-import type { MatchRow, SeasonData, StandingRow } from '@/types';
+import type {
+  MatchRow,
+  SeasonData,
+  SeasonStage,
+  StandingRow,
+  TopPlayerEntry,
+} from '@/types';
+import type { StatLeaderCategory } from '@/lib/scorelab-helpers';
+import { STAT_LEADER_CATEGORIES, getPlayerStatValue } from '@/lib/scorelab-helpers';
 
 const SCORELAB_BASE =
   process.env.NEXT_PUBLIC_SCORELAB_BASE_URL || 'https://www.scorelab.tech';
@@ -18,6 +26,8 @@ export function getMatchUrl(matchId: string): string {
 interface RawTeam {
   _id: string;
   name: string;
+  image?: string;
+  abbreviation?: string;
   ranking?: number;
   points?: number;
   pointsFor?: number;
@@ -37,11 +47,22 @@ interface RawMatch {
   awayTeamDetails?: { name: string };
   score?: { home?: { total: number }; away?: { total: number } };
   details?: { matchDate?: string; matchLocation?: string };
+  youtube?: string;
+  isPlayoff?: boolean;
+  stageId?: string;
+  isForfeit?: boolean;
+}
+
+interface RawSeasonStage {
+  _id?: string;
+  id?: string;
+  type?: 'group' | 'playoff';
+  name: string;
+  order?: number;
 }
 
 /** 从 ScoreLab 赛季页面获取并解析数据 */
 export async function fetchSeasonData(seasonUrl: string): Promise<SeasonData> {
-  // 加时间戳尽量绕过 CDN 静态缓存（ScoreLab 为 SSG，页面仍可能滞后于站内即时更新）
   const url = new URL(seasonUrl);
   url.searchParams.set('_', String(Date.now()));
 
@@ -82,18 +103,74 @@ function parseNextData(html: string): SeasonData | null {
   }
 }
 
+function parseTopPlayers(
+  raw: Record<string, unknown[]> | undefined,
+  teamImageById: Map<string, string>
+): Partial<Record<string, TopPlayerEntry[]>> | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+
+  const result: Partial<Record<string, TopPlayerEntry[]>> = {};
+
+  for (const key of STAT_LEADER_CATEGORIES) {
+    const list = raw[key];
+    if (!Array.isArray(list) || list.length === 0) continue;
+
+    const entries: TopPlayerEntry[] = list.map((item) => {
+      const p = item as Record<string, unknown>;
+      const teamId = typeof p.teamId === 'string' ? p.teamId : undefined;
+      const gamesPlayed =
+        typeof p.gamesPlayed === 'number' ? p.gamesPlayed : 0;
+      return {
+        name: String(p.name ?? ''),
+        number: p.number as string | number | undefined,
+        teamId,
+        teamName: String(p.teamName ?? ''),
+        teamImage: teamId ? teamImageById.get(teamId) : undefined,
+        gamesPlayed,
+        value: getPlayerStatValue(p, key as StatLeaderCategory),
+      };
+    });
+
+    result[key] = entries;
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined;
+}
+
 function transformSeasonData(season: {
   _id: string;
   name: string;
   teams?: RawTeam[];
   matches?: RawMatch[];
+  seasonStages?: RawSeasonStage[];
+  isSeasonEnd?: boolean;
+  topPlayers?: Record<string, unknown[]>;
 }): SeasonData {
+  const teamMeta = new Map<
+    string,
+    { image?: string; abbreviation?: string; name: string }
+  >();
+  for (const t of season.teams || []) {
+    teamMeta.set(t._id, {
+      image: t.image,
+      abbreviation: t.abbreviation,
+      name: t.name,
+    });
+  }
+
+  const teamImageById = new Map<string, string>();
+  teamMeta.forEach((meta, id) => {
+    if (meta.image) teamImageById.set(id, meta.image);
+  });
+
   const standings: StandingRow[] = (season.teams || [])
     .map((t) => ({
       rank: t.ranking ?? 0,
       teamId: t._id,
       teamName: t.name,
       teamUrl: getTeamUrl(t._id),
+      teamImage: t.image,
+      teamAbbreviation: t.abbreviation,
       points: t.points ?? 0,
       wins: t.record?.wins ?? 0,
       losses: t.record?.losses ?? 0,
@@ -106,29 +183,59 @@ function transformSeasonData(season: {
     .sort((a, b) => a.rank - b.rank);
 
   const matches: MatchRow[] = (season.matches || [])
-    .map((m) => ({
-      id: m._id,
-      matchUrl: getMatchUrl(m._id),
-      date: m.details?.matchDate ?? '',
-      homeTeamId: m.homeTeamId,
-      awayTeamId: m.awayTeamId,
-      homeTeam: m.homeTeamDetails?.name ?? m.homeTeamId,
-      awayTeam: m.awayTeamDetails?.name ?? m.awayTeamId,
-      homeTeamUrl: getTeamUrl(m.homeTeamId),
-      awayTeamUrl: getTeamUrl(m.awayTeamId),
-      homeScore: m.score?.home?.total ?? null,
-      awayScore: m.score?.away?.total ?? null,
-      status: m.isMatchEnd ? 'completed' : 'upcoming',
-      location: m.details?.matchLocation ?? '',
-      isMatchEnd: m.isMatchEnd ?? false,
-    }))
+    .map((m) => {
+      const homeMeta = teamMeta.get(m.homeTeamId);
+      const awayMeta = teamMeta.get(m.awayTeamId);
+      const ended = m.isMatchEnd ?? false;
+      const homeTotal = m.score?.home?.total;
+      const awayTotal = m.score?.away?.total;
+
+      return {
+        id: m._id,
+        matchUrl: getMatchUrl(m._id),
+        date: m.details?.matchDate ?? '',
+        homeTeamId: m.homeTeamId,
+        awayTeamId: m.awayTeamId,
+        homeTeam: m.homeTeamDetails?.name ?? homeMeta?.name ?? m.homeTeamId,
+        awayTeam: m.awayTeamDetails?.name ?? awayMeta?.name ?? m.awayTeamId,
+        homeTeamUrl: getTeamUrl(m.homeTeamId),
+        awayTeamUrl: getTeamUrl(m.awayTeamId),
+        homeTeamImage: homeMeta?.image,
+        awayTeamImage: awayMeta?.image,
+        homeTeamAbbreviation: homeMeta?.abbreviation,
+        awayTeamAbbreviation: awayMeta?.abbreviation,
+        homeScore: ended && homeTotal !== undefined ? homeTotal : null,
+        awayScore: ended && awayTotal !== undefined ? awayTotal : null,
+        status: ended ? 'completed' : 'upcoming',
+        location: m.details?.matchLocation ?? '',
+        isMatchEnd: ended,
+        youtube: m.youtube || undefined,
+        stageId: m.stageId,
+        isPlayoff: m.isPlayoff,
+        isForfeit: m.isForfeit,
+      };
+    })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const seasonStages: SeasonStage[] | undefined = season.seasonStages?.length
+    ? season.seasonStages.map((s) => ({
+        id: s._id ?? s.id ?? s.name,
+        type: s.type === 'playoff' ? 'playoff' : 'group',
+        name: s.name,
+        order: s.order,
+      }))
+    : undefined;
+
+  const topPlayers = parseTopPlayers(season.topPlayers, teamImageById);
 
   return {
     seasonId: season._id,
     seasonName: season.name,
     standings,
     matches,
+    seasonStages,
+    isSeasonEnd: season.isSeasonEnd,
+    topPlayers,
   };
 }
 
@@ -137,24 +244,30 @@ function parseHtmlTables(html: string, seasonUrl: string): SeasonData {
   const standings: StandingRow[] = [];
   const matches: MatchRow[] = [];
 
-  $('table').eq(1).find('tbody tr').each((_, row) => {
-    const cells = $(row).find('td').map((__, cell) => $(cell).text().trim()).get();
-    if (cells.length >= 10) {
-      standings.push({
-        rank: parseInt(cells[0], 10) || 0,
-        teamId: cells[1],
-        teamName: cells[1],
-        points: parseInt(cells[2], 10) || 0,
-        matchesPlayed: parseInt(cells[3], 10) || 0,
-        wins: parseInt(cells[4], 10) || 0,
-        losses: parseInt(cells[5], 10) || 0,
-        draws: parseInt(cells[6], 10) || 0,
-        pointsFor: parseInt(cells[7], 10) || 0,
-        pointsAgainst: parseInt(cells[8], 10) || 0,
-        pointsDifferential: parseInt(cells[9], 10) || 0,
-      });
-    }
-  });
+  $('table')
+    .eq(1)
+    .find('tbody tr')
+    .each((_, row) => {
+      const cells = $(row)
+        .find('td')
+        .map((__, cell) => $(cell).text().trim())
+        .get();
+      if (cells.length >= 10) {
+        standings.push({
+          rank: parseInt(cells[0], 10) || 0,
+          teamId: cells[1],
+          teamName: cells[1],
+          points: parseInt(cells[2], 10) || 0,
+          matchesPlayed: parseInt(cells[3], 10) || 0,
+          wins: parseInt(cells[4], 10) || 0,
+          losses: parseInt(cells[5], 10) || 0,
+          draws: parseInt(cells[6], 10) || 0,
+          pointsFor: parseInt(cells[7], 10) || 0,
+          pointsAgainst: parseInt(cells[8], 10) || 0,
+          pointsDifferential: parseInt(cells[9], 10) || 0,
+        });
+      }
+    });
 
   const seasonId = seasonUrl.split('/').pop() || 'unknown';
   if (matches.length === 0) {

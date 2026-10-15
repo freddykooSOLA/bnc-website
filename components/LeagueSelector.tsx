@@ -1,12 +1,16 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { Lang, LeagueConfig, SeasonData } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 import StandingsTable from './StandingsTable';
 import MatchesTable from './MatchesTable';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
+import StatLeaders from './StatLeaders';
+import NextMatchCard from './NextMatchCard';
+import RecentResultsStrip from './RecentResultsStrip';
+import MatchHighlights from './MatchHighlights';
 
 interface LeagueSelectorProps {
   lang: Lang;
@@ -25,6 +29,8 @@ export default function LeagueSelector({
   const [data, setData] = useState<SeasonData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const selectedLeague = leagues.find((l) => l.id === selectedId) ?? leagues[0];
 
   const fetchData = useCallback(async (leagueId: string, silent = false) => {
     if (!silent) {
@@ -51,7 +57,6 @@ export default function LeagueSelector({
     fetchData(selectedId);
   }, [selectedId, fetchData]);
 
-  // 页面可见时及每 5 分钟自动刷新数据
   useEffect(() => {
     const refresh = () => fetchData(selectedId, true);
 
@@ -68,13 +73,17 @@ export default function LeagueSelector({
     };
   }, [selectedId, fetchData]);
 
-  // 已完场：最新在前；未完场：最近开赛在前（勿沿用全表日期倒序）
-  const completedMatches =
-    data?.matches
-      .filter((m) => m.isMatchEnd)
-      .slice()
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 5) ?? [];
+  const completedMatches = useMemo(
+    () =>
+      data?.matches
+        .filter((m) => m.isMatchEnd)
+        .slice()
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) ?? [],
+    [data?.matches]
+  );
+
+  const recentThree = completedMatches.slice(0, 3);
+  const completedForTable = completedMatches.slice(0, 5);
   const upcomingMatches =
     data?.matches
       .filter((m) => !m.isMatchEnd)
@@ -82,10 +91,18 @@ export default function LeagueSelector({
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
       .slice(0, 5) ?? [];
 
+  const nextUpcoming = useMemo(() => {
+    const list =
+      data?.matches
+        .filter((m) => !m.isMatchEnd)
+        .slice()
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) ?? [];
+    return list[0] ?? null;
+  }, [data?.matches]);
+
   return (
-    <section className="bg-light-bg py-12">
+    <section className="bg-light-bg py-12 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 联赛选择器 */}
         <div className="flex flex-wrap items-center gap-3 mb-8">
           <span className="text-sm font-medium text-primary">{t.selectLeague}:</span>
           {leagues.map((league) => (
@@ -106,31 +123,44 @@ export default function LeagueSelector({
         {loading ? (
           <LoadingSpinner lang={lang} />
         ) : error ? (
-          <ErrorMessage lang={lang} />
+          <ErrorMessage lang={lang} scorelabUrl={selectedLeague?.url} />
         ) : (
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="card">
-              <h2 className="font-heading text-lg font-bold text-primary mb-4">
-                {t.standings}
-              </h2>
-              <StandingsTable
-                lang={lang}
-                standings={data?.standings ?? []}
-                compact
-                sortable
-              />
+          <div className="space-y-6">
+            <div className="grid lg:grid-cols-2 gap-6">
+              {nextUpcoming ? (
+                <NextMatchCard lang={lang} match={nextUpcoming} />
+              ) : null}
+              <RecentResultsStrip lang={lang} matches={recentThree} />
             </div>
-            <div className="card">
-              <h2 className="font-heading text-lg font-bold text-primary mb-4">
-                {t.recentResults}
-              </h2>
-              <MatchesTable lang={lang} matches={completedMatches} />
-            </div>
-            <div className="card">
-              <h2 className="font-heading text-lg font-bold text-primary mb-4">
-                {t.upcoming}
-              </h2>
-              <MatchesTable lang={lang} matches={upcomingMatches} />
+
+            <MatchHighlights lang={lang} matches={data?.matches ?? []} />
+
+            <StatLeaders lang={lang} topPlayers={data?.topPlayers} compact />
+
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="card">
+                <h2 className="font-heading text-lg font-bold text-primary mb-4">
+                  {t.standings}
+                </h2>
+                <StandingsTable
+                  lang={lang}
+                  standings={data?.standings ?? []}
+                  compact
+                  sortable
+                />
+              </div>
+              <div className="card">
+                <h2 className="font-heading text-lg font-bold text-primary mb-4">
+                  {t.recentResults}
+                </h2>
+                <MatchesTable lang={lang} matches={completedForTable} flat />
+              </div>
+              <div className="card">
+                <h2 className="font-heading text-lg font-bold text-primary mb-4">
+                  {t.upcoming}
+                </h2>
+                <MatchesTable lang={lang} matches={upcomingMatches} flat />
+              </div>
             </div>
           </div>
         )}

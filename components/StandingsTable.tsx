@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import type { Lang } from '@/types';
 import type { StandingRow } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
+import TeamLogo from './TeamLogo';
 
 interface StandingsTableProps {
   lang: Lang;
@@ -134,18 +135,26 @@ export default function StandingsTable({
                     </span>
                   </td>
                   <td className="py-3 px-2 font-medium text-gray-700">
-                    {row.teamUrl ? (
-                      <a
-                        href={row.teamUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:text-orange transition-colors underline-offset-2 hover:underline"
-                      >
-                        {row.teamName}
-                      </a>
-                    ) : (
-                      row.teamName
-                    )}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <TeamLogo
+                        name={row.teamName}
+                        imageUrl={row.teamImage}
+                        abbreviation={row.teamAbbreviation}
+                        size={28}
+                      />
+                      {row.teamUrl ? (
+                        <a
+                          href={row.teamUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-orange transition-colors underline-offset-2 hover:underline truncate"
+                        >
+                          {row.teamName}
+                        </a>
+                      ) : (
+                        <span className="truncate">{row.teamName}</span>
+                      )}
+                    </div>
                   </td>
                   <td className="py-3 px-2 text-center font-bold text-primary">
                     {row.points}
