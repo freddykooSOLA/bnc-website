@@ -1,7 +1,7 @@
 import { getConfig } from '@/lib/config';
 import type { Lang } from '@/types';
 import Hero from '@/components/Hero';
-import ShopEventsBand from '@/components/ShopEventsBand';
+import HomeIntro from '@/components/HomeIntro';
 import LeagueSelector from '@/components/LeagueSelector';
 import YoutubeFeed from '@/components/YoutubeFeed';
 import FacebookFeed from '@/components/FacebookFeed';
@@ -15,10 +15,12 @@ export default async function HomePage({ params }: HomePageProps) {
   const lang = params.lang as Lang;
   const config = getConfig();
 
+  const hasCustomBg = Boolean(config.hero.backgroundImage?.startsWith('/uploads/'));
+
   return (
     <>
       <Hero lang={lang} config={config} />
-      <ShopEventsBand lang={lang} />
+      <HomeIntro lang={lang} config={config} headingLevel={hasCustomBg ? 'h1' : 'h2'} />
       <LeagueSelector
         lang={lang}
         leagues={config.matches.leagues}

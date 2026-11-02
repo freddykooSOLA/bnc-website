@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Lang, SiteConfig } from '@/types';
+import { HOME_H1 } from '@/lib/home-intro';
 
 interface HeroProps {
   lang: Lang;
@@ -17,7 +18,7 @@ export default function Hero({ lang, config }: HeroProps) {
         <div className="relative w-full aspect-[1024/267] min-h-[180px] md:min-h-[280px]">
           <Image
             src={config.hero.backgroundImage}
-            alt={config.hero.title[lang]}
+            alt={HOME_H1[lang]}
             fill
             priority
             className="object-cover object-center"
@@ -43,7 +44,7 @@ export default function Hero({ lang, config }: HeroProps) {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
         <h1 className="font-heading text-4xl md:text-6xl font-bold mb-4 leading-tight">
-          {config.hero.title[lang]}
+          {HOME_H1[lang]}
         </h1>
         <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl">
           {config.hero.subtitle[lang]}

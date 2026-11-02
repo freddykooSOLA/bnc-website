@@ -15,10 +15,18 @@ interface MatchesContentProps {
   lang: Lang;
   config: SiteConfig;
   leagueLists: MatchesLeagueLists;
+  initialLeagueId?: string;
+  initialSeasonData?: SeasonData;
 }
 
 /** 比赛页面 — 在本站直接展示赛季排名与赛程（实时从 ScoreLab 抓取） */
-function MatchesContentInner({ lang, config, leagueLists }: MatchesContentProps) {
+function MatchesContentInner({
+  lang,
+  config,
+  leagueLists,
+  initialLeagueId,
+  initialSeasonData,
+}: MatchesContentProps) {
   const t = UI_TEXT[lang];
   const searchParams = useSearchParams();
   const seasonParam = searchParams.get('season');
@@ -28,14 +36,21 @@ function MatchesContentInner({ lang, config, leagueLists }: MatchesContentProps)
   const leagues =
     activeTab === 'latest' ? leagueLists.latest : leagueLists.archive;
 
-  const initialLeagueId =
+  const initialLeagueIdResolved =
     (seasonParam && leagues.some((l) => l.id === seasonParam)
       ? seasonParam
-      : null) ?? config.matches.defaultLeagueId;
+      : null) ??
+    initialLeagueId ??
+    config.matches.defaultLeagueId;
 
-  const [selectedId, setSelectedId] = useState(initialLeagueId);
-  const [seasonData, setSeasonData] = useState<SeasonData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState(initialLeagueIdResolved);
+  const [seasonData, setSeasonData] = useState<SeasonData | null>(
+    initialSeasonData &&
+      initialLeagueIdResolved === (initialLeagueId ?? config.matches.defaultLeagueId)
+      ? initialSeasonData
+      : null
+  );
+  const [loading, setLoading] = useState(!seasonData);
   const [error, setError] = useState(false);
 
   const selectedLeague =

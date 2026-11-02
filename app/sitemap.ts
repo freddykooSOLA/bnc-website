@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { LANGUAGES } from '@/lib/i18n';
+import { listPublicEvents, SHOP_SECTION_PUBLIC } from '@/lib/public-catalog';
 import { SHOP_CATEGORIES, SHOP_PRODUCTS } from '@/lib/shop-catalog';
-import { LEAGUE_EVENTS } from '@/lib/events-catalog';
 import { getConfig } from '@/lib/config';
 import { getCachedSeasonData } from '@/lib/scorelab-cache';
 
@@ -17,11 +17,15 @@ const STATIC_PAGES = [
   '/matches',
   '/hall-of-fame',
   '/news',
-  '/shop',
-  '/events',
-  ...SHOP_CATEGORIES.map((category) => `/shop/${category.id}`),
-  ...SHOP_PRODUCTS.map((product) => `/shop/product/${product.slug}`),
-  ...LEAGUE_EVENTS.map((event) => `/events/${event.slug}`),
+  ...(SHOP_SECTION_PUBLIC
+    ? [
+        '/shop',
+        ...SHOP_CATEGORIES.map((category) => `/shop/${category.id}`),
+        ...SHOP_PRODUCTS.map((product) => `/shop/product/${product.slug}`),
+      ]
+    : []),
+  ...listPublicEvents().map((event) => `/events/${event.slug}`),
+  ...(listPublicEvents().length ? ['/events'] : []),
 ];
 
 async function scorelabDynamicPaths(): Promise<string[]> {

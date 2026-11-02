@@ -84,11 +84,22 @@ export function generateJsonLd(config: SiteConfig, lang: Lang) {
           email: config.contact.email,
           contactType: 'customer service',
         },
+        sameAs: [
+          config.socialLinks.youtube,
+          config.socialLinks.facebook,
+          config.socialLinks.instagram,
+        ].filter(Boolean),
       },
       {
         '@type': 'SportsOrganization',
         name: config.siteName[lang],
         sport: 'Basketball',
+        url: BASE_URL,
+        parentOrganization: {
+          '@type': 'Organization',
+          name: 'SuperLearning',
+          url: 'https://www.suhksport.com/',
+        },
         location: {
           '@type': 'Place',
           name: 'Hong Kong',

@@ -1,0 +1,28 @@
+# BNC League (BNC 籃球聯賽)
+
+> Hong Kong local basketball league brand hosted by SUPER LEARNING (https://www.suhksport.com/). Official site for schedules, standings, match results, and league news.
+
+## Main pages
+
+- [繁體中文首頁](https://bncleague.com/zh-hk)
+- [简体中文首页](https://bncleague.com/zh-cn)
+- [English home](https://bncleague.com/en)
+- [比賽 / Matches](https://bncleague.com/zh-hk/matches)
+- [關於我們 / About](https://bncleague.com/zh-hk/about)
+- [賽事新聞 / News](https://bncleague.com/zh-hk/news)
+
+## Data
+
+- Match statistics and fixtures are published as BNC League data; detailed scores are provided via ScoreLab (linked from the Matches page).
+
+## Contact
+
+- Email: bncsportshkg@gmail.com
+- Phone: +852 9213 3533
+- Address: Room 1006, 10/F, Wah Shing Centre, Shing Yip Street, Kwun Tong, Kowloon, Hong Kong
+
+## Social
+
+- YouTube: https://www.youtube.com/@BNCChampion
+- Facebook: https://www.facebook.com/bnchk
+- Instagram: https://www.instagram.com/bncsportshkg

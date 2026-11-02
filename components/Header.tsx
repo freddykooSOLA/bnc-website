@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import type { Lang, SiteConfig } from '@/types';
 import { SECTION_COPY } from '@/lib/section-copy';
+import { EVENTS_SECTION_PUBLIC, SHOP_SECTION_PUBLIC } from '@/lib/public-catalog';
 import { UI_TEXT } from '@/lib/i18n';
 import LanguageSwitcher from './LanguageSwitcher';
 import MemberAuthNav from './MemberAuthNav';
@@ -32,9 +33,9 @@ export default function Header({ lang, config }: HeaderProps) {
       label: config.nav.hallOfFame[lang],
     },
     { key: 'news', href: `/${lang}/news`, label: t.navNews },
-    { key: 'shop', href: `/${lang}/shop`, label: copy.shop },
-    { key: 'events', href: `/${lang}/events`, label: copy.events },
-  ];
+    { key: 'shop', href: `/${lang}/shop`, label: copy.shop, show: SHOP_SECTION_PUBLIC },
+    { key: 'events', href: `/${lang}/events`, label: copy.events, show: EVENTS_SECTION_PUBLIC },
+  ].filter((item) => item.show !== false);
 
   return (
     <header className="bg-primary text-white sticky top-0 z-50 shadow-lg">

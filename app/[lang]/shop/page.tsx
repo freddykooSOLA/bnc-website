@@ -5,28 +5,29 @@ import { getConfig } from '@/lib/config';
 import { isValidLang } from '@/lib/i18n';
 import { generatePageMetadata } from '@/lib/seo';
 import { SECTION_COPY } from '@/lib/section-copy';
+import { SHOP_SECTION_PUBLIC } from '@/lib/public-catalog';
 import { SHOP_CATEGORIES, SHOP_PRODUCTS, samplePriceLabel } from '@/lib/shop-catalog';
 import type { Lang } from '@/types';
 import SampleTile from '@/components/SampleTile';
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   if (!isValidLang(params.lang)) return {};
-  const copy = SECTION_COPY[params.lang];
   const title = {
     'zh-hk': '商店 | BNC 籃球聯賽',
     'zh-cn': '商店 | BNC 篮球联赛',
     en: 'Shop | BNC Basketball League',
   };
   const description = {
-    'zh-hk': copy.sampleBanner,
-    'zh-cn': SECTION_COPY['zh-cn'].sampleBanner,
-    en: SECTION_COPY.en.sampleBanner,
+    'zh-hk': 'BNC 籃球聯賽官方網站。',
+    'zh-cn': 'BNC 篮球联赛官方网站。',
+    en: 'BNC Basketball League official site.',
   };
   return generatePageMetadata(params.lang, getConfig(), { title, description }, '/shop');
 }
 
 export default function ShopPage({ params }: { params: { lang: string } }) {
   if (!isValidLang(params.lang)) notFound();
+  if (!SHOP_SECTION_PUBLIC) notFound();
   const lang: Lang = params.lang;
   const copy = SECTION_COPY[lang];
 
