@@ -26,6 +26,11 @@ export const metadata: Metadata = {
     shortcut: '/uploads/favicon-bnc.png',
     apple: '/uploads/favicon-bnc.png',
   },
+  verification: {
+    other: {
+      'msvalidate.01': '032E5B1D63B55E4CF0AB143E8C7821AB',
+    },
+  },
 };
 
 export default function RootLayout({
