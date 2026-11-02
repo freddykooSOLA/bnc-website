@@ -2,9 +2,21 @@ import { getConfig } from '@/lib/config';
 import type { Lang } from '@/types';
 import Hero from '@/components/Hero';
 import HomeIntro from '@/components/HomeIntro';
-import LeagueSelector from '@/components/LeagueSelector';
-import YoutubeFeed from '@/components/YoutubeFeed';
-import FacebookFeed from '@/components/FacebookFeed';
+import dynamic from 'next/dynamic';
+
+const LeagueSelector = dynamic(() => import('@/components/LeagueSelector'), {
+  loading: () => (
+    <section className="bg-light-bg py-12 min-h-[200px]" aria-busy="true" aria-label="Loading" />
+  ),
+});
+
+const YoutubeFeed = dynamic(() => import('@/components/YoutubeFeed'), {
+  loading: () => null,
+});
+
+const FacebookFeed = dynamic(() => import('@/components/FacebookFeed'), {
+  loading: () => null,
+});
 
 interface HomePageProps {
   params: { lang: string };
@@ -19,6 +31,14 @@ export default async function HomePage({ params }: HomePageProps) {
 
   return (
     <>
+      {hasCustomBg ? (
+        <link
+          rel="preload"
+          as="image"
+          href={config.hero.backgroundImage}
+          fetchPriority="high"
+        />
+      ) : null}
       <Hero lang={lang} config={config} />
       <HomeIntro lang={lang} config={config} headingLevel={hasCustomBg ? 'h1' : 'h2'} />
       <LeagueSelector

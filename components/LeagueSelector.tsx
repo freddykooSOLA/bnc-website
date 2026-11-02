@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type { Lang, LeagueConfig, SeasonData } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 import StandingsTable from './StandingsTable';
@@ -54,7 +54,19 @@ export default function LeagueSelector({
     }
   }, []);
 
+  const deferredInitialFetch = useRef(true);
+
   useEffect(() => {
+    if (deferredInitialFetch.current) {
+      deferredInitialFetch.current = false;
+      const run = () => fetchData(selectedId);
+      if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+        const id = window.requestIdleCallback(run, { timeout: 2500 });
+        return () => window.cancelIdleCallback(id);
+      }
+      const timer = globalThis.setTimeout(run, 2000);
+      return () => globalThis.clearTimeout(timer);
+    }
     fetchData(selectedId);
   }, [selectedId, fetchData]);
 

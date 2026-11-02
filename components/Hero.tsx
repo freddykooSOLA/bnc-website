@@ -22,7 +22,8 @@ export default function Hero({ lang, config }: HeroProps) {
             fill
             priority
             className="object-cover object-center"
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, 1200px"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           <div className="absolute bottom-4 md:bottom-8 left-0 right-0 flex justify-center px-4">
