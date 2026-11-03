@@ -23,5 +23,10 @@ export async function submitIndexNow(urlList: string[]): Promise<{ ok: boolean; 
 }
 
 export function indexNowUrlsForLang(lang: string): string[] {
-  return [`${BASE_URL}/${lang}`, `${BASE_URL}/${lang}/matches`, `${BASE_URL}/${lang}/about`];
+  return [
+    `${BASE_URL}/${lang}`,
+    `${BASE_URL}/${lang}/matches`,
+    `${BASE_URL}/${lang}/about`,
+    `${BASE_URL}/${lang}/events`,
+  ];
 }

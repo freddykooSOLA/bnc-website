@@ -2,6 +2,7 @@ import { getConfig } from '@/lib/config';
 import type { Lang } from '@/types';
 import Hero from '@/components/Hero';
 import HomeIntro from '@/components/HomeIntro';
+import HomeFaqBlocks from '@/components/HomeFaqBlocks';
 import dynamic from 'next/dynamic';
 
 const LeagueSelector = dynamic(() => import('@/components/LeagueSelector'), {
@@ -41,6 +42,7 @@ export default async function HomePage({ params }: HomePageProps) {
       ) : null}
       <Hero lang={lang} config={config} />
       <HomeIntro lang={lang} config={config} headingLevel={hasCustomBg ? 'h1' : 'h2'} />
+      <HomeFaqBlocks lang={lang} />
       <LeagueSelector
         lang={lang}
         leagues={config.matches.leagues}
