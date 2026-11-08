@@ -5,7 +5,7 @@ import type { Lang } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 import { formatMatchDateHK } from '@/lib/scorelab-time';
 import type { NewsMatchItem } from '@/lib/match-news';
-import { recapScoreTitle } from '@/lib/match-recap';
+import { recapResultSentence, recapScoreTitle } from '@/lib/match-recap';
 import { parseYoutubeVideoId, youtubeThumbnail } from '@/lib/scorelab-helpers';
 
 interface NewsListContentProps {
@@ -92,8 +92,11 @@ export default function NewsListContent({
                     {recapScoreTitle(item.match)}
                   </Link>
                 </h2>
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-sm text-gray-500 mb-2">
                   {formatMatchDateHK(item.match.date, lang)}
+                </p>
+                <p className="text-sm text-gray-800 leading-relaxed mb-4">
+                  {recapResultSentence(item.match, lang)}
                 </p>
                 <Link
                   href={href}

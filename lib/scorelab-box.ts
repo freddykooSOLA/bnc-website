@@ -25,10 +25,27 @@ export interface BoxLeader {
   players: BoxPlayer[];
 }
 
+export interface PlayerLine {
+  playerId: string;
+  name: string;
+  jersey: string;
+  pts: number;
+  reb: number;
+  ast: number;
+  threes: number;
+}
+
+export interface TeamLines {
+  side: 'home' | 'away';
+  name: string;
+  players: PlayerLine[];
+}
+
 export interface MatchBox {
   quarters: PeriodScore[];
   overtime: PeriodScore[];
   leaders: BoxLeader[];
+  teams: TeamLines[];
 }
 
 function num(value: unknown): number {
@@ -166,9 +183,45 @@ export function parseMatchBox(html: string): MatchBox | null {
     ? box.score.filter((row): row is Record<string, unknown> => !!row && typeof row === 'object')
     : [];
   const leaders = leadersFrom(rows, people);
+  const teams = teamLines(rows, people, homeName, awayName);
 
-  if (quarters.length === 0 && leaders.length === 0) return null;
-  return { quarters, overtime, leaders };
+  if (quarters.length === 0 && leaders.length === 0 && teams.every((team) => team.players.length === 0)) {
+    return null;
+  }
+  return { quarters, overtime, leaders, teams };
+}
+
+function teamLines(
+  rows: Record<string, unknown>[],
+  people: Map<string, BoxPlayer>,
+  homeName: string,
+  awayName: string
+): TeamLines[] {
+  const grouped: Record<'home' | 'away', PlayerLine[]> = { home: [], away: [] };
+  for (const row of rows) {
+    const side = row.side === 'away' ? 'away' : row.side === 'home' ? 'home' : null;
+    const player = people.get(String(row.playerId ?? ''));
+    if (!side || !player) continue;
+    const line: PlayerLine = {
+      playerId: player.playerId,
+      name: player.name,
+      jersey: player.jersey,
+      pts: points(row),
+      reb: rebounds(row),
+      ast: num(row.AST),
+      threes: num(row['3PM']),
+    };
+    if (line.pts === 0 && line.reb === 0 && line.ast === 0 && line.threes === 0 && num(row.MINS) === 0) {
+      continue;
+    }
+    grouped[side].push(line);
+  }
+  const sortLines = (lines: PlayerLine[]) =>
+    lines.sort((a, b) => b.pts - a.pts || b.reb - a.reb || a.name.localeCompare(b.name));
+  return [
+    { side: 'home', name: homeName, players: sortLines(grouped.home) },
+    { side: 'away', name: awayName, players: sortLines(grouped.away) },
+  ];
 }
 
 async function fetchMatchBox(matchId: string): Promise<MatchBox | null> {

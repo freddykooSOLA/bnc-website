@@ -1,7 +1,7 @@
 import type { Lang, MatchRow } from '@/types';
 import { formatMatchDateTimeHK } from '@/lib/scorelab-time';
 import { UI_TEXT } from '@/lib/i18n';
-import type { BoxLeader, LeaderKey, MatchBox, PeriodScore } from '@/lib/scorelab-box';
+import type { BoxLeader, LeaderKey, MatchBox, PeriodScore, PlayerLine } from '@/lib/scorelab-box';
 
 export function recapScoreTitle(match: MatchRow): string {
   const home = match.homeScore ?? 0;
@@ -97,4 +97,25 @@ export function recapStatsParagraph(box: MatchBox, lang: Lang): string {
     );
   }
   return parts.join(gap);
+}
+
+export function playerLineText(player: PlayerLine, lang: Lang): string {
+  const who = player.jersey ? `#${player.jersey} ${player.name}` : player.name;
+  return UI_TEXT[lang].recapPlayerLine
+    .replace('{who}', who)
+    .replace('{pts}', String(player.pts))
+    .replace('{reb}', String(player.reb))
+    .replace('{ast}', String(player.ast))
+    .replace('{threes}', String(player.threes));
+}
+
+/** 兩隊每位上場球員各一句。 */
+export function recapPlayerParagraph(box: MatchBox, lang: Lang): string {
+  return box.teams
+    .filter((team) => team.players.length > 0)
+    .map((team) => {
+      const lines = team.players.map((player) => playerLineText(player, lang)).join('');
+      return team.name ? `${team.name}。${lines}` : lines;
+    })
+    .join(lang === 'en' ? ' ' : '');
 }

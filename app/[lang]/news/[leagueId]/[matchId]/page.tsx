@@ -10,6 +10,8 @@ import {
   periodLabel,
   recapMetaLine,
   recapResultSentence,
+  playerLineText,
+  recapPlayerParagraph,
   recapScoreTitle,
   recapStatsParagraph,
 } from '@/lib/match-recap';
@@ -45,10 +47,11 @@ export default async function NewsArticlePage({ params }: PageProps) {
   const { match, leagueId, season } = item;
   const box = await getCachedMatchBox(match.id);
   const statsText = box ? recapStatsParagraph(box, lang) : '';
+  const playerText = box ? recapPlayerParagraph(box, lang) : '';
   const jsonLd = buildNewsArticleJsonLd(
     item,
     lang,
-    [recapResultSentence(match, lang), statsText].filter(Boolean).join(' ')
+    [recapResultSentence(match, lang), statsText, playerText].filter(Boolean).join(' ')
   );
   const homeHead = match.homeTeamAbbreviation || match.homeTeam;
   const awayHead = match.awayTeamAbbreviation || match.awayTeam;
@@ -141,6 +144,37 @@ export default async function NewsArticlePage({ params }: PageProps) {
                 </li>
               ))}
             </ul>
+          </section>
+        ) : null}
+
+        {box && box.teams.some((team) => team.players.length > 0) ? (
+          <section className="mb-8">
+            <h2 className="font-heading text-xl font-bold text-primary mb-4">{t.recapPlayers}</h2>
+            <div className="space-y-6">
+              {box.teams.filter((team) => team.players.length > 0).map((team) => (
+                <div key={team.side}>
+                  <h3 className="font-heading text-lg font-bold text-primary mb-2">{team.name}</h3>
+                  <ul className="space-y-2">
+                    {team.players.map((player) => {
+                      const who = player.jersey ? `#${player.jersey} ${player.name}` : player.name;
+                      const sentence = playerLineText(player, lang);
+                      const rest = sentence.startsWith(who) ? sentence.slice(who.length) : sentence;
+                      return (
+                        <li key={player.playerId} className="text-sm text-gray-800 leading-relaxed">
+                          <Link
+                            href={playerPagePath(lang, leagueId, player.playerId)}
+                            className="text-primary hover:text-orange underline"
+                          >
+                            {who}
+                          </Link>
+                          {rest}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </section>
         ) : null}
 
