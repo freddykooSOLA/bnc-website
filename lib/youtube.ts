@@ -128,16 +128,20 @@ async function fetchVideosViaChannelPage(maxResults = 6): Promise<YoutubeVideo[]
   const html = await res.text();
   const ids: string[] = [];
   const seen = new Set<string>();
-  for (const match of html.matchAll(/watch\?v=([\w-]{11})/g)) {
-    const id = match[1];
+  const idPattern = /watch\?v=([\w-]{11})/g;
+  let idMatch: RegExpExecArray | null;
+  while ((idMatch = idPattern.exec(html))) {
+    const id = idMatch[1];
     if (seen.has(id)) continue;
     seen.add(id);
     ids.push(id);
   }
 
   const titles: string[] = [];
-  for (const match of html.matchAll(/"title":\{"content":"((?:\\.|[^"\\])*)"\}/g)) {
-    const title = decodeJsonString(match[1]).trim();
+  const titlePattern = /"title":\{"content":"((?:\\.|[^"\\])*)"\}/g;
+  let titleMatch: RegExpExecArray | null;
+  while ((titleMatch = titlePattern.exec(html))) {
+    const title = decodeJsonString(titleMatch[1]).trim();
     if (!title || MENU_TITLES.has(title)) continue;
     titles.push(title);
   }
