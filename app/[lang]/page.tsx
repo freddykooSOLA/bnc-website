@@ -31,7 +31,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const hasCustomBg = Boolean(config.hero.backgroundImage?.startsWith('/uploads/'));
 
   return (
-    <>
+    <div className="flex flex-col">
       {hasCustomBg ? (
         <link
           rel="preload"
@@ -40,16 +40,28 @@ export default async function HomePage({ params }: HomePageProps) {
           fetchPriority="high"
         />
       ) : null}
-      <Hero lang={lang} config={config} />
-      <HomeIntro lang={lang} config={config} headingLevel={hasCustomBg ? 'h1' : 'h2'} />
-      <HomeFaqBlocks lang={lang} />
-      <LeagueSelector
-        lang={lang}
-        leagues={config.matches.leagues}
-        defaultLeagueId={config.matches.defaultLeagueId}
-      />
-      <YoutubeFeed lang={lang} />
-      <FacebookFeed lang={lang} config={config} />
-    </>
+      <div className="order-1">
+        <Hero lang={lang} config={config} />
+      </div>
+      <div className="order-2">
+        <LeagueSelector
+          lang={lang}
+          leagues={config.matches.leagues}
+          defaultLeagueId={config.matches.defaultLeagueId}
+        />
+      </div>
+      <div className="order-3">
+        <YoutubeFeed lang={lang} />
+      </div>
+      <div className="order-4">
+        <FacebookFeed lang={lang} config={config} />
+      </div>
+      <div className="order-5">
+        <HomeIntro lang={lang} config={config} headingLevel={hasCustomBg ? 'h1' : 'h2'} />
+      </div>
+      <div className="order-6">
+        <HomeFaqBlocks lang={lang} />
+      </div>
+    </div>
   );
 }

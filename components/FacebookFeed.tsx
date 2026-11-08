@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Lang, SiteConfig } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 
@@ -9,59 +9,92 @@ interface FacebookFeedProps {
   config: SiteConfig;
 }
 
-/** Facebook 最新贴文 — 进入视口后再加载 Page Plugin，避免阻塞 LCP */
+interface FacebookPost {
+  message: string;
+  createdAt: string;
+  url: string;
+}
+
+/** 有專頁權杖時顯示最近 3 帖。沒有權杖時只嵌時間線，不顯示專頁封面。 */
 export default function FacebookFeed({ lang, config }: FacebookFeedProps) {
   const t = UI_TEXT[lang];
-  const sectionRef = useRef<HTMLElement>(null);
-  const [embed, setEmbed] = useState(false);
+  const [posts, setPosts] = useState<FacebookPost[] | null>(null);
   const pageUrl = encodeURIComponent(config.socialLinks.facebook);
 
   useEffect(() => {
-    const node = sectionRef.current;
-    if (!node) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setEmbed(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '240px' }
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
+    let cancelled = false;
+    fetch('/api/facebook')
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => {
+        if (!cancelled) setPosts(Array.isArray(data.posts) ? data.posts.slice(0, 3) : []);
+      })
+      .catch(() => {
+        if (!cancelled) setPosts([]);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  return (
-    <section ref={sectionRef} className="bg-light-bg py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary mb-8 text-center md:text-left">
-          {t.facebookFeed}
-        </h2>
+  const dated = (value: string) => !Number.isNaN(Date.parse(value));
 
-        <div className="flex justify-center">
-          <div className="card p-0 overflow-hidden w-full max-w-[500px]">
-            {embed ? (
+  return (
+    <section className="bg-light-bg py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-end justify-between gap-4 mb-8">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary">
+            {t.facebookFeed}
+          </h2>
+          <a
+            href={config.socialLinks.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-semibold text-orange shrink-0"
+          >
+            {t.viewOnFacebook}
+          </a>
+        </div>
+
+        {posts && posts.length > 0 ? (
+          <div className="grid md:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <a
+                key={post.url}
+                href={post.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="card hover:shadow-md transition-shadow"
+              >
+                <p className="text-sm text-gray-800 leading-relaxed line-clamp-6">
+                  {post.message || t.viewOnFacebook}
+                </p>
+                {dated(post.createdAt) ? (
+                  <p className="text-xs text-gray-400 mt-4">
+                    {new Date(post.createdAt).toLocaleDateString(lang)}
+                  </p>
+                ) : null}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div className="max-w-[520px]">
+            {posts === null ? (
+              <div className="card min-h-[420px] bg-gray-50" aria-hidden />
+            ) : (
               <iframe
                 title="Facebook Page Feed"
-                src={`https://www.facebook.com/plugins/page.php?href=${pageUrl}&tabs=timeline&width=500&height=500&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false`}
+                src={`https://www.facebook.com/plugins/page.php?href=${pageUrl}&tabs=timeline&width=500&height=680&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false`}
                 width="100%"
-                height="500"
+                height="680"
                 style={{ border: 'none', overflow: 'hidden' }}
                 scrolling="no"
                 loading="lazy"
                 allow="encrypted-media"
-                className="w-full min-h-[400px] md:min-h-[500px]"
-              />
-            ) : (
-              <div
-                className="w-full min-h-[400px] md:min-h-[500px] bg-gray-50"
-                aria-hidden
+                className="w-full bg-white"
               />
             )}
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

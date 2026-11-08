@@ -26,8 +26,7 @@ export default function Hero({ lang, config }: HeroProps) {
             fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-          <div className="absolute bottom-4 md:bottom-8 left-0 right-0 flex flex-col items-center px-4 gap-3">
-            <span className="bnc-court-line" aria-hidden="true" />
+          <div className="absolute bottom-4 md:bottom-8 left-0 right-0 flex justify-center px-4">
             <Link href={`/${lang}/matches`} className="btn-primary text-sm md:text-lg shadow-lg">
               {config.hero.ctaText[lang]}
             </Link>
@@ -45,7 +44,6 @@ export default function Hero({ lang, config }: HeroProps) {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
-        <span className="bnc-court-line" aria-hidden="true" />
         <h1 className="font-heading text-4xl md:text-6xl font-bold mb-4 leading-tight">
           {HOME_H1[lang]}
         </h1>

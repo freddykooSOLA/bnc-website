@@ -34,7 +34,17 @@ export default function YoutubeFeed({ lang }: YoutubeFeedProps) {
       {loading ? (
         <LoadingSpinner lang={lang} />
       ) : error || videos.length === 0 ? (
-        <div className="card text-center text-gray-500 py-12">{t.noVideos}</div>
+        <div className="card text-center text-gray-500 py-12">
+          <p>{t.noVideos}</p>
+          <a
+            href="https://www.youtube.com/@BNCChampion"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block text-orange font-semibold"
+          >
+            {t.viewOnYoutube}
+          </a>
+        </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {videos.map((video) => (
@@ -58,9 +68,11 @@ export default function YoutubeFeed({ lang }: YoutubeFeedProps) {
                 <h3 className="font-semibold text-sm text-primary line-clamp-2 group-hover:text-orange transition-colors">
                   {video.title}
                 </h3>
-                <p className="text-xs text-gray-400 mt-2">
-                  {new Date(video.publishedAt).toLocaleDateString(lang)}
-                </p>
+                {video.publishedAt && !Number.isNaN(Date.parse(video.publishedAt)) ? (
+                  <p className="text-xs text-gray-400 mt-2">
+                    {new Date(video.publishedAt).toLocaleDateString(lang)}
+                  </p>
+                ) : null}
               </div>
             </a>
           ))}

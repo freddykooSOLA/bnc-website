@@ -97,7 +97,69 @@ export async function fetchVideosViaRss(
   return videos;
 }
 
-/** 获取最新视频（优先 API，回退 RSS） */
+const MENU_TITLES = new Set([
+  'Add to queue',
+  'Save to playlist',
+  'Share',
+  'Watch later',
+]);
+
+function decodeJsonString(raw: string): string {
+  try {
+    return JSON.parse(`"${raw}"`) as string;
+  } catch {
+    return raw;
+  }
+}
+
+/** 頻道 RSS 已對這個頻道回 404，改讀公開影片頁 */
+async function fetchVideosViaChannelPage(maxResults = 6): Promise<YoutubeVideo[]> {
+  const res = await fetch('https://www.youtube.com/@BNCChampion/videos', {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+      'Accept-Language': 'en',
+    },
+    next: { revalidate: 1800 },
+  });
+
+  if (!res.ok) throw new Error('影片頁獲取失敗');
+
+  const html = await res.text();
+  const ids: string[] = [];
+  const seen = new Set<string>();
+  for (const match of html.matchAll(/watch\?v=([\w-]{11})/g)) {
+    const id = match[1];
+    if (seen.has(id)) continue;
+    seen.add(id);
+    ids.push(id);
+  }
+
+  const titles: string[] = [];
+  for (const match of html.matchAll(/"title":\{"content":"((?:\\.|[^"\\])*)"\}/g)) {
+    const title = decodeJsonString(match[1]).trim();
+    if (!title || MENU_TITLES.has(title)) continue;
+    titles.push(title);
+  }
+
+  const videos: YoutubeVideo[] = [];
+  const count = Math.min(maxResults, ids.length, titles.length);
+  for (let i = 0; i < count; i += 1) {
+    const id = ids[i];
+    videos.push({
+      id,
+      title: titles[i],
+      thumbnail: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+      publishedAt: '',
+      url: `https://www.youtube.com/watch?v=${id}`,
+    });
+  }
+
+  if (videos.length === 0) throw new Error('影片頁沒有解析到影片');
+  return videos;
+}
+
+/** 获取最新视频（优先 API，再 RSS，最後讀公開影片頁） */
 export async function fetchLatestVideos(maxResults = 6): Promise<YoutubeVideo[]> {
   const apiKey = process.env.YOUTUBE_API_KEY;
 
@@ -105,9 +167,13 @@ export async function fetchLatestVideos(maxResults = 6): Promise<YoutubeVideo[]>
     try {
       return await fetchVideosViaApi(apiKey, maxResults);
     } catch {
-      // API 失败时回退 RSS
+      // API 失败时回退
     }
   }
 
-  return fetchVideosViaRss(undefined, maxResults);
+  try {
+    return await fetchVideosViaRss(undefined, maxResults);
+  } catch {
+    return fetchVideosViaChannelPage(maxResults);
+  }
 }
