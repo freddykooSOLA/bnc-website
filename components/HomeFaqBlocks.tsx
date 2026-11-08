@@ -5,7 +5,7 @@ interface HomeFaqBlocksProps {
   lang: Lang;
 }
 
-/** 首頁 AEO 答案區塊（SSR，curl 可讀） */
+/** 關於我們頁 AEO 答案區塊（SSR，curl 可讀）。不放首頁。 */
 export default function HomeFaqBlocks({ lang }: HomeFaqBlocksProps) {
   const blocks = homeFaqBlocks(lang);
   const faqLd = {

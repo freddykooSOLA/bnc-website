@@ -4,6 +4,7 @@ import { getConfig } from '@/lib/config';
 import { generatePageMetadata } from '@/lib/seo';
 import { UI_TEXT } from '@/lib/i18n';
 import type { Lang } from '@/types';
+import HomeFaqBlocks from '@/components/HomeFaqBlocks';
 
 interface AboutPageProps {
   params: { lang: string };
@@ -68,6 +69,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
           </div>
         </div>
       </div>
+
+      <HomeFaqBlocks lang={lang} />
 
       {/* Google 地图 */}
       <div className="card p-0 overflow-hidden">
