@@ -103,7 +103,8 @@ export function buildPlayerPersonJsonLd(
 
 export function buildNewsArticleJsonLd(
   item: { leagueId: string; match: MatchRow },
-  lang: Lang
+  lang: Lang,
+  articleBody?: string
 ): object {
   const headline = recapScoreTitle(item.match);
   const url = `${BASE_URL}/${lang}/news/${item.leagueId}/${item.match.id}`;
@@ -113,6 +114,7 @@ export function buildNewsArticleJsonLd(
     headline,
     datePublished: toHktIsoOffset(item.match.date),
     url,
+    ...(articleBody ? { articleBody } : {}),
     about: sportsEventFromMatch(item.match),
   };
 }

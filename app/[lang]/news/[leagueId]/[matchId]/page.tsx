@@ -6,11 +6,16 @@ import { UI_TEXT } from '@/lib/i18n';
 import type { Lang } from '@/types';
 import { findNewsMatch } from '@/lib/match-news';
 import {
+  leaderLabel,
+  periodLabel,
   recapMetaLine,
   recapResultSentence,
   recapScoreTitle,
+  recapStatsParagraph,
 } from '@/lib/match-recap';
+import { getCachedMatchBox } from '@/lib/scorelab-box';
 import { teamPagePath } from '@/lib/team-links';
+import { playerPagePath } from '@/lib/player-links';
 import JsonLd from '@/components/JsonLd';
 import { buildNewsArticleJsonLd } from '@/lib/json-ld';
 import YoutubeReplayButton from '@/components/YoutubeReplayButton';
@@ -38,7 +43,15 @@ export default async function NewsArticlePage({ params }: PageProps) {
   if (!item) notFound();
 
   const { match, leagueId, season } = item;
-  const jsonLd = buildNewsArticleJsonLd(item, lang);
+  const box = await getCachedMatchBox(match.id);
+  const statsText = box ? recapStatsParagraph(box, lang) : '';
+  const jsonLd = buildNewsArticleJsonLd(
+    item,
+    lang,
+    [recapResultSentence(match, lang), statsText].filter(Boolean).join(' ')
+  );
+  const homeHead = match.homeTeamAbbreviation || match.homeTeam;
+  const awayHead = match.awayTeamAbbreviation || match.awayTeam;
 
   const homeTeamId = match.homeTeamId;
   const awayTeamId = match.awayTeamId;
@@ -52,7 +65,84 @@ export default async function NewsArticlePage({ params }: PageProps) {
           {recapScoreTitle(match)}
         </h1>
         <p className="text-gray-600 mb-6">{recapMetaLine(match, lang)}</p>
-        <p className="text-lg text-gray-800 mb-8">{recapResultSentence(match, lang)}</p>
+        <p className="text-lg text-gray-800 mb-4">{recapResultSentence(match, lang)}</p>
+        {statsText ? <p className="text-gray-800 leading-relaxed mb-8">{statsText}</p> : null}
+
+        {box && box.quarters.length > 0 ? (
+          <section className="mb-8">
+            <h2 className="font-heading text-xl font-bold text-primary mb-4">{t.recapQuarters}</h2>
+            <div className="card overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 text-left text-gray-500">
+                    <th className="py-3 pr-4" />
+                    <th className="py-3 pr-4">{homeHead}</th>
+                    <th className="py-3">{awayHead}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {box.quarters.map((row, index) => (
+                    <tr key={`q${index}`} className="border-b border-gray-50">
+                      <td className="py-3 pr-4 font-medium text-primary">
+                        {periodLabel('quarter', index, lang)}
+                      </td>
+                      <td className="py-3 pr-4 font-bold">{row.home}</td>
+                      <td className="py-3 font-bold">{row.away}</td>
+                    </tr>
+                  ))}
+                  {box.overtime.map((row, index) => (
+                    <tr key={`ot${index}`} className="border-b border-gray-50">
+                      <td className="py-3 pr-4 font-medium text-primary">
+                        {periodLabel('overtime', index, lang)}
+                      </td>
+                      <td className="py-3 pr-4 font-bold">{row.home}</td>
+                      <td className="py-3 font-bold">{row.away}</td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td className="py-3 pr-4 font-medium text-primary">{t.recapTotal}</td>
+                    <td className="py-3 pr-4 font-bold">{match.homeScore}</td>
+                    <td className="py-3 font-bold">{match.awayScore}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p className="text-xs text-gray-400 mt-4">{t.scorelabCredit}</p>
+            </div>
+          </section>
+        ) : null}
+
+        {box && box.leaders.length > 0 ? (
+          <section className="mb-8">
+            <h2 className="font-heading text-xl font-bold text-primary mb-4">{t.recapLeaders}</h2>
+            <ul className="card space-y-3">
+              {box.leaders.map((leader) => (
+                <li key={leader.key} className="flex flex-wrap items-baseline gap-x-2 text-sm">
+                  <span className="font-medium text-primary">{leaderLabel(leader.key, lang)}</span>
+                  <span>
+                    {leader.players.map((player, index) => (
+                      <span key={player.playerId}>
+                        {index > 0 ? (lang === 'en' ? ' and ' : '、') : null}
+                        <Link
+                          href={playerPagePath(lang, leagueId, player.playerId)}
+                          className="text-primary hover:text-orange underline"
+                        >
+                          {player.jersey ? `#${player.jersey} ` : ''}
+                          {player.name}
+                        </Link>
+                        {player.teamName
+                          ? lang === 'en'
+                            ? ` (${player.teamName})`
+                            : `（${player.teamName}）`
+                          : null}
+                      </span>
+                    ))}
+                  </span>
+                  <span className="font-bold">{leader.value}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <div className="flex flex-wrap items-center gap-4 mb-8">
           {homeTeamId && (
