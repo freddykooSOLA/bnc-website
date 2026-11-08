@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import type { Lang, SiteConfig } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 
@@ -13,6 +14,7 @@ interface FacebookPost {
   message: string;
   createdAt: string;
   url: string;
+  image?: string;
 }
 
 /** 有專頁權杖時顯示最近 3 帖。沒有權杖時只嵌時間線，不顯示專頁封面。 */
@@ -56,25 +58,41 @@ export default function FacebookFeed({ lang, config }: FacebookFeedProps) {
         </div>
 
         {posts && posts.length > 0 ? (
-          <div className="grid md:grid-cols-3 gap-6">
-            {posts.map((post) => (
-              <a
-                key={post.url}
-                href={post.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="card hover:shadow-md transition-shadow"
-              >
-                <p className="text-sm text-gray-800 leading-relaxed line-clamp-6">
-                  {post.message || t.viewOnFacebook}
-                </p>
-                {dated(post.createdAt) ? (
-                  <p className="text-xs text-gray-400 mt-4">
-                    {new Date(post.createdAt).toLocaleDateString(lang)}
-                  </p>
-                ) : null}
-              </a>
-            ))}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => {
+              const caption = post.message.trim().split('\n').find((line) => line.trim())?.trim() ?? '';
+              return (
+                <a
+                  key={post.url}
+                  href={post.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`card group hover:shadow-md transition-shadow overflow-hidden ${post.image ? 'p-0' : ''}`}
+                >
+                  {post.image ? (
+                    <div className="relative aspect-[4/3] bg-gray-100">
+                      <Image
+                        src={post.image}
+                        alt={caption.slice(0, 80) || t.facebookFeed}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  ) : null}
+                  <div className={post.image ? 'p-4' : ''}>
+                    <p className="text-sm text-gray-800 leading-relaxed line-clamp-4">
+                      {post.message || t.viewOnFacebook}
+                    </p>
+                    {dated(post.createdAt) ? (
+                      <p className="text-xs text-gray-400 mt-4">
+                        {new Date(post.createdAt).toLocaleDateString(lang)}
+                      </p>
+                    ) : null}
+                  </div>
+                </a>
+              );
+            })}
           </div>
         ) : (
           <div className="max-w-[520px]">
