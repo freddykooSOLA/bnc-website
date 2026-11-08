@@ -179,9 +179,10 @@ export function parseMatchBox(html: string): MatchBox | null {
     page.initialBoxScoreData && typeof page.initialBoxScoreData === 'object'
       ? (page.initialBoxScoreData as Record<string, unknown>)
       : {};
-  const rows = Array.isArray(box.score)
+  const boxRows = Array.isArray(box.score)
     ? box.score.filter((row): row is Record<string, unknown> => !!row && typeof row === 'object')
     : [];
+  const rows = boxRows.length > 0 ? boxRows : rowsFromPlays(page.initialPlayRecords);
   const leaders = leadersFrom(rows, people);
   const teams = teamLines(rows, people, homeName, awayName);
 
@@ -189,6 +190,35 @@ export function parseMatchBox(html: string): MatchBox | null {
     return null;
   }
   return { quarters, overtime, leaders, teams };
+}
+
+/** 技術統計表未出時，用逐球紀錄加總得分、籃板、助攻、三分。 */
+function rowsFromPlays(plays: unknown): Record<string, unknown>[] {
+  if (!Array.isArray(plays)) return [];
+  const tally = new Map<string, Record<string, unknown>>();
+  for (const item of plays) {
+    if (!item || typeof item !== 'object') continue;
+    const play = item as Record<string, unknown>;
+    const playerId = String(play.playerId ?? '');
+    const side = play.side === 'away' ? 'away' : play.side === 'home' ? 'home' : '';
+    if (!playerId || !side) continue;
+    const key = `${side}:${playerId}`;
+    let row = tally.get(key);
+    if (!row) {
+      row = { playerId, side, '1PM': 0, '2PM': 0, '3PM': 0, OREB: 0, DREB: 0, AST: 0 };
+      tally.set(key, row);
+    }
+    const action = String(play.action ?? '');
+    if (action === '1PM' || action === 'FTM') row['1PM'] = num(row['1PM']) + 1;
+    else if (action === '2PM') row['2PM'] = num(row['2PM']) + 1;
+    else if (action === '3PM') row['3PM'] = num(row['3PM']) + 1;
+    else if (action === 'OREB') row.OREB = num(row.OREB) + 1;
+    else if (action === 'DREB') row.DREB = num(row.DREB) + 1;
+    else if (action === 'AST') row.AST = num(row.AST) + 1;
+  }
+  const rows: Record<string, unknown>[] = [];
+  tally.forEach((row) => rows.push(row));
+  return rows;
 }
 
 function teamLines(
@@ -238,7 +268,7 @@ async function fetchMatchBox(matchId: string): Promise<MatchBox | null> {
 }
 
 export function getCachedMatchBox(matchId: string): Promise<MatchBox | null> {
-  return unstable_cache(() => fetchMatchBox(matchId), ['scorelab-match-box', matchId], {
+  return unstable_cache(() => fetchMatchBox(matchId), ['scorelab-match-box-v3', matchId], {
     revalidate: 300,
   })();
 }

@@ -71,7 +71,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
         <p className="text-lg text-gray-800 mb-4">{recapResultSentence(match, lang)}</p>
         {statsText ? <p className="text-gray-800 leading-relaxed mb-8">{statsText}</p> : null}
 
-        {box && box.quarters.length > 0 ? (
+        {box && (box.quarters ?? []).length > 0 ? (
           <section className="mb-8">
             <h2 className="font-heading text-xl font-bold text-primary mb-4">{t.recapQuarters}</h2>
             <div className="card overflow-x-auto">
@@ -84,7 +84,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {box.quarters.map((row, index) => (
+                  {(box.quarters ?? []).map((row, index) => (
                     <tr key={`q${index}`} className="border-b border-gray-50">
                       <td className="py-3 pr-4 font-medium text-primary">
                         {periodLabel('quarter', index, lang)}
@@ -93,7 +93,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
                       <td className="py-3 font-bold">{row.away}</td>
                     </tr>
                   ))}
-                  {box.overtime.map((row, index) => (
+                  {(box.overtime ?? []).map((row, index) => (
                     <tr key={`ot${index}`} className="border-b border-gray-50">
                       <td className="py-3 pr-4 font-medium text-primary">
                         {periodLabel('overtime', index, lang)}
@@ -114,11 +114,11 @@ export default async function NewsArticlePage({ params }: PageProps) {
           </section>
         ) : null}
 
-        {box && box.leaders.length > 0 ? (
+        {box && (box.leaders ?? []).length > 0 ? (
           <section className="mb-8">
             <h2 className="font-heading text-xl font-bold text-primary mb-4">{t.recapLeaders}</h2>
             <ul className="card space-y-3">
-              {box.leaders.map((leader) => (
+              {(box.leaders ?? []).map((leader) => (
                 <li key={leader.key} className="flex flex-wrap items-baseline gap-x-2 text-sm">
                   <span className="font-medium text-primary">{leaderLabel(leader.key, lang)}</span>
                   <span>
@@ -147,11 +147,11 @@ export default async function NewsArticlePage({ params }: PageProps) {
           </section>
         ) : null}
 
-        {box && box.teams.some((team) => team.players.length > 0) ? (
+        {box && (box.teams ?? []).some((team) => team.players.length > 0) ? (
           <section className="mb-8">
             <h2 className="font-heading text-xl font-bold text-primary mb-4">{t.recapPlayers}</h2>
             <div className="space-y-6">
-              {box.teams.filter((team) => team.players.length > 0).map((team) => (
+              {(box.teams ?? []).filter((team) => team.players.length > 0).map((team) => (
                 <div key={team.side}>
                   <h3 className="font-heading text-lg font-bold text-primary mb-2">{team.name}</h3>
                   <ul className="space-y-2">

@@ -79,13 +79,15 @@ export function recapStatsParagraph(box: MatchBox, lang: Lang): string {
   const joiner = lang === 'en' ? ', ' : '、';
   const gap = lang === 'en' ? ' ' : '';
   const parts: string[] = [];
-  if (box.quarters.length > 0) {
-    parts.push(t.recapQuarterRun.replace('{scores}', box.quarters.map(scorePair).join(joiner)));
+  const quarters = box.quarters ?? [];
+  const overtime = box.overtime ?? [];
+  if (quarters.length > 0) {
+    parts.push(t.recapQuarterRun.replace('{scores}', quarters.map(scorePair).join(joiner)));
   }
-  if (box.overtime.length > 0) {
-    parts.push(t.recapOvertimeRun.replace('{scores}', box.overtime.map(scorePair).join(joiner)));
+  if (overtime.length > 0) {
+    parts.push(t.recapOvertimeRun.replace('{scores}', overtime.map(scorePair).join(joiner)));
   }
-  for (const leader of box.leaders) {
+  for (const leader of box.leaders ?? []) {
     const names = leader.players
       .map((player) => playerName(player, lang))
       .join(lang === 'en' ? ' and ' : '、');
@@ -111,7 +113,7 @@ export function playerLineText(player: PlayerLine, lang: Lang): string {
 
 /** 兩隊每位上場球員各一句。 */
 export function recapPlayerParagraph(box: MatchBox, lang: Lang): string {
-  return box.teams
+  return (box.teams ?? [])
     .filter((team) => team.players.length > 0)
     .map((team) => {
       const lines = team.players.map((player) => playerLineText(player, lang)).join('');
