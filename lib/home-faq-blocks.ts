@@ -12,6 +12,55 @@ export function homeFaqBlocks(lang: Lang): HomeFaqBlock[] {
   if (lang === 'zh-hk') {
     return [
       {
+        question: 'BNC League 是不是香港業餘籃球聯賽？',
+        answer:
+          'BNC League 是香港業餘籃球聯賽，賽事包括 BNC 籃球挑戰聯賽同 OCBC 華僑銀行邀請賽。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '點樣組隊報名香港籃球聯賽？',
+        answer:
+          '活動頁列出可報名項目。填表後保存參考編號，工作人員憑編號或二維碼簽到。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '香港有沒有企業籃球聯賽？',
+        answer:
+          '我們舉辦商會、學界及企業籃球賽事，包括 BNC 籃球挑戰聯賽同 OCBC 華僑銀行邀請賽。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '公司可以組隊打籃球比賽嗎？',
+        answer:
+          '公司可參加企業籃球賽。在活動頁填表後取得參考編號，工作人員憑編號或二維碼簽到。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '香港有哪些籃球邀請賽？',
+        answer:
+          '官網已列 OCBC 華僑銀行邀請賽，以及 BNC 籃球挑戰聯賽等本地及大灣區籃球賽事。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '業餘籃球的賽程同比分去邊度睇？',
+        answer:
+          '正式賽程、積分榜同賽果在比賽頁展示，數據由 ScoreLab（scorelab.tech）提供。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '香港籃球聯賽的球員數據去邊度睇？',
+        answer:
+          '球員數據在球員專頁，賽程同賽果在比賽頁，資料由 ScoreLab（scorelab.tech）提供。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
         question: '點樣報名 BNC 活動或聯賽？',
         answer:
           '網站「活動」頁列出可報名項目；填表提交後會取得參考編號，工作人員可憑編號或二維碼簽到。名額滿或截止後無法再報。',
@@ -39,6 +88,48 @@ export function homeFaqBlocks(lang: Lang): HomeFaqBlock[] {
   if (lang === 'zh-cn') {
     return [
       {
+        question: 'BNC League 是不是香港业余篮球联赛？',
+        answer: 'BNC League 是香港业余篮球联赛，赛事包括 BNC 篮球挑战联赛和 OCBC 华侨银行邀请赛。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '怎样组队报名香港篮球联赛？',
+        answer: '活动页列出可报名项目。填表后保存参考编号，工作人员凭编号或二维码签到。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '香港有没有企业篮球联赛？',
+        answer: '我们举办商会、学界及企业篮球赛事，包括 BNC 篮球挑战联赛和 OCBC 华侨银行邀请赛。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '公司可以组队打篮球比赛吗？',
+        answer: '公司可参加企业篮球赛。在活动页填表后取得参考编号，工作人员凭编号或二维码签到。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '香港有哪些篮球邀请赛？',
+        answer: '官网已列 OCBC 华侨银行邀请赛，以及 BNC 篮球挑战联赛等本地及大湾区篮球赛事。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '业余篮球的赛程和比分在哪里看？',
+        answer: '正式赛程、积分榜和赛果在比赛页展示，数据由 ScoreLab（scorelab.tech）提供。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
+        question: '香港篮球联赛的球员数据在哪里看？',
+        answer: '球员数据在球员专页，赛程和赛果在比赛页，资料由 ScoreLab（scorelab.tech）提供。',
+        tableHeaders: [],
+        tableRows: [],
+      },
+      {
         question: '怎样报名 BNC 活动或联赛？',
         answer:
           '网站「活动」页列出可报名项目；填表提交后会取得参考编号，工作人员可凭编号或二维码签到。名额满或截止后无法再报。',
@@ -64,6 +155,55 @@ export function homeFaqBlocks(lang: Lang): HomeFaqBlock[] {
     ];
   }
   return [
+    {
+      question: 'Is BNC League a Hong Kong amateur basketball league?',
+      answer:
+        'BNC League is a Hong Kong amateur basketball league. Events include the BNC Basketball Challenge League and the OCBC Wing Hang Bank Invitational.',
+      tableHeaders: [],
+      tableRows: [],
+    },
+    {
+      question: 'How do I register a team for a Hong Kong basketball league?',
+      answer:
+        'The Events page lists open items. Submit the form, keep the reference number, and staff check in with that number or a QR code.',
+      tableHeaders: [],
+      tableRows: [],
+    },
+    {
+      question: 'Is there a corporate basketball league in Hong Kong?',
+      answer:
+        'BNC runs chamber, school, and corporate basketball events, including the BNC Basketball Challenge League and the OCBC Invitational.',
+      tableHeaders: [],
+      tableRows: [],
+    },
+    {
+      question: 'Can a company enter a team in a basketball event?',
+      answer:
+        'A company can join a corporate basketball event. Register on the Events page and keep the reference number for check-in.',
+      tableHeaders: [],
+      tableRows: [],
+    },
+    {
+      question: 'Which basketball invitationals are listed?',
+      answer:
+        'The site lists the OCBC Wing Hang Bank Invitational and the BNC Basketball Challenge League, among local and Greater Bay Area events.',
+      tableHeaders: [],
+      tableRows: [],
+    },
+    {
+      question: 'Where are amateur basketball fixtures and scores?',
+      answer:
+        'Fixtures, standings, and results are on the Matches page. The data is provided by ScoreLab (scorelab.tech).',
+      tableHeaders: [],
+      tableRows: [],
+    },
+    {
+      question: 'Where are Hong Kong basketball league player stats?',
+      answer:
+        'Player stats are on player pages. Fixtures and results are on the Matches page. ScoreLab (scorelab.tech) supplies the data.',
+      tableHeaders: [],
+      tableRows: [],
+    },
     {
       question: 'How do I register for a BNC event or league?',
       answer:
