@@ -21,7 +21,7 @@ export default function Hero({ lang, config }: HeroProps) {
             alt={HOME_H1[lang]}
             fill
             priority
-            className="object-cover object-center"
+            className="object-cover object-center bnc-hero-push"
             sizes="(max-width: 768px) 100vw, 1200px"
             fetchPriority="high"
           />
@@ -44,6 +44,7 @@ export default function Hero({ lang, config }: HeroProps) {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 w-full">
+        <span className="bnc-court-line" aria-hidden="true" />
         <h1 className="font-heading text-4xl md:text-6xl font-bold mb-4 leading-tight">
           {HOME_H1[lang]}
         </h1>

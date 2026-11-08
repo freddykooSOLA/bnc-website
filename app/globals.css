@@ -90,3 +90,34 @@ h1, h2 {
   border-color: #f7931e;
   box-shadow: 0 0 0 2px rgba(247, 147, 30, 0.2);
 }
+
+@keyframes bnc-hero-push {
+  from { transform: scale(1.05); }
+  to { transform: scale(1); }
+}
+
+.bnc-hero-push {
+  animation: bnc-hero-push 12s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.bnc-court-line {
+  display: block;
+  width: min(12rem, 46vw);
+  height: 3px;
+  margin-bottom: 1.25rem;
+  background: #f7931e;
+  transform-origin: left center;
+  animation: bnc-court-line 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes bnc-court-line {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bnc-hero-push,
+  .bnc-court-line {
+    animation: none;
+  }
+}
