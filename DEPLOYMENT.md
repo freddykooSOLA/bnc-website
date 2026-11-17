@@ -1,5 +1,7 @@
 # BNC 篮球联赛网站 — SiteGround 部署指南
 
+> **現況**：網站已部署於 **Vercel**（`git push main` 自動部署）。以下 SiteGround 相關段落僅作歷史參考，**已停用**。
+
 ## 环境变量
 
 | 变量名 | 说明 | 必填 |

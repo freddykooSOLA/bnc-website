@@ -9,6 +9,7 @@
 - [English home](https://bncleague.com/en)
 - [比賽 / Matches](https://bncleague.com/zh-hk/matches)
 - [關於我們 / About](https://bncleague.com/zh-hk/about)
+- [常見問題 / FAQ](https://bncleague.com/zh-hk/about)
 - [賽事新聞 / News](https://bncleague.com/zh-hk/news)
 
 ## Data

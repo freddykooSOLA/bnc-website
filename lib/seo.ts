@@ -4,6 +4,28 @@ import { HREFLANG_MAP, LANGUAGES } from '@/lib/i18n';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://bncleague.com';
 
+function organizationTelephone(phone: string): string {
+  const compact = phone.replace(/\s/g, '');
+  if (compact.startsWith('+')) return compact;
+  if (compact.startsWith('852')) return `+${compact}`;
+  return phone.trim();
+}
+
+/** PostalAddress fields derived from config contact address (English line is comma-separated). */
+function organizationPostalAddress(config: SiteConfig, lang: Lang) {
+  const parts = config.contact.address.en.split(',').map((s) => s.trim());
+  const streetAddress =
+    parts.length >= 5 ? parts.slice(0, 4).join(', ') : config.contact.address[lang];
+
+  return {
+    '@type': 'PostalAddress',
+    streetAddress,
+    addressLocality: parts.length >= 5 ? parts[4] : 'Hong Kong',
+    ...(parts.length >= 6 ? { addressRegion: parts[5] } : {}),
+    addressCountry: 'HK',
+  };
+}
+
 interface LocalizedSeoConfig {
   title: LocalizedString;
   description: LocalizedString;
@@ -74,13 +96,11 @@ export function generateJsonLd(config: SiteConfig, lang: Lang) {
         name: config.siteName[lang],
         url: BASE_URL,
         logo: `${BASE_URL}${config.logo}`,
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: 'Hong Kong',
-          addressCountry: 'HK',
-        },
+        telephone: organizationTelephone(config.contact.phone),
+        address: organizationPostalAddress(config, lang),
         contactPoint: {
           '@type': 'ContactPoint',
+          telephone: organizationTelephone(config.contact.phone),
           email: config.contact.email,
           contactType: 'customer service',
         },
