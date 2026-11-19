@@ -8,7 +8,7 @@
   "favicon": "/uploads/favicon-bnc.png",
   "defaultLang": "zh-hk",
   "contact": {
-    "phone": "852 9213 3533",
+    "phone": "+852 5240 0678",
     "email": "bncsportshkg@gmail.com",
     "address": {
       "zh-hk": "香港九龍觀塘成業街華成工商中心10樓1006室",
@@ -21,7 +21,7 @@
     "youtube": "https://www.youtube.com/@BNCChampion",
     "facebook": "https://www.facebook.com/bnchk",
     "instagram": "https://www.instagram.com/bncsportshkg",
-    "whatsapp": "https://wa.me/85292133533"
+    "whatsapp": "https://wa.me/85252400678"
   },
   "nav": {
     "home": { "zh-hk": "首頁", "zh-cn": "首页", "en": "Home" },

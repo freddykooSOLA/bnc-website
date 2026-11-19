@@ -69,7 +69,7 @@ export function homeFaqBlocks(lang: Lang): HomeFaqBlock[] {
           ['選擇活動', '於活動頁查看項目與名額'],
           ['網上報名', '提交表單並保存參考編號'],
           ['付款／確認', '部分活動詳情頁會列 FPS／Alipay 等付款指引（以該頁為準）'],
-          ['聯絡', '電話 852 9213 3533；電郵 bncsportshkg@gmail.com'],
+          ['聯絡', '電話 +852 5240 0678；電郵 bncsportshkg@gmail.com'],
         ],
       },
       {
@@ -138,7 +138,7 @@ export function homeFaqBlocks(lang: Lang): HomeFaqBlock[] {
           ['选择活动', '于活动页查看项目与名额'],
           ['网上报名', '提交表单并保存参考编号'],
           ['付款／确认', '部分活动详情页会列 FPS／Alipay 等付款指引（以该页为准）'],
-          ['联络', '电话 852 9213 3533；电邮 bncsportshkg@gmail.com'],
+          ['联络', '电话 +852 5240 0678；电邮 bncsportshkg@gmail.com'],
         ],
       },
       {
@@ -213,7 +213,7 @@ export function homeFaqBlocks(lang: Lang): HomeFaqBlock[] {
         ['Pick an event', 'See capacity and dates on the Events page'],
         ['Register online', 'Submit the form and save your reference number'],
         ['Payment', 'Some event pages list FPS / Alipay instructions (follow that page)'],
-        ['Contact', 'Phone 852 9213 3533 · bncsportshkg@gmail.com'],
+        ['Contact', 'Phone +852 5240 0678 · bncsportshkg@gmail.com'],
       ],
     },
     {

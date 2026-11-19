@@ -186,7 +186,7 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
                   <Field label="Instagram">
                     <input value={fields.socialLinks.instagram} onChange={(e) => updateField(['socialLinks', 'instagram'], e.target.value)} className="input-field" />
                   </Field>
-                  <Field label="WhatsApp（例：https://wa.me/85292133533）">
+                  <Field label="WhatsApp（例：https://wa.me/85252400678）">
                     <input value={fields.socialLinks.whatsapp} onChange={(e) => updateField(['socialLinks', 'whatsapp'], e.target.value)} className="input-field" />
                   </Field>
                 </div>
