@@ -2,6 +2,8 @@ import { getConfig } from '@/lib/config';
 import type { Lang } from '@/types';
 import Hero from '@/components/Hero';
 import HomeIntro from '@/components/HomeIntro';
+import CompetitionPromoCard from '@/components/CompetitionPromoCard';
+import { getCompetition } from '@/lib/competitions';
 import dynamic from 'next/dynamic';
 
 const LeagueSelector = dynamic(() => import('@/components/LeagueSelector'), {
@@ -55,7 +57,14 @@ export default async function HomePage({ params }: HomePageProps) {
       <div className="order-4">
         <FacebookFeed lang={lang} config={config} />
       </div>
-      <div className="order-5">
+      <div className="order-5 bg-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {getCompetition('yinyuan-cup-2027') ? (
+            <CompetitionPromoCard lang={lang} competition={getCompetition('yinyuan-cup-2027')!} />
+          ) : null}
+        </div>
+      </div>
+      <div className="order-6">
         <HomeIntro lang={lang} config={config} headingLevel={hasCustomBg ? 'h1' : 'h2'} />
       </div>
     </div>

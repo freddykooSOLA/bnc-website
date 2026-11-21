@@ -10,6 +10,8 @@ import { listPublicEvents } from '@/lib/public-catalog';
 import { eventCapacityLabel } from '@/lib/event-capacity-label';
 import { countRegistrationsForEvent } from '@/lib/ledger';
 import type { Lang } from '@/types';
+import CompetitionPromoCard from '@/components/CompetitionPromoCard';
+import { getCompetition } from '@/lib/competitions';
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   if (!isValidLang(params.lang)) return {};
@@ -39,6 +41,14 @@ export default async function EventsPage({ params }: { params: { lang: string } 
     <div className="bg-light-bg">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="font-heading text-3xl font-bold text-primary mb-4">{copy.events}</h1>
+        {(() => {
+          const comp = getCompetition('yinyuan-cup-2027');
+          return comp ? (
+            <div className="mb-6">
+              <CompetitionPromoCard lang={lang} competition={comp} />
+            </div>
+          ) : null;
+        })()}
         <div className="space-y-4">
           {events.map((event, index) => (
             <Link key={event.slug} href={`/${lang}/events/${event.slug}`} className="card block hover:border-orange">
