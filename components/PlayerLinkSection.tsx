@@ -3,15 +3,22 @@
 import { useEffect, useState } from 'react';
 import type { Lang } from '@/types';
 
-type League = { id: string; label: string };
-type SearchHit = { playerId: string; name: string; teamName: string; gamesPlayed: number };
+type SearchHit = {
+  leagueId: string;
+  leagueLabel: string;
+  playerId: string;
+  name: string;
+  teamName: string;
+  number?: string;
+  image?: string;
+  gamesPlayed: number;
+};
 type LinkRow = { id: string; leagueId: string; playerId: string; status: string };
 
 const COPY: Record<
   Lang,
   {
     title: string;
-    pickLeague: string;
     search: string;
     searchBtn: string;
     submit: string;
@@ -19,63 +26,58 @@ const COPY: Record<
     statsLink: string;
     none: string;
     pending: string;
+    pick: string;
   }
 > = {
   'zh-hk': {
     title: '連結我的比賽數據',
-    pickLeague: '選擇聯賽',
-    search: '輸入姓名搜尋',
+    search: '輸入姓名搜尋（跨聯賽）',
     searchBtn: '搜尋',
-    submit: '提交連結申請',
+    submit: '提交所選連結申請',
     status: '狀態',
     statsLink: '查看我的數據與雷達',
     none: '尚未提交連結',
-    pending: '待主辦審批',
+    pending: '已提交，待主辦審批',
+    pick: '可多選（同一人在不同聯賽會有不同球員紀錄）',
   },
   'zh-cn': {
     title: '连结我的比赛数据',
-    pickLeague: '选择联赛',
-    search: '输入姓名搜索',
+    search: '输入姓名搜索（跨联赛）',
     searchBtn: '搜索',
-    submit: '提交链接申请',
+    submit: '提交所选链接申请',
     status: '状态',
     statsLink: '查看我的数据与雷达',
     none: '尚未提交链接',
-    pending: '待主办审批',
+    pending: '已提交，待主办审批',
+    pick: '可多选（同一人在不同联赛会有不同球员纪录）',
   },
   en: {
     title: 'Link my game stats',
-    pickLeague: 'Choose league',
-    search: 'Search by name',
+    search: 'Search by name (all leagues)',
     searchBtn: 'Search',
-    submit: 'Submit link request',
+    submit: 'Submit selected link requests',
     status: 'Status',
     statsLink: 'View my stats & radar',
     none: 'No link requests yet',
-    pending: 'Pending organiser review',
+    pending: 'Submitted — pending organiser review',
+    pick: 'Select one or more profiles (each league has its own player record)',
   },
 };
 
+function hitKey(h: SearchHit) {
+  return `${h.leagueId}:${h.playerId}`;
+}
+
 export default function PlayerLinkSection({ lang }: { lang: Lang }) {
   const copy = COPY[lang];
-  const [leagues, setLeagues] = useState<League[]>([]);
   const [links, setLinks] = useState<LinkRow[]>([]);
-  const [leagueId, setLeagueId] = useState('');
   const [query, setQuery] = useState('');
   const [hits, setHits] = useState<SearchHit[]>([]);
-  const [selected, setSelected] = useState<SearchHit | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [msg, setMsg] = useState('');
 
   async function refresh() {
-    const [leagueRes, linkRes] = await Promise.all([
-      fetch('/api/account/player-links/leagues'),
-      fetch('/api/account/player-links'),
-    ]);
-    if (leagueRes.ok) {
-      const j = (await leagueRes.json()) as { leagues: League[] };
-      setLeagues(j.leagues);
-      if (!leagueId && j.leagues[0]) setLeagueId(j.leagues[0].id);
-    }
+    const linkRes = await fetch('/api/account/player-links');
     if (linkRes.ok) {
       const j = (await linkRes.json()) as { links: LinkRow[] };
       setLinks(j.links);
@@ -84,52 +86,48 @@ export default function PlayerLinkSection({ lang }: { lang: Lang }) {
 
   useEffect(() => {
     void refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function onSearch(e: React.FormEvent) {
     e.preventDefault();
-    if (!leagueId || !query.trim()) return;
-    const res = await fetch(
-      `/api/account/player-links/search?leagueId=${encodeURIComponent(leagueId)}&q=${encodeURIComponent(query)}`
-    );
+    if (!query.trim()) return;
+    const res = await fetch(`/api/account/player-links/search?q=${encodeURIComponent(query)}`);
     if (!res.ok) return;
     const j = (await res.json()) as { players: SearchHit[] };
     setHits(j.players);
-    setSelected(null);
+    setSelected(new Set());
+  }
+
+  function toggleHit(h: SearchHit) {
+    const key = hitKey(h);
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
   }
 
   async function onSubmit() {
-    if (!selected || !leagueId) return;
-    const res = await fetch('/api/account/player-links', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ leagueId, playerId: selected.playerId }),
-    });
-    if (res.ok) {
-      setMsg(copy.pending);
-      await refresh();
+    const chosen = hits.filter((h) => selected.has(hitKey(h)));
+    if (chosen.length === 0) return;
+    for (const h of chosen) {
+      await fetch('/api/account/player-links', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leagueId: h.leagueId, playerId: h.playerId }),
+      });
     }
+    setMsg(copy.pending);
+    await refresh();
+    setSelected(new Set());
   }
 
   return (
     <section className="space-y-4">
       <h2 className="font-heading text-lg font-bold text-primary">{copy.title}</h2>
       <form onSubmit={onSearch} className="card space-y-3 text-base">
-        <label className="block">
-          <span className="text-gray-600">{copy.pickLeague}</span>
-          <select
-            className="mt-1 w-full min-h-11 border border-gray-200 rounded-lg px-3"
-            value={leagueId}
-            onChange={(e) => setLeagueId(e.target.value)}
-          >
-            {leagues.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <p className="text-sm text-gray-500">{copy.pick}</p>
         <label className="block">
           <span className="text-gray-600">{copy.search}</span>
           <input
@@ -143,22 +141,42 @@ export default function PlayerLinkSection({ lang }: { lang: Lang }) {
         </button>
         {hits.length > 0 ? (
           <ul className="space-y-2">
-            {hits.map((h) => (
-              <li key={h.playerId}>
-                <button
-                  type="button"
-                  onClick={() => setSelected(h)}
-                  className={`w-full text-left min-h-11 px-3 rounded-lg border ${
-                    selected?.playerId === h.playerId ? 'border-orange bg-orange/5' : 'border-gray-200'
-                  }`}
-                >
-                  {h.name} · {h.teamName} · {h.gamesPlayed} GP
-                </button>
-              </li>
-            ))}
+            {hits.map((h) => {
+              const key = hitKey(h);
+              const on = selected.has(key);
+              return (
+                <li key={key}>
+                  <button
+                    type="button"
+                    onClick={() => toggleHit(h)}
+                    className={`w-full text-left min-h-11 px-3 py-2 rounded-lg border flex gap-3 items-center ${
+                      on ? 'border-orange bg-orange/5' : 'border-gray-200'
+                    }`}
+                  >
+                    {h.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={h.image}
+                        alt=""
+                        className="w-11 h-11 rounded-full object-cover shrink-0 bg-gray-100"
+                      />
+                    ) : (
+                      <span className="w-11 h-11 rounded-full bg-gray-100 shrink-0" aria-hidden />
+                    )}
+                    <span>
+                      <span className="block font-medium">{h.name}</span>
+                      <span className="block text-sm text-gray-600">
+                        {h.leagueLabel} · {h.teamName}
+                        {h.number ? ` · #${h.number}` : ''} · {h.gamesPlayed} GP
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         ) : null}
-        {selected ? (
+        {selected.size > 0 ? (
           <button type="button" onClick={onSubmit} className="btn-primary min-h-11 w-full">
             {copy.submit}
           </button>

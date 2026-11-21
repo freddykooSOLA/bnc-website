@@ -9,6 +9,7 @@ import { isValidLang } from '@/lib/i18n';
 import { generatePageMetadata } from '@/lib/seo';
 import { databaseEnabled } from '@/lib/prisma';
 import { loadApprovedPlayerStats } from '@/lib/player-link-service';
+import { loadLeaguePlayerStatsFromDb } from '@/lib/scorelab-db';
 import {
   aggregateCareerStats,
   buildLeagueRadarPercentiles,
@@ -119,6 +120,15 @@ export default async function AccountStatsPage({ params }: { params: { lang: str
   for (const row of rows) {
     const league = allLeagues.find((l) => l.id === row.leagueId);
     if (!league) continue;
+    const dbStats = await loadLeaguePlayerStatsFromDb(row.leagueId);
+    if (dbStats) {
+      radarBlocks.push({
+        leagueLabel: row.leagueLabel,
+        percentiles: buildLeagueRadarPercentiles(row.player, dbStats),
+        player: row.player,
+      });
+      continue;
+    }
     try {
       const data = await getCachedSeasonData(league.url);
       if (!data.playerStats) continue;

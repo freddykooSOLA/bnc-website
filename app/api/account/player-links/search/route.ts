@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { playerLinksEnabled, searchScorelabPlayers } from '@/lib/player-link-service';
+import { playerLinksEnabled, searchScorelabPlayersAllLeagues } from '@/lib/player-link-service';
 
 export async function GET(request: Request) {
   if (!playerLinksEnabled()) {
@@ -12,11 +12,10 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const leagueId = searchParams.get('leagueId') ?? '';
   const q = searchParams.get('q') ?? '';
 
   try {
-    const players = await searchScorelabPlayers(leagueId, q);
+    const players = await searchScorelabPlayersAllLeagues(q);
     return NextResponse.json({ players });
   } catch {
     return NextResponse.json({ error: 'scorelab' }, { status: 503 });
