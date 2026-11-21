@@ -281,3 +281,72 @@ model PointLedger {
 
   @@index([memberId, createdAt])
 }
+
+/// Synced from public ScoreLab season / team pages (BNC-017 B3).
+model ScoreLabTeam {
+  id         String   @id @default(cuid())
+  scorelabId String
+  leagueId   String
+  leagueSlug String
+  slug       String
+  name       String
+  image      String?
+  wins       Int      @default(0)
+  losses     Int      @default(0)
+  draws      Int      @default(0)
+  syncedAt   DateTime
+
+  @@unique([leagueId, scorelabId])
+  @@index([leagueId])
+}
+
+model ScoreLabPlayer {
+  id             String   @id @default(cuid())
+  scorelabId     String
+  teamScorelabId String
+  leagueId       String
+  name           String
+  number         String?
+  image          String?
+  active         Boolean  @default(true)
+  former         Boolean  @default(false)
+  syncedAt       DateTime
+
+  seasons ScoreLabPlayerSeason[]
+
+  @@unique([leagueId, scorelabId])
+  @@index([leagueId])
+  @@index([leagueId, teamScorelabId])
+  @@index([name])
+}
+
+model ScoreLabPlayerSeason {
+  id               String   @id @default(cuid())
+  playerScorelabId String
+  leagueId         String
+  seasonId         String
+  gamesPlayed      Int      @default(0)
+  PTS              Int      @default(0)
+  REB              Int      @default(0)
+  AST              Int      @default(0)
+  STL              Int      @default(0)
+  BLK              Int      @default(0)
+  threePM          Int      @default(0)
+  efficiency       Int      @default(0)
+  syncedAt         DateTime
+
+  player ScoreLabPlayer @relation(fields: [playerScorelabId, leagueId], references: [scorelabId, leagueId])
+
+  @@unique([playerScorelabId, leagueId, seasonId])
+  @@index([leagueId, seasonId])
+}
+
+model ScoreLabSyncRun {
+  id         String    @id @default(cuid())
+  startedAt  DateTime
+  finishedAt DateTime?
+  ok         Boolean   @default(false)
+  teams      Int       @default(0)
+  players    Int       @default(0)
+  errorsJson String?
+}
