@@ -25,6 +25,129 @@ model Member {
   voucherSharesSent     VoucherShare[] @relation("VoucherShareSharer")
   voucherSharesReceived VoucherShare[] @relation("VoucherShareClaimer")
   teamFollows           TeamFollow[]
+  identities            MemberIdentity[]
+  roles                 MemberRole[]
+  teamsCreated          Team[]            @relation("TeamCreator")
+  teamMemberships       TeamMembership[]
+  playerLinks           PlayerLink[]
+}
+
+enum MemberRoleType {
+  FAN
+  PLAYER
+  LEADER
+}
+
+model MemberIdentity {
+  id                String   @id @default(cuid())
+  memberId          String
+  provider          String
+  providerAccountId String
+  createdAt         DateTime @default(now())
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([memberId])
+}
+
+model MemberRole {
+  id       String         @id @default(cuid())
+  memberId String
+  role     MemberRoleType
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, role])
+  @@index([memberId])
+}
+
+model Team {
+  id            String   @id @default(cuid())
+  name          String
+  bank          String
+  jerseyColor1  String
+  jerseyColor2  String
+  createdById   String
+  createdAt     DateTime @default(now())
+
+  createdBy   Member           @relation("TeamCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  memberships TeamMembership[]
+  entries     TeamEntry[]
+
+  @@index([createdById])
+}
+
+model TeamMembership {
+  id           String   @id @default(cuid())
+  teamId       String
+  memberId     String?
+  nameZh       String
+  nameEn       String
+  idPartial    String
+  staffId      String?
+  jerseyNumber Int
+  isCaptain    Boolean  @default(false)
+  status       String   @default("listed")
+  inviteToken  String?
+  createdAt    DateTime @default(now())
+
+  team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  member Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@unique([teamId, jerseyNumber])
+  @@index([teamId])
+  @@index([memberId])
+}
+
+model Competition {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  title      String
+  category   String
+  registerBy DateTime
+  rosterBy   DateTime
+  feeNote    String
+  createdAt  DateTime @default(now())
+
+  entries TeamEntry[]
+}
+
+model TeamEntry {
+  id                  String    @id @default(cuid())
+  ref                 String    @unique @default(cuid())
+  competitionId       String
+  teamId              String
+  leaderNameZh        String
+  leaderNameEn        String
+  leaderIdPartial     String
+  leaderEmail         String
+  leaderMobile        String
+  leaderEmergency     String
+  declarationAccepted DateTime?
+  declarationBank     String?
+  declarationSigned   String?
+  status              String    @default("submitted")
+  createdAt           DateTime  @default(now())
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  team        Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([competitionId])
+  @@index([teamId])
+}
+
+model PlayerLink {
+  id       String @id @default(cuid())
+  memberId String
+  leagueId String
+  playerId String
+  status   String @default("pending")
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, leagueId, playerId])
+  @@index([memberId])
 }
 
 model TeamFollow {
