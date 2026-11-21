@@ -1,10 +1,10 @@
-import NextAuth from 'next-auth';
+import NextAuth, { type NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import Facebook from 'next-auth/providers/facebook';
 import { resolveAndUpsertOAuthMember, type OAuthProvider } from '@/lib/member-oauth';
 import { facebookOAuthConfigured } from '@/lib/oauth-providers';
 
-const providers = [
+const providers: NextAuthConfig['providers'] = [
   Google({
     clientId: process.env.AUTH_GOOGLE_ID,
     clientSecret: process.env.AUTH_GOOGLE_SECRET,

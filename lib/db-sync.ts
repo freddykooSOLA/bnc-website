@@ -1,6 +1,7 @@
 import type { EventRegistration, ShopOrder } from '@/lib/ledger';
 import type { MemberUser } from '@/lib/users';
 import { databaseEnabled, prisma } from '@/lib/prisma';
+import { MemberRoleType } from '@prisma/client';
 
 function logDbSyncError(context: string, error: unknown) {
   console.error(`[db-sync] ${context}`, error);
@@ -25,6 +26,13 @@ export async function syncMemberToDatabase(user: MemberUser) {
         image: user.image ?? null,
         updatedAt: new Date(user.updatedAt),
       },
+    });
+    await prisma.memberRole.upsert({
+      where: {
+        memberId_role: { memberId: user.id, role: MemberRoleType.FAN },
+      },
+      create: { memberId: user.id, role: MemberRoleType.FAN },
+      update: {},
     });
   } catch (error) {
     logDbSyncError('syncMemberToDatabase', error);
