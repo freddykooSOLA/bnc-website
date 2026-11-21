@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import AdminCompetitionsPanel from '@/components/AdminCompetitionsPanel';
 import AdminPlayerLinksPanel from '@/components/AdminPlayerLinksPanel';
+import AdminScorelabSyncPanel from '@/components/AdminScorelabSyncPanel';
 
 export default function AdminCompetitionsTabs() {
-  const [tab, setTab] = useState<'entries' | 'links'>('entries');
+  const [tab, setTab] = useState<'entries' | 'links' | 'scorelab'>('entries');
 
   return (
     <div>
@@ -28,8 +29,23 @@ export default function AdminCompetitionsTabs() {
         >
           球員連結
         </button>
+        <button
+          type="button"
+          className={`min-h-11 px-4 rounded-lg text-base ${
+            tab === 'scorelab' ? 'bg-orange/10 text-orange font-semibold' : 'bg-white border'
+          }`}
+          onClick={() => setTab('scorelab')}
+        >
+          ScoreLab 同步
+        </button>
       </div>
-      {tab === 'entries' ? <AdminCompetitionsPanel /> : <AdminPlayerLinksPanel />}
+      {tab === 'entries' ? (
+        <AdminCompetitionsPanel />
+      ) : tab === 'links' ? (
+        <AdminPlayerLinksPanel />
+      ) : (
+        <AdminScorelabSyncPanel />
+      )}
     </div>
   );
 }
