@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    NEXT_PUBLIC_FACEBOOK_LOGIN_ENABLED:
+      process.env.AUTH_FACEBOOK_ID?.trim() && process.env.AUTH_FACEBOOK_SECRET?.trim()
+        ? '1'
+        : '0',
+  },
   images: {
     remotePatterns: [
       {

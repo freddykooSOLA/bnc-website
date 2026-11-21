@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import { auth, signIn } from '@/auth';
+import { auth } from '@/auth';
+import SignInGate from '@/components/SignInGate';
 import { isValidLang } from '@/lib/i18n';
 import { findMemberById } from '@/lib/users';
 import type { Lang } from '@/types';
@@ -46,8 +47,18 @@ export default async function MyRegistrationsPage({ params }: PageProps) {
 
   const session = await auth();
   if (!session?.user) {
-    await signIn('google', { redirectTo: `/${lang}/my-registrations` });
-    return null;
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-10 sm:py-14">
+        <h1 className="text-2xl sm:text-3xl font-heading font-bold text-primary mb-6">
+          {copy.title}
+        </h1>
+        <SignInGate
+          lang={lang}
+          callbackPath={`/${lang}/my-registrations`}
+          prompt={copy.signInPrompt}
+        />
+      </div>
+    );
   }
 
   const memberId = session.user.id;

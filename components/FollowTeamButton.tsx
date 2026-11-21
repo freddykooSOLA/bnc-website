@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
+import OAuthSignInButtons from '@/components/OAuthSignInButtons';
 import type { Lang } from '@/types';
 import { UI_TEXT } from '@/lib/i18n';
 
@@ -72,17 +72,11 @@ export default function FollowTeamButton({
 
   if (!session?.user) {
     return (
-      <button
-        type="button"
-        onClick={() =>
-          signIn('google', {
-            callbackUrl: `/${lang}/teams/${leagueId}/${teamId}`,
-          })
-        }
-        className="btn-secondary text-sm"
-      >
-        {t.signInToFollow}
-      </button>
+      <OAuthSignInButtons
+        lang={lang}
+        callbackUrl={`/${lang}/teams/${leagueId}/${teamId}`}
+        layout="stack"
+      />
     );
   }
 

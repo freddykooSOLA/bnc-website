@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { auth, signIn } from '@/auth';
+import { auth } from '@/auth';
+import SignInGate from '@/components/SignInGate';
 import { getConfig } from '@/lib/config';
 import { isValidLang, UI_TEXT } from '@/lib/i18n';
 import type { Lang } from '@/types';
@@ -40,8 +41,18 @@ export default async function MyTeamsPage({ params }: PageProps) {
   const session = await auth();
 
   if (!session?.user?.id) {
-    await signIn('google', { redirectTo: `/${lang}/my-teams` });
-    return null;
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16">
+        <h1 className="font-heading text-2xl font-bold text-primary mb-6 text-center">
+          {t.myTeamsTitle}
+        </h1>
+        <SignInGate
+          lang={lang}
+          callbackPath={`/${lang}/my-teams`}
+          prompt={t.signInToFollow}
+        />
+      </div>
+    );
   }
 
   if (!databaseEnabled()) {

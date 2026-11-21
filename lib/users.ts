@@ -137,3 +137,9 @@ export async function findMemberById(id: string): Promise<MemberUser | null> {
   const store = usesBlob() ? await readBlob() : readFile();
   return store.users.find((u) => u.id === id) || null;
 }
+
+export async function findMemberByEmailInStore(email: string): Promise<MemberUser | null> {
+  const normalized = email.trim().toLowerCase();
+  const store = usesBlob() ? await readBlob() : readFile();
+  return store.users.find((u) => u.email.trim().toLowerCase() === normalized) || null;
+}
