@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
-import AdminCompetitionsPanel from '@/components/AdminCompetitionsPanel';
+import AdminCompetitionsTabs from '@/components/AdminCompetitionsTabs';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,7 +23,7 @@ export default async function AdminCompetitionsPage() {
           </a>
         </div>
       </header>
-      <AdminCompetitionsPanel />
+      <AdminCompetitionsTabs />
     </div>
   );
 }

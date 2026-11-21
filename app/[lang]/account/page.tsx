@@ -7,6 +7,7 @@ import { getConfig } from '@/lib/config';
 import { isValidLang } from '@/lib/i18n';
 import { generatePageMetadata } from '@/lib/seo';
 import { loadMemberAccount, ROLE_LABEL } from '@/lib/member-account';
+import PlayerLinkSection from '@/components/PlayerLinkSection';
 import { databaseEnabled, prisma } from '@/lib/prisma';
 import type { Lang } from '@/types';
 import type { MemberRoleType } from '@prisma/client';
@@ -173,6 +174,8 @@ export default async function AccountPage({ params }: { params: { lang: string }
             </ul>
           </section>
         ) : null}
+
+        {databaseEnabled() ? <PlayerLinkSection lang={lang} /> : null}
 
         <section className="space-y-3">
           <h2 className="font-heading text-lg font-bold text-primary">{copy.followedTeams}</h2>
