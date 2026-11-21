@@ -149,7 +149,9 @@ export default async function AccountPage({ params }: { params: { lang: string }
         {account && account.playerTeams.length > 0 ? (
           <section className="space-y-3">
             <h2 className="font-heading text-lg font-bold text-primary">{copy.myTeamsPlayer}</h2>
-            <p className="text-sm text-gray-500">B2</p>
+            {account.playerTeams.map((team) => (
+              <TeamCard key={`player-${team.teamId}`} team={team} lang={lang} copy={copy} />
+            ))}
           </section>
         ) : null}
 

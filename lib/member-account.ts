@@ -62,7 +62,7 @@ export async function loadMemberAccount(memberId: string): Promise<MemberAccount
   });
 
   const playerTeams: AccountTeamSummary[] = memberships
-    .filter((m) => m.team.createdById !== memberId)
+    .filter((m) => m.status === 'joined')
     .map((m) => {
       const entry = m.team.entries[0];
       return {
