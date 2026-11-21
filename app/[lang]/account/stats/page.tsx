@@ -134,7 +134,7 @@ export default async function AccountStatsPage({ params }: { params: { lang: str
 
   return (
     <div className="bg-light-bg min-h-[50vh]">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8 overflow-x-hidden">
         <Link href={`/${lang}/account`} className="text-sm text-orange hover:underline">
           {copy.back}
         </Link>

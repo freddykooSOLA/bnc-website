@@ -8,16 +8,10 @@ import { UI_TEXT } from '@/lib/i18n';
 import { teamPagePath } from '@/lib/team-links';
 import JsonLd from '@/components/JsonLd';
 import { buildPlayerPersonJsonLd } from '@/lib/json-ld';
-import {
-  STAT_LEADER_CATEGORIES,
-  statCategoryLabel,
-  type StatLeaderCategory,
-} from '@/lib/scorelab-helpers';
-import {
-  buildPlayerStatRanks,
-  playerStatTotal,
-} from '@/lib/player-ranks';
+import type { StatLeaderCategory } from '@/lib/scorelab-helpers';
+import { buildPlayerStatRanks } from '@/lib/player-ranks';
 import BasketballRadar from '@/components/BasketballRadar';
+import PlayerSeasonStatsTable from '@/components/PlayerSeasonStatsTable';
 import {
   buildLeagueRadarPercentiles,
   playerPerGameAverages,
@@ -49,11 +43,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch {
     return { title: `${t.playerPageTitle} | ${config.siteName[lang]}` };
   }
-}
-
-function formatAvg(total: number, games: number): string {
-  if (!games) return '—';
-  return (total / games).toFixed(1);
 }
 
 export default async function PlayerPage({ params }: PageProps) {
@@ -125,39 +114,8 @@ export default async function PlayerPage({ params }: PageProps) {
           </div>
         ) : null}
 
-        <div className="card overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 text-left text-gray-500">
-                <th className="py-3 pr-4">{t.statLeaders}</th>
-                <th className="py-3 pr-4">{t.seasonTotals}</th>
-                <th className="py-3 pr-4">{t.seasonAvg}</th>
-                <th className="py-3">{t.leagueRank}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {STAT_LEADER_CATEGORIES.map((cat) => {
-                const total = playerStatTotal(player, cat as StatLeaderCategory);
-                const rank = ranks?.[cat as StatLeaderCategory]?.get(player.playerId);
-                return (
-                  <tr key={cat} className="border-b border-gray-50">
-                    <td className="py-3 pr-4 font-medium text-primary">
-                      {statCategoryLabel(cat as StatLeaderCategory, lang)}
-                    </td>
-                    <td className="py-3 pr-4 font-bold">{total}</td>
-                    <td className="py-3 pr-4 text-gray-600">
-                      {formatAvg(total, player.gamesPlayed)} {t.perGame}
-                    </td>
-                    <td className="py-3 text-gray-600">
-                      {rank
-                        ? t.rankNth.replace('{n}', String(rank))
-                        : '—'}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="card max-w-full overflow-x-hidden">
+          <PlayerSeasonStatsTable lang={lang} player={player} ranks={ranks} />
           <p className="text-xs text-gray-400 mt-4">
             {t.scorelabCredit} · {player.gamesPlayed} GP
           </p>

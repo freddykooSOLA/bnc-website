@@ -50,8 +50,14 @@ export function buildLeagueRadarPercentiles(
       out[axis] = 0;
       continue;
     }
-    const below = sorted.filter((x) => x <= v).length;
-    out[axis] = Math.round((below / sorted.length) * 100);
+    if (v <= 0) {
+      out[axis] = 0;
+      continue;
+    }
+    // Mid-rank percentile so ties (e.g. many players on 0) do not inflate the score.
+    const below = sorted.filter((x) => x < v).length;
+    const equal = sorted.filter((x) => x === v).length;
+    out[axis] = Math.round(((below + equal / 2) / sorted.length) * 100);
   }
 
   return out;
