@@ -55,6 +55,8 @@ const UI: Record<Lang, Record<string, string>> = {
     successPay: '繳費方法',
     validation: '請檢查標示欄位。',
     offline: '網上報名暫未開放，請下載表格電郵 superlearninghkltd@gmail.com',
+    closed: '報名已截止。',
+    duplicate: '您已為此比賽提交過球隊報名。',
   },
   'zh-cn': {
     bank: '银行',
@@ -82,6 +84,8 @@ const UI: Record<Lang, Record<string, string>> = {
     successPay: '缴费方法',
     validation: '请检查标示栏位。',
     offline: '网上报名暂未开放，请下载表格电邮 superlearninghkltd@gmail.com',
+    closed: '报名已截止。',
+    duplicate: '您已为此比赛提交过球队报名。',
   },
   en: {
     bank: 'Bank',
@@ -109,6 +113,8 @@ const UI: Record<Lang, Record<string, string>> = {
     successPay: 'Payment',
     validation: 'Please fix the highlighted fields.',
     offline: 'Online registration is not open yet. Email superlearninghkltd@gmail.com with the downloaded form.',
+    closed: 'Registration has closed.',
+    duplicate: 'You have already submitted a team entry for this competition.',
   },
 };
 
@@ -242,8 +248,17 @@ export default function TeamEntryRegisterForm({
         ref?: string;
         paymentNote?: string;
         fields?: Record<string, string>;
+        error?: string;
       };
       if (!res.ok) {
+        if (res.status === 409 && data.error === 'closed') {
+          setFieldErrors({ form: ui.closed });
+          return;
+        }
+        if (res.status === 409 && data.error === 'duplicate') {
+          setFieldErrors({ form: ui.duplicate });
+          return;
+        }
         if (data.fields) setFieldErrors(data.fields);
         else setFieldErrors({ form: ui.validation });
         return;

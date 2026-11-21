@@ -3,6 +3,10 @@ import { auth } from '@/auth';
 import { getCompetition } from '@/lib/competitions';
 import { competitionEntriesEnabled, submitTeamEntry } from '@/lib/competition-db';
 import { validateTeamEntryInput } from '@/lib/competition-entry-validation';
+import {
+  isCompetitionRegistrationOpen,
+  leaderHasCompetitionEntry,
+} from '@/lib/competition-registration';
 
 export async function POST(
   request: Request,
@@ -17,10 +21,18 @@ export async function POST(
     return NextResponse.json({ error: 'not_found' }, { status: 404 });
   }
 
+  if (!isCompetitionRegistrationOpen(competition)) {
+    return NextResponse.json({ error: 'closed' }, { status: 409 });
+  }
+
   const session = await auth();
   const memberId = session?.user?.id;
   if (!memberId) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
+  if (await leaderHasCompetitionEntry(params.slug, memberId)) {
+    return NextResponse.json({ error: 'duplicate' }, { status: 409 });
   }
 
   let body: unknown;
