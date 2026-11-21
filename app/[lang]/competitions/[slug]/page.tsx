@@ -69,6 +69,22 @@ export default function CompetitionPage({
           <p className="text-xs text-gray-500">{competition.dateDisclaimer[lang]}</p>
         </header>
 
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link
+            href={competitionRegisterPath(competition.slug, lang)}
+            className="btn-primary text-center text-sm min-h-11 inline-flex items-center justify-center flex-1"
+          >
+            {ui.registerOnline}
+          </Link>
+          <a
+            href={competition.downloadPath}
+            className="text-sm font-medium min-h-11 px-4 py-2 rounded-lg border border-gray-300 bg-white hover:border-orange text-primary text-center inline-flex items-center justify-center flex-1"
+            download
+          >
+            {ui.downloadForm}
+          </a>
+        </div>
+
         <div className="card text-sm space-y-2">
           <p>
             <span className="font-medium text-primary">{competition.category[lang]}</span>
@@ -134,21 +150,6 @@ export default function CompetitionPage({
           </p>
         </Section>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          <a
-            href={competition.downloadPath}
-            className="btn-primary text-center text-sm"
-            download
-          >
-            {ui.downloadForm}
-          </a>
-          <Link
-            href={competitionRegisterPath(competition.slug, lang)}
-            className="text-sm font-medium px-4 py-2 rounded-lg border border-orange text-orange hover:bg-orange/5 text-center"
-          >
-            {ui.registerOnline}
-          </Link>
-        </div>
       </div>
     </div>
   );
