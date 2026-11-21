@@ -82,7 +82,7 @@ export default function AdminCompetitionsPanel() {
                 匯出 CSV
               </a>
             </div>
-            <motionTable
+            <CompetitionEntriesTable
               entries={comp.entries}
               openEntry={openEntry}
               setOpenEntry={setOpenEntry}
@@ -95,57 +95,7 @@ export default function AdminCompetitionsPanel() {
   );
 }
 
-function motionTable({
-  entries,
-  openEntry,
-  setOpenEntry,
-  setStatus,
-}: {
-  entries: Entry[];
-  openEntry: string | null;
-  setOpenEntry: (id: string | null) => void;
-  setStatus: (id: string, status: string) => void;
-}) {
-  return (
-    <motionTableWrap
-      entries={entries}
-      openEntry={openEntry}
-      setOpenEntry={setOpenEntry}
-      setStatus={setStatus}
-    />
-  );
-}
-
-function motionTableWrap(props: Parameters<typeof tableBlock>[0]) {
-  return tableBlock(props);
-}
-
-function tableBlock({
-  entries,
-  openEntry,
-  setOpenEntry,
-  setStatus,
-}: {
-  entries: Entry[];
-  openEntry: string | null;
-  setOpenEntry: (id: string | null) => void;
-  setStatus: (id: string, status: string) => void;
-}) {
-  return (
-    <motionTableInner
-      entries={entries}
-      openEntry={openEntry}
-      setOpenEntry={setOpenEntry}
-      setStatus={setStatus}
-    />
-  );
-}
-
-function motionTableInner(props: Parameters<typeof tableInner>[0]) {
-  return tableInner(props);
-}
-
-function tableInner({
+function CompetitionEntriesTable({
   entries,
   openEntry,
   setOpenEntry,
@@ -171,7 +121,7 @@ function tableInner({
         </thead>
         <tbody>
           {entries.map((e) => (
-            <motionEntryRows
+            <CompetitionEntryRows
               key={e.id}
               e={e}
               openEntry={openEntry}
@@ -185,11 +135,7 @@ function tableInner({
   );
 }
 
-function motionEntryRows(props: Parameters<typeof entryRows>[0]) {
-  return entryRows(props);
-}
-
-function entryRows({
+function CompetitionEntryRows({
   e,
   openEntry,
   setOpenEntry,

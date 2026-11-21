@@ -126,15 +126,15 @@ export default function JoinPage() {
 
   if (status === 'loading' || !preview) {
     return (
-      <motionWrap lang={lang} title={copy.title}>
+      <JoinPageWrap lang={lang} title={copy.title}>
         <p className="text-base text-gray-600">{error || copy.preview}</p>
-      </motionWrap>
+      </JoinPageWrap>
     );
   }
 
   if (!session?.user) {
     return (
-      <motionWrap lang={lang} title={copy.title}>
+      <JoinPageWrap lang={lang} title={copy.title}>
         <p className="text-base mb-4">{copy.signIn}</p>
         <Link
           href={`/api/auth/signin?callbackUrl=/${lang}/join/${encodeURIComponent(token)}`}
@@ -142,32 +142,32 @@ export default function JoinPage() {
         >
           Sign in
         </Link>
-      </motionWrap>
+      </JoinPageWrap>
     );
   }
 
   if (done) {
     return (
-      <motionWrap lang={lang} title={copy.title}>
+      <JoinPageWrap lang={lang} title={copy.title}>
         <p className="text-base text-primary mb-4">{copy.success}</p>
         <Link href={`/${lang}/account`} className="text-orange text-base min-h-11 inline-flex items-center">
           {copy.account}
         </Link>
-      </motionWrap>
+      </JoinPageWrap>
     );
   }
 
   if (error || (preview && !preview.claimable)) {
     return (
-      <motionWrap lang={lang} title={copy.title}>
+      <JoinPageWrap lang={lang} title={copy.title}>
         <p className="text-base text-red-700">{error || copy.invalid}</p>
-      </motionWrap>
+      </JoinPageWrap>
     );
   }
 
   return (
-    <motionWrap lang={lang} title={copy.title}>
-      <motionCard preview={preview!} copy={copy} />
+    <JoinPageWrap lang={lang} title={copy.title}>
+      <JoinPreviewCard preview={preview!} copy={copy} />
       <button
         type="button"
         onClick={onClaim}
@@ -176,12 +176,11 @@ export default function JoinPage() {
       >
         {busy ? copy.confirming : copy.confirm}
       </button>
-    </motionWrap>
+    </JoinPageWrap>
   );
 }
 
-function motionWrap({
-  lang,
+function JoinPageWrap({
   title,
   children,
 }: {
@@ -199,7 +198,7 @@ function motionWrap({
   );
 }
 
-function motionCard({ preview, copy }: { preview: Preview; copy: (typeof COPY)['zh-hk'] }) {
+function JoinPreviewCard({ preview, copy }: { preview: Preview; copy: (typeof COPY)['zh-hk'] }) {
   return (
     <div className="card text-base space-y-2">
       <p>

@@ -17,6 +17,11 @@ import {
   buildPlayerStatRanks,
   playerStatTotal,
 } from '@/lib/player-ranks';
+import BasketballRadar from '@/components/BasketballRadar';
+import {
+  buildLeagueRadarPercentiles,
+  playerPerGameAverages,
+} from '@/lib/basketball-radar';
 
 interface PageProps {
   params: { lang: string; leagueId: string; playerId: string };
@@ -84,6 +89,11 @@ export default async function PlayerPage({ params }: PageProps) {
     ? buildPlayerStatRanks(seasonData.playerStats)
     : null;
 
+  const radarPercentiles =
+    seasonData.playerStats
+      ? buildLeagueRadarPercentiles(player, seasonData.playerStats)
+      : null;
+
   const jsonLd = buildPlayerPersonJsonLd(player, lang, params.leagueId);
 
   return (
@@ -103,6 +113,17 @@ export default async function PlayerPage({ params }: PageProps) {
             {player.teamName}
           </Link>
         </p>
+
+        {radarPercentiles ? (
+          <div className="card mb-8">
+            <BasketballRadar
+              lang={lang}
+              percentiles={radarPercentiles}
+              gamesPlayed={player.gamesPlayed}
+              averages={playerPerGameAverages(player)}
+            />
+          </div>
+        ) : null}
 
         <div className="card overflow-x-auto">
           <table className="w-full text-sm">
@@ -154,3 +175,4 @@ export default async function PlayerPage({ params }: PageProps) {
     </>
   );
 }
+

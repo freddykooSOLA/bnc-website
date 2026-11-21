@@ -192,7 +192,7 @@ export default function TeamRosterManager({ teamId, lang }: { teamId: string; la
 
   return (
     <div className="space-y-6">
-      <motionSummary data={data} lang={lang} t={t} copyMsg={copyMsg} />
+      <RosterSummaryCard data={data} lang={lang} t={t} copyMsg={copyMsg} />
       {!data.editable ? <p className="text-amber-700 text-base">{t.locked}</p> : null}
       <p className="text-sm text-gray-500">{t.countHint}</p>
 
@@ -207,7 +207,7 @@ export default function TeamRosterManager({ teamId, lang }: { teamId: string; la
                   {p.memberJoined ? t.joined : t.listed}
                 </span>
               </span>
-              <motionActions
+              <RosterPlayerActions
                 editable={data.editable}
                 p={p}
                 editId={editId}
@@ -263,7 +263,7 @@ export default function TeamRosterManager({ teamId, lang }: { teamId: string; la
   );
 }
 
-function motionSummary({
+function RosterSummaryCard({
   data,
   lang,
   t,
@@ -277,38 +277,6 @@ function motionSummary({
   const deadline = data.rosterBy
     ? new Date(data.rosterBy).toLocaleString(lang === 'en' ? 'en-HK' : 'zh-HK', { timeZone: 'Asia/Hong_Kong' })
     : '—';
-  return (
-    <motionSummaryInner data={data} t={t} deadline={deadline} copyMsg={copyMsg} />
-  );
-}
-
-function motionSummaryInner({
-  data,
-  t,
-  deadline,
-  copyMsg,
-}: {
-  data: RosterData;
-  t: Record<string, string>;
-  deadline: string;
-  copyMsg: string;
-}) {
-  return (
-    <motionSummaryCard data={data} t={t} deadline={deadline} copyMsg={copyMsg} />
-  );
-}
-
-function motionSummaryCard({
-  data,
-  t,
-  deadline,
-  copyMsg,
-}: {
-  data: RosterData;
-  t: Record<string, string>;
-  deadline: string;
-  copyMsg: string;
-}) {
   return (
     <div className="card text-base space-y-1">
       <p className="font-medium text-primary">{data.team.name}</p>
@@ -326,7 +294,7 @@ function motionSummaryCard({
   );
 }
 
-function motionActions(props: {
+function RosterPlayerActions(props: {
   editable: boolean;
   p: RosterPlayer;
   editId: string | null;
@@ -339,97 +307,8 @@ function motionActions(props: {
   busy: boolean;
   t: Record<string, string>;
 }) {
-  const { editable, p, editId, setEditId, editRow, setEditRow, saveEdit, removePlayer, copyInvite, busy, t } =
-    props;
+  const { editable, p, editId, setEditId, setEditRow, saveEdit, removePlayer, copyInvite, busy, t } = props;
   if (!editable) return null;
-  return (
-    <motionActionButtons
-      p={p}
-      editId={editId}
-      setEditId={setEditId}
-      setEditRow={setEditRow}
-      saveEdit={saveEdit}
-      removePlayer={removePlayer}
-      copyInvite={copyInvite}
-      busy={busy}
-      t={t}
-    />
-  );
-}
-
-function motionActionButtons({
-  p,
-  editId,
-  setEditId,
-  setEditRow,
-  saveEdit,
-  removePlayer,
-  copyInvite,
-  busy,
-  t,
-}: {
-  p: RosterPlayer;
-  editId: string | null;
-  setEditId: (id: string | null) => void;
-  setEditRow: (r: {
-    nameZh: string;
-    nameEn: string;
-    idPartial: string;
-    staffId: string;
-    jerseyNumber: string;
-  }) => void;
-  saveEdit: (id: string) => void;
-  removePlayer: (id: string) => void;
-  copyInvite: (id: string) => void;
-  busy: boolean;
-  t: Record<string, string>;
-}) {
-  return (
-    <motionActionButtonRow
-      p={p}
-      editId={editId}
-      setEditId={setEditId}
-      setEditRow={setEditRow}
-      saveEdit={saveEdit}
-      removePlayer={removePlayer}
-      copyInvite={copyInvite}
-      busy={busy}
-      t={t}
-    />
-  );
-}
-
-function motionActionButtonRow(props: Parameters<typeof actionButtonRow>[0]) {
-  return actionButtonRow(props);
-}
-
-function actionButtonRow({
-  p,
-  editId,
-  setEditId,
-  setEditRow,
-  saveEdit,
-  removePlayer,
-  copyInvite,
-  busy,
-  t,
-}: {
-  p: RosterPlayer;
-  editId: string | null;
-  setEditId: (id: string | null) => void;
-  setEditRow: (r: {
-    nameZh: string;
-    nameEn: string;
-    idPartial: string;
-    staffId: string;
-    jerseyNumber: string;
-  }) => void;
-  saveEdit: (id: string) => void;
-  removePlayer: (id: string) => void;
-  copyInvite: (id: string) => void;
-  busy: boolean;
-  t: Record<string, string>;
-}) {
   return (
     <div className="flex flex-wrap gap-2">
       {!p.memberJoined ? (
@@ -453,7 +332,7 @@ function actionButtonRow({
               }
             }}
           >
-            {editId === p.id ? t.save : t.save}
+            {t.save}
           </button>
           <button
             type="button"

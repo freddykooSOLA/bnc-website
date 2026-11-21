@@ -39,7 +39,11 @@ export default async function TeamRosterPage({
   if (!session?.user?.id) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <SignInGate lang={lang} callbackPath={`/${lang}/account/teams/${params.teamId}`} />
+        <SignInGate
+          lang={lang}
+          callbackPath={`/${lang}/account/teams/${params.teamId}`}
+          prompt={TITLE[lang]}
+        />
       </div>
     );
   }
