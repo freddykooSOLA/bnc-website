@@ -8,7 +8,6 @@ import { UI_TEXT } from '@/lib/i18n';
 import { teamPagePath } from '@/lib/team-links';
 import JsonLd from '@/components/JsonLd';
 import { buildPlayerPersonJsonLd } from '@/lib/json-ld';
-import type { StatLeaderCategory } from '@/lib/scorelab-helpers';
 import { buildPlayerStatRanks } from '@/lib/player-ranks';
 import BasketballRadar from '@/components/BasketballRadar';
 import PlayerSeasonStatsTable from '@/components/PlayerSeasonStatsTable';
