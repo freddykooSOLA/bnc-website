@@ -128,6 +128,7 @@ model TeamEntry {
   declarationBank     String?
   declarationSigned   String?
   status              String    @default("submitted")
+  statusUpdatedAt     DateTime?
   createdAt           DateTime  @default(now())
 
   competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)

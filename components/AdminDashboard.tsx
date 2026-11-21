@@ -120,6 +120,9 @@ export default function AdminDashboard({ initialConfig }: AdminDashboardProps) {
           <a href="/admin/checkin" className="text-sm text-white/70 hover:text-white">
             活動簽到
           </a>
+          <a href="/admin/competitions" className="text-sm text-white/70 hover:text-white">
+            比賽報名
+          </a>
           <a href="/zh-hk" target="_blank" className="text-sm text-white/70 hover:text-white">
             預覽網站 ↗
           </a>
