@@ -25,6 +25,7 @@ const COPY: Record<
     status: string;
     noRoles: string;
     defaultFan: string;
+    manageRoster: string;
   }
 > = {
   'zh-hk': {
@@ -39,6 +40,7 @@ const COPY: Record<
     status: '狀態',
     noRoles: '尚未設定額外身份',
     defaultFan: '粉絲（預設）',
+    manageRoster: '管理名單',
   },
   'zh-cn': {
     title: '我的账户',
@@ -52,6 +54,7 @@ const COPY: Record<
     status: '状态',
     noRoles: '尚未设定额外身份',
     defaultFan: '粉丝（默认）',
+    manageRoster: '管理名单',
   },
   en: {
     title: 'My account',
@@ -65,6 +68,7 @@ const COPY: Record<
     status: 'Status',
     noRoles: 'No extra roles yet',
     defaultFan: 'Fan (default)',
+    manageRoster: 'Manage roster',
   },
 };
 
@@ -137,7 +141,7 @@ export default async function AccountPage({ params }: { params: { lang: string }
           <section className="space-y-3">
             <h2 className="font-heading text-lg font-bold text-primary">{copy.myTeamsLeader}</h2>
             {account.leaderTeams.map((team) => (
-              <TeamCard key={team.teamId} team={team} lang={lang} copy={copy} />
+              <TeamCard key={team.teamId} team={team} lang={lang} copy={copy} showManage />
             ))}
           </section>
         ) : null}
@@ -225,8 +229,10 @@ function TeamCard({
   team,
   lang,
   copy,
+  showManage,
 }: {
   team: {
+    teamId: string;
     teamName: string;
     bank: string;
     entryRef?: string;
@@ -236,6 +242,7 @@ function TeamCard({
   };
   lang: Lang;
   copy: (typeof COPY)['zh-hk'];
+  showManage?: boolean;
 }) {
   return (
     <div className="card text-sm space-y-1">
@@ -252,6 +259,14 @@ function TeamCard({
         <p className="text-gray-500">
           {team.entryRef} · {copy.status} {team.entryStatus}
         </p>
+      ) : null}
+      {showManage ? (
+        <Link
+          href={`/${lang}/account/teams/${team.teamId}`}
+          className="inline-flex items-center min-h-11 text-base text-orange hover:underline"
+        >
+          {copy.manageRoster}
+        </Link>
       ) : null}
     </div>
   );
