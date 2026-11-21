@@ -76,6 +76,7 @@ export default function FollowTeamButton({
         lang={lang}
         callbackUrl={`/${lang}/teams/${leagueId}/${teamId}`}
         layout="stack"
+        theme="surface"
       />
     );
   }
