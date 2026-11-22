@@ -1,5 +1,9 @@
-import type { TeamEntry } from '@prisma/client';
 import { rosterDeadlinePassed } from '@/lib/team-roster';
+
+type EntryForAccess = {
+  status: string;
+  rosterUnlocked: boolean;
+};
 
 export type RosterLockReason =
   | 'none'
@@ -14,7 +18,7 @@ const STATUS_LABEL: Record<string, string> = {
   draft: '草稿',
 };
 
-export function rosterEditAccess(entry: TeamEntry | null, rosterBy: Date | null): {
+export function rosterEditAccess(entry: EntryForAccess | null, rosterBy: Date | null): {
   editable: boolean;
   reason: RosterLockReason;
   statusLabel: string | null;

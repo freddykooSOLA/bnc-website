@@ -286,6 +286,7 @@ function TeamCard({
           {copy.manageRoster}
         </Link>
       ) : null}
+      </div>
     </div>
   );
 }

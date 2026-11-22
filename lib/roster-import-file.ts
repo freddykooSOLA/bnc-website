@@ -25,6 +25,8 @@ export async function previewRosterUpload(
     dataRows = matrix.slice(1);
   } else if (lower.endsWith('.xlsx')) {
     const wb = new ExcelJS.Workbook();
+    // exceljs types expect Node Buffer; runtime accepts Buffer
+    // @ts-expect-error exceljs Buffer typings vs Node 20+
     await wb.xlsx.load(buffer);
     const sheet = wb.worksheets[0];
     if (!sheet) throw new Error('empty_workbook');
