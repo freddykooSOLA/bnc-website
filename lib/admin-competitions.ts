@@ -65,6 +65,37 @@ export async function setEntryRosterUnlocked(entryId: string, rosterUnlocked: bo
   });
 }
 
+export function rosterDetailToCsv(
+  competitionTitle: string,
+  entries: Awaited<ReturnType<typeof listCompetitionEntries>>[0]['entries']
+): string {
+  const header = [
+    '比賽',
+    '球隊',
+    '球衣號碼',
+    '中文姓名',
+    '英文姓名',
+    '有相片',
+  ];
+  const rows: string[][] = [];
+  for (const e of entries) {
+    for (const m of e.team.memberships) {
+      rows.push([
+        competitionTitle,
+        e.team.name,
+        String(m.jerseyNumber),
+        m.nameZh,
+        m.nameEn,
+        m.photoUrl ? '是' : '否',
+      ]);
+    }
+  }
+  const lines = [header, ...rows].map((cols) =>
+    cols.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')
+  );
+  return '\uFEFF' + lines.join('\r\n');
+}
+
 export function entriesToCsv(
   competitionTitle: string,
   entries: Awaited<ReturnType<typeof listCompetitionEntries>>[0]['entries']

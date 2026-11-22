@@ -27,6 +27,7 @@ export async function GET(
         id: readCtx.team.id,
         name: readCtx.team.name,
         bank: readCtx.team.bank,
+        logoUrl: readCtx.team.logoUrl ?? null,
       },
       entry: readCtx.entry
         ? {
@@ -49,6 +50,7 @@ export async function GET(
         status: m.status,
         hasInvite: Boolean(m.inviteToken),
         memberJoined: Boolean(m.memberId),
+        photoUrl: m.photoUrl ?? null,
       })),
     });
   } catch (e) {

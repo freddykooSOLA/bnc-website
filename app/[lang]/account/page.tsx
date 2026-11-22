@@ -27,6 +27,7 @@ const COPY: Record<
     noRoles: string;
     defaultFan: string;
     manageRoster: string;
+    entryNextSteps: string;
   }
 > = {
   'zh-hk': {
@@ -42,6 +43,8 @@ const COPY: Record<
     noRoles: '尚未設定額外身份',
     defaultFan: '粉絲（預設）',
     manageRoster: '管理名單',
+    entryNextSteps:
+      '繳費後待大會確認。確認後請於「我帶領的球隊」上載球員名單（可匯入 Excel）。',
   },
   'zh-cn': {
     title: '我的账户',
@@ -56,6 +59,7 @@ const COPY: Record<
     noRoles: '尚未设定额外身份',
     defaultFan: '粉丝（默认）',
     manageRoster: '管理名单',
+    entryNextSteps: 'After payment, wait for confirmation. Then upload your roster under Teams I manage (Excel import supported).',
   },
   en: {
     title: 'My account',
@@ -70,6 +74,8 @@ const COPY: Record<
     noRoles: 'No extra roles yet',
     defaultFan: 'Fan (default)',
     manageRoster: 'Manage roster',
+    entryNextSteps:
+      'After payment, wait for confirmation. Then upload your roster under Teams I manage (Excel import supported).',
   },
 };
 
@@ -159,6 +165,7 @@ export default async function AccountPage({ params }: { params: { lang: string }
         {account && account.entries.length > 0 ? (
           <section className="space-y-3">
             <h2 className="font-heading text-lg font-bold text-primary">{copy.myEntries}</h2>
+            <p className="text-sm text-gray-600">{copy.entryNextSteps}</p>
             <ul className="card text-sm space-y-2">
               {account.entries.map((entry) => (
                 <li key={entry.ref}>
@@ -240,6 +247,7 @@ function TeamCard({
     teamId: string;
     teamName: string;
     bank: string;
+    logoUrl?: string | null;
     entryRef?: string;
     entryStatus?: string;
     competitionSlug?: string;
@@ -250,7 +258,12 @@ function TeamCard({
   showManage?: boolean;
 }) {
   return (
-    <div className="card text-sm space-y-1">
+    <div className="card text-sm space-y-1 flex gap-3">
+      {team.logoUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={team.logoUrl} alt="" className="h-12 w-12 object-contain rounded border shrink-0" />
+      ) : null}
+      <div className="space-y-1">
       <p className="font-medium text-primary">{team.teamName}</p>
       <p className="text-gray-600">{team.bank}</p>
       {team.competitionTitle && team.competitionSlug ? (

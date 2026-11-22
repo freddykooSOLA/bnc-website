@@ -8,6 +8,7 @@ type RosterRow = {
   idPartial: string;
   jerseyNumber: number;
   status: string;
+  hasPhoto: boolean;
 };
 
 type Entry = {
@@ -85,12 +86,20 @@ export default function AdminCompetitionsPanel() {
           <section key={comp.id} className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-xl font-semibold text-primary">{comp.title}</h2>
-              <a
-                href={`/api/admin/competitions/${comp.id}/export`}
-                className="min-h-11 inline-flex items-center px-4 text-base bg-orange/10 text-orange rounded-lg"
-              >
-                匯出 CSV
-              </a>
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href={`/api/admin/competitions/${comp.id}/export`}
+                  className="min-h-11 inline-flex items-center px-4 text-base bg-orange/10 text-orange rounded-lg"
+                >
+                  匯出報名 CSV
+                </a>
+                <a
+                  href={`/api/admin/competitions/${comp.id}/export-roster`}
+                  className="min-h-11 inline-flex items-center px-4 text-base bg-orange/10 text-orange rounded-lg"
+                >
+                  匯出名單 CSV
+                </a>
+              </div>
             </div>
             <CompetitionEntriesTable
               entries={comp.entries}
@@ -219,7 +228,8 @@ function CompetitionEntryRows({
             <ul className="text-sm space-y-1">
               {e.roster.map((r) => (
                 <li key={`${r.jerseyNumber}-${r.nameEn}`}>
-                  #{r.jerseyNumber} {r.nameZh || r.nameEn} · {r.idPartial} · {r.status}
+                  #{r.jerseyNumber} {r.nameZh || r.nameEn} · {r.idPartial} · {r.status} · 有相片：
+                  {r.hasPhoto ? '是' : '否'}
                 </li>
               ))}
             </ul>

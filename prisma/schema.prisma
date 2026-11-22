@@ -68,6 +68,7 @@ model Team {
   bank          String
   jerseyColor1  String
   jerseyColor2  String
+  logoUrl       String?
   createdById   String
   createdAt     DateTime @default(now())
 
@@ -87,6 +88,7 @@ model TeamMembership {
   idPartial    String
   staffId      String?
   jerseyNumber Int
+  photoUrl     String?
   isCaptain    Boolean  @default(false)
   status       String   @default("listed")
   inviteToken  String?

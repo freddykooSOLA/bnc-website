@@ -40,6 +40,7 @@ export async function GET() {
           idPartial: m.idPartial,
           jerseyNumber: m.jerseyNumber,
           status: m.status,
+          hasPhoto: Boolean(m.photoUrl),
         })),
       })),
     })),

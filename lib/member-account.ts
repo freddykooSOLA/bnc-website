@@ -5,6 +5,7 @@ export interface AccountTeamSummary {
   teamId: string;
   teamName: string;
   bank: string;
+  logoUrl?: string | null;
   entryRef?: string;
   entryStatus?: string;
   competitionSlug?: string;
@@ -41,7 +42,7 @@ export async function loadMemberAccount(memberId: string): Promise<MemberAccount
       },
     }),
     prisma.teamEntry.findMany({
-      where: { team: { createdById: memberId } },
+      where: { team: { createdById: memberId }, status: { not: 'draft' } },
       include: { competition: true, team: true },
       orderBy: { createdAt: 'desc' },
     }),
@@ -53,6 +54,7 @@ export async function loadMemberAccount(memberId: string): Promise<MemberAccount
       teamId: team.id,
       teamName: team.name,
       bank: team.bank,
+      logoUrl: team.logoUrl,
       entryRef: entry?.ref,
       entryStatus: entry?.status,
       competitionSlug: entry?.competition.slug,
@@ -69,6 +71,7 @@ export async function loadMemberAccount(memberId: string): Promise<MemberAccount
         teamId: m.team.id,
         teamName: m.team.name,
         bank: m.team.bank,
+        logoUrl: m.team.logoUrl,
         entryRef: entry?.ref,
         entryStatus: entry?.status,
         competitionSlug: entry?.competition.slug,

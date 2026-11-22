@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import TeamRosterImport from '@/components/TeamRosterImport';
+import { PlayerPhotoUpload, TeamLogoUpload } from '@/components/TeamMediaUpload';
 import type { Lang } from '@/types';
 
 interface RosterPlayer {
@@ -14,10 +15,11 @@ interface RosterPlayer {
   status: string;
   hasInvite: boolean;
   memberJoined: boolean;
+  photoUrl: string | null;
 }
 
 interface RosterData {
-  team: { id: string; name: string; bank: string };
+  team: { id: string; name: string; bank: string; logoUrl: string | null };
   entry: { ref: string; status: string; competitionTitle: string } | null;
   rosterBy: string | null;
   editable: boolean;
@@ -202,6 +204,13 @@ export default function TeamRosterManager({ teamId, lang }: { teamId: string; la
   return (
     <div className="space-y-6">
       <RosterSummaryCard data={data} lang={lang} t={t} copyMsg={copyMsg} />
+      <TeamLogoUpload
+        teamId={teamId}
+        lang={lang}
+        logoUrl={data.team.logoUrl}
+        editable={data.editable}
+        onUpdated={() => void load()}
+      />
       <TeamRosterImport
         teamId={teamId}
         lang={lang}
@@ -230,6 +239,14 @@ export default function TeamRosterManager({ teamId, lang }: { teamId: string; la
                   {p.memberJoined ? t.joined : t.listed}
                 </span>
               </span>
+              <PlayerPhotoUpload
+                teamId={teamId}
+                membershipId={p.id}
+                lang={lang}
+                photoUrl={p.photoUrl}
+                editable={data.editable}
+                onUpdated={() => void load()}
+              />
               <RosterPlayerActions
                 editable={data.editable}
                 p={p}
