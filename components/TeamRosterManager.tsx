@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import TeamRosterImport from '@/components/TeamRosterImport';
 import type { Lang } from '@/types';
 
 interface RosterPlayer {
@@ -201,7 +202,21 @@ export default function TeamRosterManager({ teamId, lang }: { teamId: string; la
   return (
     <div className="space-y-6">
       <RosterSummaryCard data={data} lang={lang} t={t} copyMsg={copyMsg} />
-      {!data.editable ? <p className="text-amber-700 text-base">{t.locked}</p> : null}
+      <TeamRosterImport
+        teamId={teamId}
+        lang={lang}
+        editable={data.editable}
+        onImported={() => void load()}
+      />
+      {!data.editable ? (
+        <p className="text-amber-700 text-base">
+          {data.lockReason === 'not_confirmed'
+            ? `${t.lockedStatus}${data.statusLabel ? `（${data.statusLabel}）` : ''}`
+            : data.lockReason === 'no_entry'
+              ? t.lockedNoEntry
+              : t.locked}
+        </p>
+      ) : null}
       <p className="text-sm text-gray-500">{t.countHint}</p>
 
       <ul className="space-y-3">
