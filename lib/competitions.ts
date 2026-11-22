@@ -81,9 +81,9 @@ export const COMPETITIONS: Competition[] = [
     registerBy: '2026-12-31',
     rosterBy: '2027-01-31',
     fee: {
-      'zh-hk': '每間會員銀行 HK$10,000（最多 7 場比賽）',
-      'zh-cn': '每间会员银行 HK$10,000（最多 7 场比赛）',
-      en: 'HK$10,000 per member bank (up to 7 games)',
+      'zh-hk': '每間會員銀行 HK$10,000（每隊 6 至 8 場，平均 7 場）',
+      'zh-cn': '每间会员银行 HK$10,000（每队 6 至 8 场，平均 7 场）',
+      en: 'HK$10,000 per member bank (6–8 games per team, 7 on average)',
     },
     chequePayee: {
       'zh-hk': '劃線支票抬頭「Superlearning (Hong Kong) Limited」',
