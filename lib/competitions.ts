@@ -63,21 +63,21 @@ export const COMPETITIONS: Competition[] = [
       en: 'Men’s division',
     },
     prizes: {
-      'zh-hk': "金盃、銀盃各設冠軍、亞軍、季軍、殿軍，獎盃及獎牌。\n銀碟設冠軍、亞軍，獎盃及獎牌。",
-      'zh-cn': "金杯、银杯各设冠军、亚军、季军、殿军，奖杯及奖牌。\n银碟设冠军、亚军，奖杯及奖牌。",
-      en: "Gold Cup and Silver Cup: 1st–4th, trophies and medals.\nSilver Plate: 1st–2nd, trophies and medals.",
+      'zh-hk': "金盃（正賽組）、銀盃各設冠軍、亞軍、季軍、殿軍，獎盃及獎牌。\n銀碟設冠軍、亞軍，獎盃及獎牌。",
+      'zh-cn': "金杯（正赛组）、银杯各设冠军、亚军、季军、殿军，奖杯及奖牌。\n银碟设冠军、亚军，奖杯及奖牌。",
+      en: "Gold Cup (main draw) and Silver Cup: 1st–4th, trophies and medals.\nSilver Plate: 1st–2nd, trophies and medals.",
     },
     individualAwards: {
-      'zh-hk': "個人獎項設得分王、籃板王、助攻王、封阻王、三分王，各獎盃一個。不設其他個人獎項。獎項以整個賽季的數據計算。",
-      'zh-cn': "个人奖项设得分王、篮板王、助攻王、封阻王、三分王，各奖杯一个。不设其他个人奖项。奖项以整个赛季的数据计算。",
-      en: "Individual awards: top scorer, rebounds, assists, blocks and three-pointers — one trophy each, based on the whole season. No other individual awards.",
+      'zh-hk': "個人獎項設得分王、籃板王、助攻王、盜球王、封阻王、三分王，共 6 個，各獎盃一個。不設其他個人獎項。獎項以整個賽季的數據計算。",
+      'zh-cn': "个人奖项设得分王、篮板王、助攻王、盗球王、封阻王、三分王，共 6 个，各奖杯一个。不设其他个人奖项。奖项以整个赛季的数据计算。",
+      en: "Six individual awards: top scorer, rebounds, assists, steals, blocks and three-pointers — one trophy each, based on the whole season. No other individual awards.",
     },
-    registerBy: '2026-12-31',
+    registerBy: '2027-01-31',
     rosterBy: '2027-01-31',
     fee: {
-      'zh-hk': '每間會員銀行 HK$10,000（每隊 6 至 8 場，平均 7 場）',
-      'zh-cn': '每间会员银行 HK$10,000（每队 6 至 8 场，平均 7 场）',
-      en: 'HK$10,000 per member bank (6–8 games per team, 7 on average)',
+      'zh-hk': "每間會員銀行 HK$10,000（每隊打 6 至 7 場）",
+      'zh-cn': "每间会员银行 HK$10,000（每队打 6 至 7 场）",
+      en: "HK$10,000 per member bank (6–7 games per team)",
     },
     chequePayee: {
       'zh-hk': '劃線支票抬頭「Superlearning (Hong Kong) Limited」',
@@ -105,14 +105,14 @@ export const COMPETITIONS: Competition[] = [
       en: "10 teams drawn into Groups A and B (5 each), single round-robin, 4 games per team, 20 games; win 3, draw 1, loss 0. 35 games over 18 match days, one match day a week, two games a day (week 18: Gold Cup final only). Four 10-minute quarters; games 1–20 may end in a draw (no overtime); games 21–35 tied after 40 minutes go to a five-shot free-throw shootout.",
     },
     tieBreak: {
-      'zh-hk': "積分相同時，依次比較：兩隊對賽往績 → 總得分較多 → 總失分較少 → 得失分差 → 抽籤。比較完一項後，如只剩部分隊伍同分，由第一項重新比較。",
-      'zh-cn': "积分相同时，依次比较：两队对赛往绩 → 总得分较多 → 总失分较少 → 得失分差 → 抽签。比较完一项后，如只剩部分队伍同分，由第一项重新比较。",
-      en: "Tie-break order: head-to-head → more points scored → fewer points allowed → point differential → draw. If only some teams remain tied after a step, restart from the first step for them.",
+      'zh-hk': "積分相同時，依次比較：得失分差 → 得分較多 → 失分較少 → 兩隊對賽往績 → 抽籤。比較完一項後，如只剩部分隊伍同分，由第一項重新比較。",
+      'zh-cn': "积分相同时，依次比较：得失分差 → 得分较多 → 失分较少 → 两队对赛往绩 → 抽签。比较完一项后，如只剩部分队伍同分，由第一项重新比较。",
+      en: "Tie-break order: point differential → more points scored → fewer points allowed → head-to-head → draw. If only some teams remain tied after a step, restart from the first step for them.",
     },
     advancement: {
-      'zh-hk': "分組賽後打四場初賽（21：A4 對 B5；22：A5 對 B4；23：A2 對 B3；24：A3 對 B2），A、B 組首名直接入第 25、27 場。第 21、22 場負方入銀碟（2 隊）；其餘 8 隊按晉級圖分入金盃（4 隊）及銀盃（4 隊），各打準決賽、季殿戰及決賽。第 21 至 35 場必須分勝負。",
+      'zh-hk': "分組賽後打四場初賽（21：A4 對 B5；22：A5 對 B4；23：A2 對 B3；24：A3 對 B2），A、B 組首名直接入第 25、27 場。第 21、22 場負方入銀碟（2 隊）；其餘 8 隊按晉級圖分入金盃（正賽組，4 隊）及銀盃（4 隊），各打準決賽、季殿戰及決賽。第 21 至 35 場必須分勝負。",
       'zh-cn': "分组赛后打四场初赛（21：A4 对 B5；22：A5 对 B4；23：A2 对 B3；24：A3 对 B2），A、B 组首名直接入第 25、27 场。第 21、22 场负方入银碟（2 队）；其余 8 队按晋级图分入金杯（4 队）及银杯（4 队），各打准决赛、季殿战及决赛。第 21 至 35 场必须分胜负。",
-      en: "After the groups, four preliminary games (21: A4 v B5; 22: A5 v B4; 23: A2 v B3; 24: A3 v B2); group winners go straight to games 25 and 27. Losers of games 21 and 22 play the Silver Plate (2 teams); the other 8 teams split into the Gold Cup (4) and Silver Cup (4) by the bracket, each with semi-finals, 3rd/4th place and a final. Games 21–35 must produce a winner.",
+      en: "After the groups, four preliminary games (21: A4 v B5; 22: A5 v B4; 23: A2 v B3; 24: A3 v B2); group winners go straight to games 25 and 27. Losers of games 21 and 22 play the Silver Plate (2 teams); the other 8 teams split into the Gold Cup (main draw, 4) and Silver Cup (4) by the bracket, each with semi-finals, 3rd/4th place and a final. Games 21–35 must produce a winner.",
     },
     notices: [
       {
