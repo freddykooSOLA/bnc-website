@@ -14,6 +14,7 @@ type Entry = {
   id: string;
   ref: string;
   status: string;
+  rosterUnlocked: boolean;
   createdAt: string;
   statusUpdatedAt: string | null;
   leaderNameZh: string;
@@ -61,6 +62,15 @@ export default function AdminCompetitionsPanel() {
     if (res.ok) await load();
   }
 
+  async function setRosterUnlocked(entryId: string, rosterUnlocked: boolean) {
+    const res = await fetch(`/api/admin/competitions/entries/${entryId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rosterUnlocked }),
+    });
+    if (res.ok) await load();
+  }
+
   if (error) {
     return <p className="text-base text-red-700 p-6">{error}</p>;
   }
@@ -87,6 +97,7 @@ export default function AdminCompetitionsPanel() {
               openEntry={openEntry}
               setOpenEntry={setOpenEntry}
               setStatus={setStatus}
+              setRosterUnlocked={setRosterUnlocked}
             />
           </section>
         ))
@@ -100,11 +111,13 @@ function CompetitionEntriesTable({
   openEntry,
   setOpenEntry,
   setStatus,
+  setRosterUnlocked,
 }: {
   entries: Entry[];
   openEntry: string | null;
   setOpenEntry: (id: string | null) => void;
   setStatus: (id: string, status: string) => void;
+  setRosterUnlocked: (id: string, value: boolean) => void;
 }) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-x-auto">
@@ -127,6 +140,7 @@ function CompetitionEntriesTable({
               openEntry={openEntry}
               setOpenEntry={setOpenEntry}
               setStatus={setStatus}
+              setRosterUnlocked={setRosterUnlocked}
             />
           ))}
         </tbody>
@@ -140,11 +154,13 @@ function CompetitionEntryRows({
   openEntry,
   setOpenEntry,
   setStatus,
+  setRosterUnlocked,
 }: {
   e: Entry;
   openEntry: string | null;
   setOpenEntry: (id: string | null) => void;
   setStatus: (id: string, status: string) => void;
+  setRosterUnlocked: (id: string, value: boolean) => void;
 }) {
   const expanded = openEntry === e.id;
   return (
@@ -186,6 +202,15 @@ function CompetitionEntryRows({
               </option>
             ))}
           </select>
+          <label className="flex gap-2 items-center text-sm min-h-11">
+            <input
+              type="checkbox"
+              checked={e.rosterUnlocked}
+              onChange={(ev) => setRosterUnlocked(e.id, ev.target.checked)}
+              className="w-4 h-4"
+            />
+            解鎖名單（略過截止日）
+          </label>
         </td>
       </tr>
       {expanded ? (

@@ -26,6 +26,7 @@ export async function GET() {
         id: e.id,
         ref: e.ref,
         status: e.status,
+        rosterUnlocked: e.rosterUnlocked,
         createdAt: e.createdAt.toISOString(),
         statusUpdatedAt: e.statusUpdatedAt?.toISOString() ?? null,
         leaderNameZh: e.leaderNameZh,

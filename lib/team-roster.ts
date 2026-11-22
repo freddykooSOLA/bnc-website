@@ -1,5 +1,6 @@
 import { randomBytes } from 'crypto';
 import { ID_PARTIAL_RE } from '@/lib/competition-entry-validation';
+import { rosterEditAccess } from '@/lib/roster-access';
 import { databaseEnabled, prisma } from '@/lib/prisma';
 
 export interface RosterPlayerInput {
@@ -43,10 +44,10 @@ export async function getTeamRosterContext(teamId: string, memberId: string) {
     },
   });
   if (!team) throw new Error('not_found');
-  const entry = team.entries[0];
+  const entry = team.entries[0] ?? null;
   const rosterBy = entry?.competition.rosterBy ?? null;
-  const editable = rosterBy ? !rosterDeadlinePassed(rosterBy) : false;
-  return { team, entry, rosterBy, editable };
+  const access = rosterEditAccess(entry, rosterBy);
+  return { team, entry, rosterBy, editable: access.editable, lockReason: access.reason, statusLabel: access.statusLabel };
 }
 
 export function validateRosterPlayer(

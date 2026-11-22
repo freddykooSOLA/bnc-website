@@ -58,6 +58,13 @@ export async function updateEntryStatus(entryId: string, status: EntryStatus) {
   });
 }
 
+export async function setEntryRosterUnlocked(entryId: string, rosterUnlocked: boolean) {
+  return prisma.teamEntry.update({
+    where: { id: entryId },
+    data: { rosterUnlocked, statusUpdatedAt: new Date() },
+  });
+}
+
 export function entriesToCsv(
   competitionTitle: string,
   entries: Awaited<ReturnType<typeof listCompetitionEntries>>[0]['entries']

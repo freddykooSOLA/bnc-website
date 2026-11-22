@@ -37,6 +37,8 @@ export async function GET(
         : null,
       rosterBy: readCtx.rosterBy?.toISOString() ?? null,
       editable: readCtx.editable,
+      lockReason: readCtx.lockReason,
+      statusLabel: readCtx.statusLabel,
       players: readCtx.team.memberships.map((m) => ({
         id: m.id,
         nameZh: m.nameZh,

@@ -20,6 +20,8 @@ interface RosterData {
   entry: { ref: string; status: string; competitionTitle: string } | null;
   rosterBy: string | null;
   editable: boolean;
+  lockReason?: string;
+  statusLabel?: string | null;
   players: RosterPlayer[];
 }
 
@@ -28,6 +30,8 @@ const UI: Record<Lang, Record<string, string>> = {
     status: '報名狀態',
     rosterDeadline: '名單截止',
     locked: '名單已截止，無法修改。',
+    lockedStatus: '大會尚未確認此報名，暫不能編輯名單。',
+    lockedNoEntry: '找不到報名紀錄。',
     nameZh: '中文姓名',
     nameEn: '英文姓名',
     idPartial: '身份證首四位',
@@ -48,6 +52,8 @@ const UI: Record<Lang, Record<string, string>> = {
     status: '报名状态',
     rosterDeadline: '名单截止',
     locked: '名单已截止，无法修改。',
+    lockedStatus: '大会尚未确认此报名，暂不能编辑名单。',
+    lockedNoEntry: '找不到报名纪录。',
     nameZh: '中文姓名',
     nameEn: '英文姓名',
     idPartial: '身份证首四位',
@@ -68,6 +74,8 @@ const UI: Record<Lang, Record<string, string>> = {
     status: 'Entry status',
     rosterDeadline: 'Roster deadline',
     locked: 'The roster deadline has passed.',
+    lockedStatus: 'Your entry is not confirmed yet — roster editing is not open.',
+    lockedNoEntry: 'No competition entry found.',
     nameZh: 'Chinese name',
     nameEn: 'English name',
     idPartial: 'ID (letter + 4 digits)',
