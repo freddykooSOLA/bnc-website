@@ -18,6 +18,7 @@ export async function leaderHasCompetitionEntry(
   const existing = await prisma.teamEntry.findFirst({
     where: {
       competitionId: competition.id,
+      status: { not: 'draft' },
       team: { createdById: memberId },
     },
     select: { id: true },

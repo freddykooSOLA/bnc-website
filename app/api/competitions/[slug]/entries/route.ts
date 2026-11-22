@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { getCompetition } from '@/lib/competitions';
 import { competitionEntriesEnabled, submitTeamEntry } from '@/lib/competition-db';
-import { validateTeamEntryInput } from '@/lib/competition-entry-validation';
+import { validateTeamEntrySubmit } from '@/lib/competition-entry-validation';
 import {
   isCompetitionRegistrationOpen,
   leaderHasCompetitionEntry,
@@ -42,7 +42,7 @@ export async function POST(
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
-  const parsed = validateTeamEntryInput(body);
+  const parsed = validateTeamEntrySubmit(body);
   if (!parsed.ok) {
     return NextResponse.json({ error: 'validation', fields: parsed.errors }, { status: 400 });
   }

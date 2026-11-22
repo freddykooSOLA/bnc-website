@@ -12,6 +12,7 @@ export async function listCompetitionEntries() {
     orderBy: { createdAt: 'desc' },
     include: {
       entries: {
+        where: { status: { not: 'draft' } },
         include: {
           team: {
             include: {
@@ -25,6 +26,23 @@ export async function listCompetitionEntries() {
     },
   });
   return competitions;
+}
+
+export async function listDraftEntries() {
+  return prisma.teamEntry.findMany({
+    where: { status: 'draft' },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      competition: { select: { title: true, slug: true } },
+      team: {
+        select: {
+          bank: true,
+          name: true,
+          createdBy: { select: { email: true, displayName: true } },
+        },
+      },
+    },
+  });
 }
 
 export async function updateEntryStatus(entryId: string, status: EntryStatus) {

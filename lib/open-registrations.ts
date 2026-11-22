@@ -5,11 +5,7 @@ import {
   type Competition,
 } from '@/lib/competitions';
 import { isCompetitionRegistrationOpen } from '@/lib/competition-registration';
-import {
-  LEAGUE_EVENTS,
-  isRegistrationOpen,
-  type LeagueEvent,
-} from '@/lib/events-catalog';
+import { isRegistrationOpen, type LeagueEvent } from '@/lib/events-catalog';
 import { listPublicEvents } from '@/lib/public-catalog';
 
 export type OpenRegistrationItem =
@@ -38,9 +34,7 @@ export function listOpenRegistrations(lang: Lang): OpenRegistrationItem[] {
     items.push(competitionItem(c, lang));
   }
 
-  const publicSlugs = new Set(listPublicEvents().map((e) => e.slug));
-  for (const event of LEAGUE_EVENTS) {
-    if (event.published !== true && !publicSlugs.has(event.slug)) continue;
+  for (const event of listPublicEvents()) {
     if (!isRegistrationOpen(event)) continue;
     items.push(eventItem(event, lang));
   }

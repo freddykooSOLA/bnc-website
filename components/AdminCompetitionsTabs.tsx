@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import AdminCompetitionsDraftsPanel from '@/components/AdminCompetitionsDraftsPanel';
 import AdminCompetitionsPanel from '@/components/AdminCompetitionsPanel';
 import AdminPlayerLinksPanel from '@/components/AdminPlayerLinksPanel';
 import AdminScorelabSyncPanel from '@/components/AdminScorelabSyncPanel';
 
 export default function AdminCompetitionsTabs() {
-  const [tab, setTab] = useState<'entries' | 'links' | 'scorelab'>('entries');
+  const [tab, setTab] = useState<'entries' | 'drafts' | 'links' | 'scorelab'>('entries');
 
   return (
     <div>
@@ -19,6 +20,15 @@ export default function AdminCompetitionsTabs() {
           onClick={() => setTab('entries')}
         >
           報名審批
+        </button>
+        <button
+          type="button"
+          className={`min-h-11 px-4 rounded-lg text-base ${
+            tab === 'drafts' ? 'bg-orange/10 text-orange font-semibold' : 'bg-white border'
+          }`}
+          onClick={() => setTab('drafts')}
+        >
+          草稿
         </button>
         <button
           type="button"
@@ -41,6 +51,8 @@ export default function AdminCompetitionsTabs() {
       </div>
       {tab === 'entries' ? (
         <AdminCompetitionsPanel />
+      ) : tab === 'drafts' ? (
+        <AdminCompetitionsDraftsPanel />
       ) : tab === 'links' ? (
         <AdminPlayerLinksPanel />
       ) : (

@@ -28,23 +28,21 @@ export interface TeamEntryInput {
 
 export type EntryFieldErrors = Record<string, string>;
 
-export function validateTeamEntryInput(body: unknown): {
-  ok: true;
-  value: TeamEntryInput;
-} | {
-  ok: false;
+function parseTeamCore(data: Record<string, unknown>): {
   errors: EntryFieldErrors;
+  partial: Omit<
+    TeamEntryInput,
+  'players' | 'declarations' | 'declarationBank' | 'declarationSigned'
+  >;
 } {
   const errors: EntryFieldErrors = {};
-  const data = (body && typeof body === 'object' ? body : {}) as Record<string, unknown>;
-
   const str = (key: string, required = true): string => {
     const v = typeof data[key] === 'string' ? (data[key] as string).trim() : '';
     if (required && !v) errors[key] = 'required';
     return v;
   };
 
-  const value: TeamEntryInput = {
+  const partial = {
     division: str('division') || '男子组',
     bank: str('bank'),
     jerseyColor1: str('jerseyColor1'),
@@ -55,19 +53,23 @@ export function validateTeamEntryInput(body: unknown): {
     leaderEmail: str('leaderEmail'),
     leaderMobile: str('leaderMobile'),
     leaderEmergency: str('leaderEmergency'),
-    players: [],
-    declarations: [],
-    declarationBank: str('declarationBank'),
-    declarationSigned: str('declarationSigned'),
   };
 
-  if (value.leaderIdPartial && !ID_PARTIAL_RE.test(value.leaderIdPartial)) {
+  if (partial.leaderIdPartial && !ID_PARTIAL_RE.test(partial.leaderIdPartial)) {
     errors.leaderIdPartial = 'format';
   }
-  if (value.leaderEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.leaderEmail)) {
+  if (partial.leaderEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(partial.leaderEmail)) {
     errors.leaderEmail = 'format';
   }
 
+  return { errors, partial };
+}
+
+function parsePlayers(
+  data: Record<string, unknown>,
+  errors: EntryFieldErrors,
+  requireMinFive: boolean
+): PlayerRowInput[] {
   const rawPlayers = Array.isArray(data.players) ? data.players : [];
   const players: PlayerRowInput[] = [];
   const jerseySet = new Set<number>();
@@ -86,7 +88,7 @@ export function validateTeamEntryInput(body: unknown): {
     const number =
       typeof r.number === 'number' ? r.number : Number.parseInt(String(r.number ?? index + 1), 10);
 
-  if (!nameZh && !nameEn) return;
+    if (!nameZh && !nameEn) return;
 
     if (idPartial && !ID_PARTIAL_RE.test(idPartial)) {
       errors[`players.${index}.idPartial`] = 'format';
@@ -109,22 +111,89 @@ export function validateTeamEntryInput(body: unknown): {
     });
   });
 
-  value.players = players;
-
-  if (players.length < 5 || players.length > 20) {
-    errors.players = 'count';
+  if (players.length > 20) {
+    errors.players = 'count_max';
+  }
+  if (requireMinFive && players.length > 0 && players.length < 5) {
+    errors.players = 'count_min';
   }
 
+  return players;
+}
+
+export function validateTeamEntryDraft(body: unknown): {
+  ok: true;
+  value: TeamEntryInput;
+} | {
+  ok: false;
+  errors: EntryFieldErrors;
+} {
+  const data = (body && typeof body === 'object' ? body : {}) as Record<string, unknown>;
+  const { errors, partial } = parseTeamCore(data);
+  const players = parsePlayers(data, errors, false);
   const rawDecl = Array.isArray(data.declarations) ? data.declarations : [];
   const declarations = [0, 1, 2, 3, 4].map((i) => Boolean(rawDecl[i]));
-  value.declarations = declarations;
-  if (!declarations.every(Boolean)) {
-    errors.declarations = 'all_required';
-  }
+
+  const value: TeamEntryInput = {
+    ...partial,
+    players,
+    declarations,
+    declarationBank: typeof data.declarationBank === 'string' ? data.declarationBank.trim() : '',
+    declarationSigned:
+      typeof data.declarationSigned === 'string' ? data.declarationSigned.trim() : '',
+  };
 
   if (Object.keys(errors).length > 0) {
     return { ok: false, errors };
   }
-
   return { ok: true, value };
+}
+
+export function validateTeamEntrySubmit(body: unknown): {
+  ok: true;
+  value: TeamEntryInput;
+} | {
+  ok: false;
+  errors: EntryFieldErrors;
+} {
+  const data = (body && typeof body === 'object' ? body : {}) as Record<string, unknown>;
+  const { errors, partial } = parseTeamCore(data);
+  const players = parsePlayers(data, errors, false);
+
+  const rawDecl = Array.isArray(data.declarations) ? data.declarations : [];
+  const declarations = [0, 1, 2, 3, 4].map((i) => Boolean(rawDecl[i]));
+  const declarationBank =
+    typeof data.declarationBank === 'string' ? data.declarationBank.trim() : '';
+  const declarationSigned =
+    typeof data.declarationSigned === 'string' ? data.declarationSigned.trim() : '';
+
+  if (!declarationBank) errors.declarationBank = 'required';
+  if (!declarationSigned) errors.declarationSigned = 'required';
+  if (!declarations.every(Boolean)) {
+    errors.declarations = 'all_required';
+  }
+
+  const value: TeamEntryInput = {
+    ...partial,
+    players,
+    declarations,
+    declarationBank,
+    declarationSigned,
+  };
+
+  if (Object.keys(errors).length > 0) {
+    return { ok: false, errors };
+  }
+  return { ok: true, value };
+}
+
+/** @deprecated use validateTeamEntrySubmit — kept for scripts */
+export function validateTeamEntryInput(body: unknown): {
+  ok: true;
+  value: TeamEntryInput;
+} | {
+  ok: false;
+  errors: EntryFieldErrors;
+} {
+  return validateTeamEntrySubmit(body);
 }

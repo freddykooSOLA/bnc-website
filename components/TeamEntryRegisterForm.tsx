@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Lang } from '@/types';
 import type { Competition } from '@/lib/competitions';
 
@@ -39,7 +39,16 @@ const UI: Record<Lang, Record<string, string>> = {
     email: '電郵地址',
     mobile: '手提電話',
     emergency: '緊急聯絡電話',
-    players: '球員名單（5–20 人，編號 1 為隊長）',
+    players: '球員名單（可留空，之後再補；最多 20 人）',
+    playersOptional: '名單可報名後再補；如現時填寫，請確保球衣號碼不重複。',
+    saveDraft: '儲存草稿',
+    draftSaved: '草稿已儲存。',
+    draftSaving: '儲存中…',
+    localRestoreTitle: '載入未儲存的內容？',
+    localRestoreYes: '載入',
+    localRestoreNo: '捨棄',
+    nextSteps:
+      '請以劃線支票繳交報名費（抬頭 Superlearning (Hong Kong) Limited）→ 大會確認後，登入「我的球隊」上載球員名單。',
     nameZh: '中文姓名',
     nameEn: '英文姓名',
     idPartial: '身份證首四位',
@@ -68,7 +77,16 @@ const UI: Record<Lang, Record<string, string>> = {
     email: '电邮地址',
     mobile: '手提电话',
     emergency: '紧急联络电话',
-    players: '球员名单（5–20 人，编号 1 为队长）',
+    players: '球员名单（可留空，之后再补；最多 20 人）',
+    playersOptional: '名单可报名后再补；如现时填写，请确保球衣号码不重复。',
+    saveDraft: '保存草稿',
+    draftSaved: '草稿已保存。',
+    draftSaving: '保存中…',
+    localRestoreTitle: '加载未保存的内容？',
+    localRestoreYes: '加载',
+    localRestoreNo: '丢弃',
+    nextSteps:
+      '请以划线支票缴交报名费（抬头 Superlearning (Hong Kong) Limited）→ 大会确认后，登录「我的球队」上传球员名单。',
     nameZh: '中文姓名',
     nameEn: '英文姓名',
     idPartial: '身份证首四位',
@@ -97,7 +115,16 @@ const UI: Record<Lang, Record<string, string>> = {
     email: 'Email',
     mobile: 'Mobile',
     emergency: 'Emergency contact',
-    players: 'Roster (5–20 players; #1 is captain)',
+    players: 'Roster (optional now; up to 20 players)',
+    playersOptional: 'You may add the roster after approval. If you enter players now, jersey numbers must be unique.',
+    saveDraft: 'Save draft',
+    draftSaved: 'Draft saved.',
+    draftSaving: 'Saving…',
+    localRestoreTitle: 'Load unsaved content?',
+    localRestoreYes: 'Load',
+    localRestoreNo: 'Discard',
+    nextSteps:
+      'Pay by crossed cheque (payable to Superlearning (Hong Kong) Limited). After confirmation, sign in and upload your roster under My teams.',
     nameZh: 'Name (Chinese)',
     nameEn: 'Name (English)',
     idPartial: 'HKID prefix',
@@ -127,6 +154,32 @@ type PlayerDraft = {
   jerseyNumber: string;
 };
 
+type SavedPayload = {
+  division: string;
+  bank: string;
+  jerseyColor1: string;
+  jerseyColor2: string;
+  leaderNameZh: string;
+  leaderNameEn: string;
+  leaderIdPartial: string;
+  leaderEmail: string;
+  leaderMobile: string;
+  leaderEmergency: string;
+  declarationBank: string;
+  declarationSigned: string;
+  declarations: boolean[];
+  players: {
+    number: number;
+    nameZh: string;
+    nameEn: string;
+    idPartial: string;
+    staffId?: string;
+    jerseyNumber: number;
+  }[];
+};
+
+const LOCAL_KEY = (slug: string) => `bnc-entry-autosave:${slug}`;
+
 function emptyPlayers(count: number): PlayerDraft[] {
   return Array.from({ length: count }, (_, i) => ({
     number: i + 1,
@@ -151,7 +204,11 @@ export default function TeamEntryRegisterForm({
 }) {
   const ui = UI[lang];
   const declLines = DECLARATIONS[lang];
-  const [players, setPlayers] = useState<PlayerDraft[]>(() => emptyPlayers(5));
+  const [players, setPlayers] = useState<PlayerDraft[]>(() => emptyPlayers(1));
+  const [draftMsg, setDraftMsg] = useState('');
+  const [draftBusy, setDraftBusy] = useState(false);
+  const [localPrompt, setLocalPrompt] = useState<SavedPayload | null>(null);
+  const hydrateDone = useRef(false);
   const [declarations, setDeclarations] = useState<boolean[]>([false, false, false, false, false]);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [pending, setPending] = useState(false);
@@ -198,6 +255,36 @@ export default function TeamEntryRegisterForm({
     ]);
   };
 
+  const applyPayload = useCallback((data: SavedPayload) => {
+    setForm({
+      division: data.division,
+      bank: data.bank,
+      jerseyColor1: data.jerseyColor1,
+      jerseyColor2: data.jerseyColor2,
+      leaderNameZh: data.leaderNameZh,
+      leaderNameEn: data.leaderNameEn,
+      leaderIdPartial: data.leaderIdPartial,
+      leaderEmail: data.leaderEmail,
+      leaderMobile: data.leaderMobile,
+      leaderEmergency: data.leaderEmergency,
+      declarationBank: data.declarationBank,
+      declarationSigned: data.declarationSigned,
+    });
+    if (data.players.length > 0) {
+      setPlayers(
+        data.players.map((p) => ({
+          number: p.number,
+          nameZh: p.nameZh,
+          nameEn: p.nameEn,
+          idPartial: p.idPartial,
+          staffId: p.staffId ?? '',
+          jerseyNumber: String(p.jerseyNumber),
+        }))
+      );
+    }
+    setDeclarations(data.declarations);
+  }, []);
+
   const payload = useMemo(
     () => ({
       ...form,
@@ -217,6 +304,108 @@ export default function TeamEntryRegisterForm({
     [form, declarations, players]
   );
 
+  useEffect(() => {
+    if (hydrateDone.current || offline) return;
+    hydrateDone.current = true;
+    void (async () => {
+      try {
+        const res = await fetch(`/api/competitions/${slug}/draft`);
+        if (res.ok) {
+          const json = (await res.json()) as {
+            draft?: {
+              form: Record<string, string>;
+              players: PlayerDraft[];
+            } | null;
+          };
+          if (json.draft) {
+            applyPayload({
+              division: json.draft.form.division ?? competition.category[lang],
+              bank: json.draft.form.bank ?? '',
+              jerseyColor1: json.draft.form.jerseyColor1 ?? '',
+              jerseyColor2: json.draft.form.jerseyColor2 ?? '',
+              leaderNameZh: json.draft.form.leaderNameZh ?? '',
+              leaderNameEn: json.draft.form.leaderNameEn ?? '',
+              leaderIdPartial: json.draft.form.leaderIdPartial ?? '',
+              leaderEmail: json.draft.form.leaderEmail ?? '',
+              leaderMobile: json.draft.form.leaderMobile ?? '',
+              leaderEmergency: json.draft.form.leaderEmergency ?? '',
+              declarationBank: json.draft.form.declarationBank ?? '',
+              declarationSigned: json.draft.form.declarationSigned ?? '',
+              declarations: [false, false, false, false, false],
+              players: json.draft.players.map((p) => ({
+                number: p.number,
+                nameZh: p.nameZh,
+                nameEn: p.nameEn,
+                idPartial: p.idPartial,
+                staffId: p.staffId,
+                jerseyNumber:
+                  typeof p.jerseyNumber === 'number'
+                    ? p.jerseyNumber
+                    : Number.parseInt(String(p.jerseyNumber), 10) || 0,
+              })),
+            });
+            return;
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+      const raw = localStorage.getItem(LOCAL_KEY(slug));
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw) as SavedPayload;
+        setLocalPrompt(parsed);
+      } catch {
+        localStorage.removeItem(LOCAL_KEY(slug));
+      }
+    })();
+  }, [slug, offline, applyPayload, competition.category, lang]);
+
+  useEffect(() => {
+    if (offline) return;
+    const id = setInterval(() => {
+      try {
+        localStorage.setItem(LOCAL_KEY(slug), JSON.stringify(payload));
+      } catch {
+        /* quota */
+      }
+    }, 5000);
+    return () => clearInterval(id);
+  }, [slug, payload, offline]);
+
+  useEffect(() => {
+    if (offline) return;
+    try {
+      localStorage.setItem(LOCAL_KEY(slug), JSON.stringify(payload));
+    } catch {
+      /* quota */
+    }
+  }, [payload, slug, offline]);
+
+  const saveDraft = async () => {
+    setDraftBusy(true);
+    setDraftMsg('');
+    setFieldErrors({});
+    try {
+      const res = await fetch(`/api/competitions/${slug}/draft`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = (await res.json()) as { fields?: Record<string, string> };
+      if (!res.ok) {
+        if (data.fields) setFieldErrors(data.fields);
+        return;
+      }
+      setDraftMsg(ui.draftSaved);
+      localStorage.removeItem(LOCAL_KEY(slug));
+    } catch {
+      setFieldErrors({ form: ui.validation });
+    } finally {
+      setDraftBusy(false);
+    }
+  };
+
   if (offline) {
     return <p className="card text-sm text-red-600">{ui.offline}</p>;
   }
@@ -230,6 +419,7 @@ export default function TeamEntryRegisterForm({
         <p>
           {ui.successPay}：{result.paymentNote}
         </p>
+        <p className="text-gray-700">{ui.nextSteps}</p>
       </div>
     );
   }
@@ -264,6 +454,7 @@ export default function TeamEntryRegisterForm({
         return;
       }
       if (data.ref) {
+        localStorage.removeItem(LOCAL_KEY(slug));
         setResult({ ref: data.ref, paymentNote: data.paymentNote || competition.chequePayee[lang] });
       }
     } catch {
@@ -275,7 +466,35 @@ export default function TeamEntryRegisterForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
+      {localPrompt ? (
+        <div className="card text-sm flex flex-wrap gap-3 items-center justify-between">
+          <span>{ui.localRestoreTitle}</span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="min-h-11 px-4 rounded-lg bg-orange text-white"
+              onClick={() => {
+                applyPayload(localPrompt);
+                setLocalPrompt(null);
+              }}
+            >
+              {ui.localRestoreYes}
+            </button>
+            <button
+              type="button"
+              className="min-h-11 px-4 rounded-lg border"
+              onClick={() => {
+                localStorage.removeItem(LOCAL_KEY(slug));
+                setLocalPrompt(null);
+              }}
+            >
+              {ui.localRestoreNo}
+            </button>
+          </div>
+        </div>
+      ) : null}
       {fieldErrors.form ? <p className="text-sm text-red-600">{fieldErrors.form}</p> : null}
+      {draftMsg ? <p className="text-sm text-green-700">{draftMsg}</p> : null}
       <input type="hidden" name="division" value={form.division} />
 
       <div className="grid sm:grid-cols-2 gap-4">
@@ -316,6 +535,7 @@ export default function TeamEntryRegisterForm({
 
       <section className="space-y-3">
         <h2 className="font-heading text-lg font-bold text-primary">{ui.players}</h2>
+        <p className="text-sm text-gray-600">{ui.playersOptional}</p>
         {fieldErrors.players ? <p className="text-sm text-red-600">{ui.validation}</p> : null}
         {players.map((p, index) => (
           <div key={p.number} className="card grid sm:grid-cols-2 gap-3 text-sm">
@@ -371,9 +591,19 @@ export default function TeamEntryRegisterForm({
         </Field>
       </section>
 
-      <button type="submit" className="btn-primary" disabled={pending}>
-        {pending ? ui.submitting : ui.submit}
-      </button>
+      <div className="flex flex-wrap gap-3">
+        <button type="submit" className="btn-primary min-h-11" disabled={pending}>
+          {pending ? ui.submitting : ui.submit}
+        </button>
+        <button
+          type="button"
+          className="min-h-11 px-6 rounded-lg border border-gray-300 bg-white text-primary font-medium"
+          disabled={draftBusy || pending}
+          onClick={() => void saveDraft()}
+        >
+          {draftBusy ? ui.draftSaving : ui.saveDraft}
+        </button>
+      </div>
     </form>
   );
 }
