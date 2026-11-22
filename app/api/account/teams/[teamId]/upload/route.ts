@@ -18,11 +18,6 @@ export async function POST(
   request: Request,
   { params }: { params: { teamId: string } }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
-
   let body: HandleUploadBody;
   try {
     body = (await request.json()) as HandleUploadBody;
@@ -39,11 +34,15 @@ export async function POST(
       body,
       request,
       onBeforeGenerateToken: async (pathname, clientPayload) => {
+        const session = await auth();
+        if (!session?.user?.id) {
+          throw new Error('unauthorized');
+        }
         const payload = parsePayload(clientPayload);
         if (!pathname.startsWith(`bnc/teams/${params.teamId}/`)) {
           throw new Error('forbidden_path');
         }
-        await ensureRosterEditable(params.teamId, session.user!.id);
+        await ensureRosterEditable(params.teamId, session.user.id);
         if (payload.kind === 'photo') {
           const membership = await prisma.teamMembership.findFirst({
             where: { id: payload.membershipId, teamId: params.teamId },
@@ -58,23 +57,19 @@ export async function POST(
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
-        const payload = parsePayload(tokenPayload ?? null);
-        if (payload.kind === 'logo') {
-          await prisma.team.update({
-            where: { id: params.teamId },
-            data: { logoUrl: blob.url },
-          });
-        } else if (payload.kind === 'photo' && payload.membershipId) {
-          await prisma.teamMembership.update({
-            where: { id: payload.membershipId },
-            data: { photoUrl: blob.url },
-          });
-        }
+        console.log('[team upload completed]', {
+          teamId: params.teamId,
+          url: blob.url,
+          tokenPayload,
+        });
       },
     });
     return NextResponse.json(jsonResponse);
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'error';
+    if (msg === 'unauthorized') {
+      return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+    }
     if (msg === 'roster_locked' || msg === 'forbidden') {
       return NextResponse.json({ error: 'forbidden' }, { status: 403 });
     }

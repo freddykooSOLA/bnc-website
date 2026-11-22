@@ -55,11 +55,17 @@ export function TeamLogoUpload({
     setErr('');
     try {
       const pathname = `bnc/teams/${teamId}/logo-${Date.now()}`;
-      await upload(pathname, file, {
+      const blob = await upload(pathname, file, {
         access: 'public',
         handleUploadUrl: `/api/account/teams/${teamId}/upload`,
         clientPayload: JSON.stringify({ kind: 'logo' }),
       });
+      const save = await fetch(`/api/account/teams/${teamId}/media`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'logo', url: blob.url }),
+      });
+      if (!save.ok) throw new Error('save_failed');
       onUpdated();
     } catch {
       setErr(t.fail);
@@ -114,11 +120,17 @@ export function PlayerPhotoUpload({
     setBusy(true);
     try {
       const pathname = `bnc/teams/${teamId}/players/${membershipId}-${Date.now()}`;
-      await upload(pathname, file, {
+      const blob = await upload(pathname, file, {
         access: 'public',
         handleUploadUrl: `/api/account/teams/${teamId}/upload`,
         clientPayload: JSON.stringify({ kind: 'photo', membershipId }),
       });
+      const save = await fetch(`/api/account/teams/${teamId}/media`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'photo', membershipId, url: blob.url }),
+      });
+      if (!save.ok) throw new Error('save_failed');
       onUpdated();
     } catch {
       /* silent — leader can retry */
