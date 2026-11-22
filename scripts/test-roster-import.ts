@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict';
-import { mergeJerseyConflicts, parseCsvUtf8, rowsFromSheetMatrix } from '../lib/roster-import';
+import {
+  mergeJerseyConflicts,
+  parseCsvUtf8,
+  replaceModeKeptJerseys,
+  rowsFromSheetMatrix,
+} from '../lib/roster-import';
 
 function okPreview(matrix: string[][], existing: number[] = []) {
   return mergeJerseyConflicts(rowsFromSheetMatrix(matrix), existing);
@@ -59,6 +64,17 @@ const header = ['中文姓名', '英文姓名', '身份證首4位', '職員編�
   const csv = '\uFEFF' + header.join(',') + '\n' + 'Test,Test,A1234,,8,Y';
   const matrix = parseCsvUtf8(csv);
   assert.equal(matrix[0][0], '中文姓名');
+}
+
+{
+  const kept = replaceModeKeptJerseys([
+    { memberId: 'user-1', jerseyNumber: 7 },
+    { memberId: null, jerseyNumber: 4 },
+    { memberId: 'user-2', jerseyNumber: 11 },
+  ]);
+  assert.deepEqual(kept, [7, 11]);
+  const p = okPreview([header, ['新丁', 'New', 'A1234', '', '7', '']], kept);
+  assert.ok(p.rows[0].errors.some((e) => e.includes('現有')));
 }
 
 console.log('roster-import tests OK');

@@ -16,6 +16,7 @@ const UI: Record<
     errors: string;
     busy: string;
     done: string;
+    keepClaimed: string;
   }
 > = {
   'zh-hk': {
@@ -29,6 +30,7 @@ const UI: Record<
     errors: '錯誤',
     busy: '處理中…',
     done: '已匯入',
+    keepClaimed: '已認領球員 {n} 名會保留',
   },
   'zh-cn': {
     title: 'Excel／CSV 导入名单',
@@ -41,6 +43,7 @@ const UI: Record<
     errors: '错误',
     busy: '处理中…',
     done: '已导入',
+    keepClaimed: '已认领球员 {n} 名会保留',
   },
   en: {
     title: 'Import roster (Excel / CSV)',
@@ -53,6 +56,7 @@ const UI: Record<
     errors: 'Errors',
     busy: 'Working…',
     done: 'Imported',
+    keepClaimed: '{n} claimed player(s) will be kept',
   },
 };
 
@@ -82,6 +86,7 @@ export default function TeamRosterImport({
   const [hasErrors, setHasErrors] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
+  const [claimedKeptCount, setClaimedKeptCount] = useState<number | null>(null);
 
   if (!editable) return null;
 
@@ -103,9 +108,15 @@ export default function TeamRosterImport({
         setMsg('無法預覽檔案。');
         return;
       }
-      const json = (await res.json()) as { preview: PreviewRow[]; hasErrors: boolean };
+      const json = (await res.json()) as {
+        preview: PreviewRow[];
+        hasErrors: boolean;
+        replace: boolean;
+        claimedKeptCount?: number;
+      };
       setRows(json.preview);
       setHasErrors(json.hasErrors);
+      setClaimedKeptCount(json.replace && typeof json.claimedKeptCount === 'number' ? json.claimedKeptCount : null);
       return;
     }
     if (!res.ok) {
@@ -156,6 +167,11 @@ export default function TeamRosterImport({
       >
         {busy ? t.busy : t.preview}
       </button>
+      {claimedKeptCount != null ? (
+        <p className="text-base text-primary">
+          {t.keepClaimed.replace('{n}', String(claimedKeptCount))}
+        </p>
+      ) : null}
       {rows ? (
         <ul className="space-y-2 text-sm max-h-80 overflow-y-auto">
           {rows.map((r) => (

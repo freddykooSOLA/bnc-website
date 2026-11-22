@@ -96,6 +96,18 @@ export function rowsFromSheetMatrix(matrix: string[][]): RosterImportPreview {
   };
 }
 
+export function replaceModeKeptJerseys(
+  memberships: Array<{ memberId: string | null; jerseyNumber: number }>
+): number[] {
+  return memberships.filter((m) => m.memberId != null).map((m) => m.jerseyNumber);
+}
+
+export function replaceModeKeptCount(
+  memberships: Array<{ memberId: string | null }>
+): number {
+  return memberships.filter((m) => m.memberId != null).length;
+}
+
 export function mergeJerseyConflicts(
   preview: RosterImportPreview,
   existingJerseys: number[]

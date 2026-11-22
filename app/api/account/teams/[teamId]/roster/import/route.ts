@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { ensureRosterEditable, rosterEnabled } from '@/lib/team-roster';
 import { previewRosterUpload } from '@/lib/roster-import-file';
+import { replaceModeKeptCount, replaceModeKeptJerseys } from '@/lib/roster-import';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(
@@ -35,12 +36,16 @@ export async function POST(
 
   try {
     const ctx = await ensureRosterEditable(params.teamId, session.user.id);
-    const existingJerseys = replace ? [] : ctx.team.memberships.map((m) => m.jerseyNumber);
+    const claimedKeptCount = replace ? replaceModeKeptCount(ctx.team.memberships) : 0;
+    const existingJerseys = replace
+      ? replaceModeKeptJerseys(ctx.team.memberships)
+      : ctx.team.memberships.map((m) => m.jerseyNumber);
     const preview = await previewRosterUpload(buffer, file.name, existingJerseys);
 
     if (mode === 'preview') {
       return NextResponse.json({
         replace,
+        claimedKeptCount,
         preview: preview.rows.map((r) => ({
           rowNumber: r.rowNumber,
           nameZh: r.nameZh,
@@ -60,14 +65,18 @@ export async function POST(
       return NextResponse.json({ error: 'validation' }, { status: 400 });
     }
 
-    const total = replace ? preview.valid.length : ctx.team.memberships.length + preview.valid.length;
+    const total = replace
+      ? claimedKeptCount + preview.valid.length
+      : ctx.team.memberships.length + preview.valid.length;
     if (total > 20 || total < 1) {
       return NextResponse.json({ error: 'count' }, { status: 400 });
     }
 
     await prisma.$transaction(async (tx) => {
       if (replace) {
-        await tx.teamMembership.deleteMany({ where: { teamId: params.teamId } });
+        await tx.teamMembership.deleteMany({
+          where: { teamId: params.teamId, memberId: null },
+        });
       }
       await tx.teamMembership.createMany({
         data: preview.valid.map((r) => ({
