@@ -31,6 +31,7 @@ function MatchesContentInner({
   const searchParams = useSearchParams();
   const seasonParam = searchParams.get('season');
 
+  const showArchiveTab = config.matches.showArchive && leagueLists.archive.length > 0;
   const [activeTab, setActiveTab] = useState<'latest' | 'archive'>('latest');
 
   const leagues =
@@ -139,7 +140,7 @@ function MatchesContentInner({
         >
           {t.latestMatches}
         </button>
-        {config.matches.showArchive && (
+        {showArchiveTab ? (
           <button
             onClick={() => handleTabChange('archive')}
             className={`pb-3 text-sm md:text-base transition-colors ${
@@ -148,7 +149,7 @@ function MatchesContentInner({
           >
             {t.archiveMatches}
           </button>
-        )}
+        ) : null}
       </div>
 
       {leagues.length > 0 ? (

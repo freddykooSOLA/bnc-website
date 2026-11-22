@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getConfig } from '@/lib/config';
 import { generatePageMetadata } from '@/lib/seo';
 import type { Lang, SeasonData } from '@/types';
+import MatchesAllCompetitions from '@/components/MatchesAllCompetitions';
 import MatchesContent from '@/components/MatchesContent';
 import MatchesServerPreview from '@/components/MatchesServerPreview';
 import { homeIntroParagraphs } from '@/lib/home-intro';
@@ -54,6 +55,10 @@ export default async function MatchesPage({ params }: MatchesPageProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <p className="text-gray-700 leading-relaxed max-w-3xl">{intro}</p>
       </div>
+      <MatchesAllCompetitions
+        lang={lang}
+        scorelabLeagues={[...config.matches.leagues, ...config.matches.archiveLeagues]}
+      />
       {defaultLeague && initialSeasonData ? (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MatchesServerPreview
