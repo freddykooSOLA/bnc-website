@@ -63,20 +63,14 @@ export const COMPETITIONS: Competition[] = [
       en: 'Men’s division',
     },
     prizes: {
-      'zh-hk':
-        '正賽組冠、亞、季及殿軍可獲獎盃一個，得獎隊員連後備各可獲獎牌一面。\n另設銀杯賽冠、亞、季及殿軍可獲獎盃一個，得獎隊員連後備各可獲獎牌一面。\n另設銀碟賽冠及亞軍可獲獎盃一個，得獎隊員連後備各可獲獎牌一面。',
-      'zh-cn':
-        '正赛组冠、亚、季及殿军可获奖杯一个，得奖队员连后备各可获奖牌一面。\n另设银杯赛冠、亚、季及殿军可获奖杯一个，得奖队员连后备各可获奖牌一面。\n另设银碟赛冠及亚军可获奖杯一个，得奖队员连后备各可获奖牌一面。',
-      en:
-        'Main draw: trophies for 1st–4th; medals for players and reserves.\nSilver Cup: trophies for 1st–4th; medals for players and reserves.\nSilver Plate: trophies for 1st–2nd; medals for players and reserves.',
+      'zh-hk': "金盃、銀盃各設冠軍、亞軍、季軍、殿軍，獎盃及獎牌。\n銀碟設冠軍、亞軍，獎盃及獎牌。",
+      'zh-cn': "金杯、银杯各设冠军、亚军、季军、殿军，奖杯及奖牌。\n银碟设冠军、亚军，奖杯及奖牌。",
+      en: "Gold Cup and Silver Cup: 1st–4th, trophies and medals.\nSilver Plate: 1st–2nd, trophies and medals.",
     },
     individualAwards: {
-      'zh-hk':
-        '個人獎項設「三分王」、「籃板王」、「得分王」、「封阻王」及「助攻王」，各獲獎盃一個（計算全部賽事成績）。',
-      'zh-cn':
-        '个人奖项设「三分王」、「篮板王」、「得分王」、「封阻王」及「助攻王」，各获奖杯一个（计算全部赛事成绩）。',
-      en:
-        'Individual awards: Three-Point King, Rebound King, Scoring King, Block King, and Assist King — one trophy each (all games counted).',
+      'zh-hk': "個人獎項設得分王、籃板王、助攻王、封阻王、三分王，各獎盃一個。不設其他個人獎項。獎項以整個賽季的數據計算。",
+      'zh-cn': "个人奖项设得分王、篮板王、助攻王、封阻王、三分王，各奖杯一个。不设其他个人奖项。奖项以整个赛季的数据计算。",
+      en: "Individual awards: top scorer, rebounds, assists, blocks and three-pointers — one trophy each, based on the whole season. No other individual awards.",
     },
     registerBy: '2026-12-31',
     rosterBy: '2027-01-31',
@@ -106,95 +100,80 @@ export const COMPETITIONS: Competition[] = [
       },
     ],
     format: {
-      'zh-hk': '預計 10 隊參賽，分兩組，採單循環，每隊 4 場小組賽；勝 3 分、和 1 分、負 0 分。',
-      'zh-cn': '预计 10 队参赛，分两组，采单循环，每队 4 场小组赛；胜 3 分、和 1 分、负 0 分。',
-      en: '10 teams in two groups, round-robin (4 games each); win 3 pts, tie 1 pt, loss 0 pts.',
+      'zh-hk': "10 隊抽籤分 A、B 兩組，每組 5 隊單循環，每隊 4 場，共 20 場；勝 3 分、和 1 分、負 0 分。全賽 35 場、18 個比賽日，每星期一個比賽日，每日兩場（第 18 週只打金盃決賽）。每場四節、每節 10 分鐘；第 1 至 20 場平手記和波，不加時；第 21 至 35 場平手以輪流罰五球決勝。",
+      'zh-cn': "10 队抽签分 A、B 两组，每组 5 队单循环，每队 4 场，共 20 场；胜 3 分、和 1 分、负 0 分。全赛 35 场、18 个比赛日，每星期一个比赛日，每日两场（第 18 周只打金杯决赛）。每场四节、每节 10 分钟；第 1 至 20 场平手记和波，不加时；第 21 至 35 场平手以轮流罚五球决胜。",
+      en: "10 teams drawn into Groups A and B (5 each), single round-robin, 4 games per team, 20 games; win 3, draw 1, loss 0. 35 games over 18 match days, one match day a week, two games a day (week 18: Gold Cup final only). Four 10-minute quarters; games 1–20 may end in a draw (no overtime); games 21–35 tied after 40 minutes go to a five-shot free-throw shootout.",
     },
     tieBreak: {
-      'zh-hk':
-        '小組同分時，依序以：隊伍相互對賽往績（勝者為先）→ 總得分較高者 → 總失分較少者 → 得失分差較少者 → 抽籤決定。',
-      'zh-cn':
-        '小组同分时，依序以：队伍相互对赛往绩（胜者为先）→ 总得分较高者 → 总失分较少者 → 得失分差较少者 → 抽签决定。',
-      en:
-        'Tie-break order: head-to-head → points scored → points allowed → point differential → draw.',
+      'zh-hk': "積分相同時，依次比較：兩隊對賽往績 → 總得分較多 → 總失分較少 → 得失分差 → 抽籤。比較完一項後，如只剩部分隊伍同分，由第一項重新比較。",
+      'zh-cn': "积分相同时，依次比较：两队对赛往绩 → 总得分较多 → 总失分较少 → 得失分差 → 抽签。比较完一项后，如只剩部分队伍同分，由第一项重新比较。",
+      en: "Tie-break order: head-to-head → more points scored → fewer points allowed → point differential → draw. If only some teams remain tied after a step, restart from the first step for them.",
     },
     advancement: {
-      'zh-hk':
-        '小組賽後晉級：上線為正賽組冠亞季殿，下線為銀杯組冠亞季殿，第九、十名為銀碟組冠亞軍。',
-      'zh-cn':
-        '小组赛后晋级：上线为正赛组冠亚季殿，下线为银杯组冠亚季殿，第九、十名为银碟组冠亚军。',
-      en:
-        'After groups: top bracket = main draw (1st–4th); lower bracket = Silver Cup (1st–4th); 9th–10th = Silver Plate final.',
+      'zh-hk': "分組賽後打四場初賽（21：A4 對 B5；22：A5 對 B4；23：A2 對 B3；24：A3 對 B2），A、B 組首名直接入第 25、27 場。第 21、22 場負方入銀碟（2 隊）；其餘 8 隊按晉級圖分入金盃（4 隊）及銀盃（4 隊），各打準決賽、季殿戰及決賽。第 21 至 35 場必須分勝負。",
+      'zh-cn': "分组赛后打四场初赛（21：A4 对 B5；22：A5 对 B4；23：A2 对 B3；24：A3 对 B2），A、B 组首名直接入第 25、27 场。第 21、22 场负方入银碟（2 队）；其余 8 队按晋级图分入金杯（4 队）及银杯（4 队），各打准决赛、季殿战及决赛。第 21 至 35 场必须分胜负。",
+      en: "After the groups, four preliminary games (21: A4 v B5; 22: A5 v B4; 23: A2 v B3; 24: A3 v B2); group winners go straight to games 25 and 27. Losers of games 21 and 22 play the Silver Plate (2 teams); the other 8 teams split into the Gold Cup (4) and Silver Cup (4) by the bracket, each with semi-finals, 3rd/4th place and a final. Games 21–35 must produce a winner.",
     },
     notices: [
       {
-        'zh-hk': '每位球員只可代表一隊作賽；比賽期間代表另一隊參賽，所代表隊伍均被取消資格及所有成績。',
-        'zh-cn': '每位球员只可代表一队作赛；比赛期间代表另一队参赛，所代表队伍均被取消资格及所有成绩。',
-        en: 'Each player may play for one team only; playing for another team voids that team’s results.',
+        'zh-hk': "比賽採用香港籃球總會現行採用的 FIBA 規則；本賽例沒有列明的，以 FIBA 規則為準。",
+        'zh-cn': "比赛采用香港篮球总会现行采用的 FIBA 规则；本赛例没有列明的，以 FIBA 规则为准。",
+        en: "FIBA rules as used by the Hong Kong Basketball Association apply where these rules are silent.",
       },
       {
-        'zh-hk':
-          '各球隊須具備兩套不同深淺顏色及合規球衣；主隊淺色、客隊深色。球衣同色時由球證決定更換。球衣號碼須與出場表一致，0–99 號，同隊不得重複。',
-        'zh-cn':
-          '各球队须具备两套不同深浅颜色及合规球衣；主队浅色、客队深色。球衣同色时由球证决定更换。球衣号码须与出场表一致，0–99 号，同队不得重复。',
-        en:
-          'Two light/dark kits; home light, away dark. Numbers 0–99 on the roster, unique per team.',
+        'zh-hk': "參賽球員須為所代表銀行的職員，由領隊在報名表聲明確認；賽季期間離職的員工不能再代表該銀行。每名球員只可代表一隊。",
+        'zh-cn': "参赛球员须为所代表银行的职员，由领队在报名表声明确认；赛季期间离职的员工不能再代表该银行。每名球员只可代表一队。",
+        en: "Players must be staff of the bank they represent, confirmed by the team manager on the entry form; staff who leave mid-season can no longer play for that bank. Each player may represent one team only.",
       },
       {
-        'zh-hk': '各球隊須核對賽程、場地、日期及時間，於開賽前 15 分鐘向賽會報到。',
-        'zh-cn': '各球队须核对赛程、场地、日期及时间，于开赛前 15 分钟向赛会报到。',
-        en: 'Check fixtures and report 15 minutes before tip-off.',
+        'zh-hk': "每隊最多登記 20 名球員，另加教練及領隊各 1 名。球員退隊可申請添加球員替補；曾退隊的球員同一賽季不能再參賽。",
+        'zh-cn': "每队最多登记 20 名球员，另加教练及领队各 1 名。球员退队可申请添加球员替补；曾退队的球员同一赛季不能再参赛。",
+        en: "Up to 20 players per team plus one coach and one team manager. A withdrawn player may be replaced; a withdrawn player cannot return in the same season.",
       },
       {
-        'zh-hk':
-          '開賽前 15 分鐘，球員須親身攜身份證明文件或行員證（正本）及已填出場表交工作人員及球證核對；資料不符一律不得作賽。',
-        'zh-cn':
-          '开赛前 15 分钟，球员须亲身携身份证明文件或行员证（正本）及已填出场表交工作人员及球证核对；资料不符一律不得作赛。',
-        en: 'Bring ID or staff card and lineup sheet 15 minutes before game; mismatches cannot play.',
+        'zh-hk': "球隊須於開賽前 15 分鐘報到，交出場球員名單，並與球證進行球員出場確認登記。主辦單位可要求出示職員證或身份證明；冒名頂替，該場判負，並取消該球員參賽資格。",
+        'zh-cn': "球队须于开赛前 15 分钟报到，交出场球员名单，并与球证进行球员出场确认登记。主办单位可要求出示职员证或身份证明；冒名顶替，该场判负，并取消该球员参赛资格。",
+        en: "Teams report 15 minutes before tip-off with the lineup sheet for check-in with the referee. Staff card or ID may be requested; an impostor forfeits the game and is disqualified.",
       },
       {
-        'zh-hk': '開賽時隊伍不足 5 人，判輸 20:0；比賽時間以球證手錶為準。',
-        'zh-cn': '开赛时队伍不足 5 人，判输 20:0；比赛时间以球证手表为准。',
-        en: 'Fewer than 5 players at tip-off = forfeit 20–0; official’s watch is the clock.',
+        'zh-hk': "開賽時間過後 10 分鐘仍未有 5 名球員出場，該隊作棄權，對手以 20:0 勝出；分組賽棄權得 0 分。棄權兩場或以上，主辦單位可取消該隊所有賽果。",
+        'zh-cn': "开赛时间过后 10 分钟仍未有 5 名球员出场，该队作弃权，对手以 20:0 胜出；分组赛弃权得 0 分。弃权两场或以上，主办单位可取消该队所有赛果。",
+        en: "A team without 5 players 10 minutes after the scheduled start forfeits 20–0 (0 points in the group stage). Two or more forfeits may void all of that team’s results.",
       },
       {
-        'zh-hk': '非報名球員參賽，該隊資格及成績取消；賽會可要求出示身份證明文件。',
-        'zh-cn': '非报名球员参赛，该队资格及成绩取消；赛会可要求出示身份证明文件。',
-        en: 'Unlisted players void the team’s entry; ID may be requested.',
+        'zh-hk': "個人犯規累計 5 次須離場；每隊每節由第 5 次團隊犯規起，對方獲罰球。被判取消比賽資格者自動停賽下一場；任何打架或暴力行為，主辦單位可取消有關球員以至整隊的參賽資格。",
+        'zh-cn': "个人犯规累计 5 次须离场；每队每节由第 5 次团队犯规起，对方获罚球。被判取消比赛资格者自动停赛下一场；任何打架或暴力行为，主办单位可取消有关球员以至整队的参赛资格。",
+        en: "Five personal fouls and the player is out; from the 5th team foul in a quarter the opponent shoots free throws. A disqualified player or official is suspended for the next game; fighting or violence may disqualify the player or the whole team.",
       },
       {
-        'zh-hk': '嚴重犯規、違反規則或不君子行為，裁判可取消該隊資格及一切成績。',
-        'zh-cn': '严重犯规、违反规则或不君子行为，裁判可取消该队资格及一切成绩。',
-        en: 'Serious misconduct may disqualify a team.',
+        'zh-hk': "每隊須有統一顏色球衣，前後有清楚號碼 0 至 99。賽程先列的一隊穿淺色，後列的穿深色；顏色相近時由主辦單位決定。比賽用 7 號球，由主辦單位提供。",
+        'zh-cn': "每队须有统一颜色球衣，前后有清楚号码 0 至 99。赛程先列的一队穿浅色，后列的穿深色；颜色相近时由主办单位决定。比赛用 7 号球，由主办单位提供。",
+        en: "Matching kit with clear numbers 0–99 front and back. The team listed first wears light, the second dark; the organiser decides if colours clash. Size 7 balls supplied by the organiser.",
       },
       {
-        'zh-hk': '賽會不設上訴；賽果以裁判最後判決為準。',
-        'zh-cn': '赛会不设上诉；赛果以裁判最后判决为准。',
-        en: 'No appeals; officials’ decisions are final.',
+        'zh-hk': "所有判罰及賽果上訴須即時提出，以球證即場判決為準，不接受賽後上訴。",
+        'zh-cn': "所有判罚及赛果上诉须即时提出，以球证即场判决为准，不接受赛后上诉。",
+        en: "Any appeal must be raised on the spot; the referee’s decision on court is final. No post-game appeals.",
       },
       {
-        'zh-hk':
-          '球員須穿適當服裝及運動鞋，遵守《遊樂場地規例》及場地管理人員指示。',
-        'zh-cn': '球员须穿适当服装及运动鞋，遵守《游乐场法规例》及场地管理人员指示。',
-        en: 'Appropriate kit and footwear; follow venue rules and staff directions.',
+        'zh-hk': "參賽者須確保身體狀況適合劇烈運動。現場不設急救人員；建議各參加銀行為參賽職員購買相關保險，球隊及球員自行承擔責任。主辦單位不負責個人財物遺失。",
+        'zh-cn': "参赛者须确保身体状况适合剧烈运动。现场不设急救人员；建议各参加银行为参赛职员购买相关保险，球队及球员自行承担责任。主办单位不负责个人财物遗失。",
+        en: "Players must be fit for strenuous exercise. No first-aid staff on site; banks are advised to insure participating staff, and teams and players take their own responsibility. The organiser is not liable for lost belongings.",
       },
       {
-        'zh-hk':
-          '比賽當日如天文台於首輪報到前兩小時已發出八號預警、仍懸八號或以上熱帶氣旋信號或黑色暴雨警告，該日賽事取消，安排另行通知。',
-        'zh-cn':
-          '比赛当日如天文台于首轮报到前两小时已发出八号预警、仍悬八号或以上热带气旋信号或黑色暴雨警告，该日赛事取消，安排另行通知。',
-        en:
-          'Games cancel if T8 pre-warning, T8+, or Black Rain is in force before first check-in; rescheduling announced later.',
+        'zh-hk': "首輪報到前兩小時天文台已發出八號預警，或懸掛八號或以上熱帶氣旋警告信號，比賽取消；三號或以下信號、紅色或黃色暴雨（體育館照常開放）比賽繼續；黑色暴雨在體育館開放前生效而體育館暫停開放，比賽取消。主辦單位會盡量於比賽前 2 小時通知，不就取消或改期作出賠償。",
+        'zh-cn': "首轮报到前两小时天文台已发出八号预警，或悬挂八号或以上热带气旋警告信号，比赛取消；三号或以下信号、红色或黄色暴雨（体育馆照常开放）比赛继续；黑色暴雨在体育馆开放前生效而体育馆暂停开放，比赛取消。主办单位会尽量于比赛前 2 小时通知，不就取消或改期作出赔偿。",
+        en: "Games are cancelled if the T8 pre-warning is issued two hours before first check-in or T8 or above is hoisted; T3 or below, and Red/Amber rain with the venue open, games go ahead; Black Rain before opening with the venue closed, games are cancelled. The organiser aims to notify teams 2 hours before; no compensation for cancellation or rescheduling.",
       },
       {
-        'zh-hk': '建議各參加銀行為參賽職員購買相關保險。',
-        'zh-cn': '建议各参加银行为参赛职员购买相关保险。',
-        en: 'Banks are advised to arrange insurance for participating staff.',
+        'zh-hk': "報名收集的個人資料只用於本賽事的行政、核實資格及聯絡。",
+        'zh-cn': "报名收集的个人资料只用于本赛事的行政、核实资格及联络。",
+        en: "Personal data collected at registration is used only for running this event, eligibility checks and contact.",
       },
       {
-        'zh-hk': '本章程如有未盡善處，賽會有權隨時作出修改。',
-        'zh-cn': '本章程如有未尽善处，赛会有权随时作出修改。',
-        en: 'The organiser may amend these rules at any time.',
+        'zh-hk': "主辦單位對本賽例有最終解釋權及修改權。",
+        'zh-cn': "主办单位对本赛例有最终解释权及修改权。",
+        en: "The organiser has the final say on interpreting and amending these rules.",
       },
     ],
     contactPhone: '61016161',
