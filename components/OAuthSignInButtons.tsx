@@ -29,11 +29,13 @@ export default function OAuthSignInButtons({
   callbackUrl,
   layout = 'row',
   theme = 'header',
+  compact = false,
 }: {
   lang: Lang;
   callbackUrl: string;
   layout?: 'row' | 'stack';
   theme?: 'header' | 'surface';
+  compact?: boolean;
 }) {
   const copy = COPY[lang];
   const showFacebook = facebookLoginVisibleOnClient();
@@ -50,9 +52,21 @@ export default function OAuthSignInButtons({
       <button
         type="button"
         onClick={() => signIn('google', { callbackUrl })}
-        className={`${styles.google} ${rowOnSurface}`}
+        className={`${styles.google} ${rowOnSurface} ${compact ? 'px-2 sm:px-4 gap-1.5' : ''}`}
+        aria-label={copy.google}
       >
-        {copy.google}
+        {compact ? (
+          <>
+            <span className="inline-flex w-6 h-6 rounded-full bg-white text-primary text-xs font-bold items-center justify-center shrink-0" aria-hidden>
+              G
+            </span>
+            <span className="hidden min-[400px]:inline text-xs sm:text-sm max-w-[4.5rem] sm:max-w-none truncate">
+              {lang === 'en' ? 'Sign in' : '登入'}
+            </span>
+          </>
+        ) : (
+          copy.google
+        )}
       </button>
       {showFacebook ? (
         <button

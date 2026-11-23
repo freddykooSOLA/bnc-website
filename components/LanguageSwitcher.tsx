@@ -30,7 +30,7 @@ export default function LanguageSwitcher({ lang }: LanguageSwitcherProps) {
         <Link
           key={l}
           href={getLangPath(l)}
-          className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+          className={`px-2.5 min-h-11 py-2 rounded-md text-xs font-semibold transition-colors ${
             l === lang
               ? 'bg-orange text-white'
               : 'text-white/70 hover:text-white hover:bg-white/10'

@@ -38,7 +38,13 @@ const COPY: Record<
   },
 };
 
-export default function MemberAuthNav({ lang }: { lang: Lang }) {
+export default function MemberAuthNav({
+  lang,
+  compact = false,
+}: {
+  lang: Lang;
+  compact?: boolean;
+}) {
   const { data: session, status } = useSession();
   const copy = COPY[lang];
 
@@ -50,7 +56,7 @@ export default function MemberAuthNav({ lang }: { lang: Lang }) {
 
   if (!session?.user) {
     return (
-      <OAuthSignInButtons lang={lang} callbackUrl={`/${lang}/my-registrations`} layout="row" />
+      <OAuthSignInButtons lang={lang} callbackUrl={`/${lang}/my-registrations`} layout="row" compact={compact} />
     );
   }
 
@@ -80,7 +86,7 @@ export default function MemberAuthNav({ lang }: { lang: Lang }) {
       <button
         type="button"
         onClick={() => signOut({ callbackUrl: `/${lang}` })}
-        className="text-xs sm:text-sm font-medium px-3 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-white whitespace-nowrap"
+        className="text-xs sm:text-sm font-medium min-h-11 px-3 rounded-lg bg-white/15 hover:bg-white/25 text-white whitespace-nowrap inline-flex items-center"
       >
         {copy.signOut}
       </button>

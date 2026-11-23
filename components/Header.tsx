@@ -20,6 +20,7 @@ interface HeaderProps {
 export default function Header({ lang, config }: HeaderProps) {
   const pathname = usePathname();
   const [logoError, setLogoError] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const copy = SECTION_COPY[lang];
   const t = UI_TEXT[lang];
@@ -37,11 +38,18 @@ export default function Header({ lang, config }: HeaderProps) {
     { key: 'events', href: `/${lang}/events`, label: copy.events, show: EVENTS_SECTION_PUBLIC },
   ].filter((item) => item.show !== false);
 
+  const navLinkClass = (active: boolean) =>
+    `block w-full text-left px-4 min-h-11 flex items-center rounded-lg text-sm font-medium transition-colors ${
+      active
+        ? 'bg-orange text-white'
+        : 'text-white/90 hover:text-white hover:bg-white/10'
+    }`;
+
   return (
     <header className="bg-primary text-white sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <Link href={`/${lang}`} className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center justify-between h-16 md:h-20 gap-2">
+          <Link href={`/${lang}`} className="flex items-center gap-2 sm:gap-3 shrink min-w-0">
             <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden flex items-center justify-center shrink-0">
               {!logoError ? (
                 <Image
@@ -56,12 +64,12 @@ export default function Header({ lang, config }: HeaderProps) {
                 <span className="text-primary font-bold text-lg">BNC</span>
               )}
             </div>
-            <span className="font-heading font-bold text-lg md:text-xl hidden sm:block">
+            <span className="font-heading font-bold text-base md:text-xl hidden sm:block truncate max-w-[40vw] sm:max-w-none sm:inline">
               {config.siteName[lang]}
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1 flex-1 justify-center" aria-label="Main">
             {navItems.map((item) => {
               const isActive =
                 item.href === `/${lang}`
@@ -71,7 +79,7 @@ export default function Header({ lang, config }: HeaderProps) {
                 <Link
                   key={item.key}
                   href={item.href}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-4 min-h-11 inline-flex items-center rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-orange text-white'
                       : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -83,33 +91,48 @@ export default function Header({ lang, config }: HeaderProps) {
             })}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            <MemberAuthNav lang={lang} />
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <MemberAuthNav lang={lang} compact />
             <LanguageSwitcher lang={lang} />
+            <button
+              type="button"
+              className="md:hidden min-h-11 min-w-11 inline-flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-main-nav"
+              onClick={() => setMobileOpen((o) => !o)}
+            >
+              <span className="sr-only">{mobileOpen ? 'Close menu' : 'Open menu'}</span>
+              <span className="text-xl leading-none" aria-hidden>
+                {mobileOpen ? '×' : '☰'}
+              </span>
+            </button>
           </div>
         </div>
 
-        <nav className="md:hidden flex overflow-x-auto gap-1 pb-3 -mx-4 px-4">
-          {navItems.map((item) => {
-            const isActive =
-              item.href === `/${lang}`
-                ? pathname === `/${lang}` || pathname === `/${lang}/`
-                : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.key}
-                href={item.href}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
-                  isActive
-                    ? 'bg-orange text-white'
-                    : 'text-white/70 hover:text-white bg-white/10'
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        {mobileOpen ? (
+          <nav
+            id="mobile-main-nav"
+            className="md:hidden pb-4 border-t border-white/10 pt-2 space-y-1"
+            aria-label="Main mobile"
+          >
+            {navItems.map((item) => {
+              const isActive =
+                item.href === `/${lang}`
+                  ? pathname === `/${lang}` || pathname === `/${lang}/`
+                  : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  className={navLinkClass(isActive)}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        ) : null}
       </div>
     </header>
   );
