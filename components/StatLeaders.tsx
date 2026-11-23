@@ -44,9 +44,9 @@ function LeadersList({
   }
 
   return (
-    <ol className="space-y-3">
+    <ol className="space-y-3 max-w-full overflow-x-hidden">
       {list.map((p, i) => (
-        <li key={`${p.name}-${p.teamId}-${i}`} className="flex items-center gap-3">
+        <li key={`${p.name}-${p.teamId}-${i}`} className="flex items-center gap-3 min-w-0 max-w-full">
           <span className="w-6 text-center text-xs font-bold text-gray-400">
             {i + 1}
           </span>
@@ -114,7 +114,7 @@ export default function StatLeaders({
     if (compactCats.length === 0) return null;
 
     return (
-      <div className="card">
+      <div className="card overflow-x-hidden">
         <h2 className="font-heading text-lg font-bold text-primary mb-4">
           {t.statLeaders}
         </h2>
@@ -140,7 +140,7 @@ export default function StatLeaders({
   const active = available.includes(category) ? category : available[0];
 
   return (
-    <div className="card">
+    <div className="card overflow-x-hidden">
       <h2 className="font-heading text-xl font-bold text-primary mb-4">
         {t.statLeaders}
       </h2>
@@ -150,7 +150,7 @@ export default function StatLeaders({
             key={cat}
             type="button"
             onClick={() => setCategory(cat)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+            className={`px-3 min-h-11 rounded-full text-xs font-semibold transition-colors inline-flex items-center ${
               active === cat
                 ? 'bg-orange text-white'
                 : 'bg-gray-100 text-primary hover:bg-orange/10'

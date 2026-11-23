@@ -114,7 +114,7 @@ export default function LeagueSelector({
   }, [data?.matches]);
 
   return (
-    <section className="bg-light-bg py-12 overflow-x-hidden">
+    <section className="bg-light-bg py-12 overflow-x-hidden max-w-[100vw]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-center gap-3 mb-8">
           <span className="text-sm font-medium text-primary">{t.selectLeague}:</span>

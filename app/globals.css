@@ -51,11 +51,11 @@ h1, h2 {
 }
 
 .btn-primary {
-  @apply inline-flex items-center gap-2 bg-orange hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors;
+  @apply inline-flex items-center justify-center gap-2 min-h-11 bg-orange hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors;
 }
 
 .btn-secondary {
-  @apply inline-flex items-center gap-2 bg-primary hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors;
+  @apply inline-flex items-center justify-center gap-2 min-h-11 bg-primary hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors;
 }
 
 .tab-active {
@@ -64,6 +64,10 @@ h1, h2 {
 
 .tab-inactive {
   @apply border-b-2 border-transparent text-gray-500 hover:text-primary;
+}
+
+.tap-target {
+  @apply min-h-11 min-w-11 inline-flex items-center justify-center;
 }
 
 .scorelab-iframe-container {
