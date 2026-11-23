@@ -139,11 +139,15 @@ export default function LeagueSelector({
           <ErrorMessage lang={lang} scorelabUrl={selectedLeague?.url} />
         ) : (
           <div className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
               {nextUpcoming ? (
-                <NextMatchCard lang={lang} match={nextUpcoming} />
+                <div className="min-w-0">
+                  <NextMatchCard lang={lang} match={nextUpcoming} />
+                </div>
               ) : null}
-              <RecentResultsStrip lang={lang} matches={recentThree} />
+              <div className="min-w-0">
+                <RecentResultsStrip lang={lang} matches={recentThree} />
+              </div>
             </div>
 
             <MatchHighlights lang={lang} matches={data?.matches ?? []} />
@@ -155,7 +159,7 @@ export default function LeagueSelector({
               leagueId={selectedId}
             />
 
-            <div className="grid lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
               <div className="card">
                 <h2 className="font-heading text-lg font-bold text-primary mb-4">
                   {t.standings}
