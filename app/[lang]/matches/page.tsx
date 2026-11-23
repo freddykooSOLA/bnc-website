@@ -1,15 +1,17 @@
 import type { Metadata } from 'next';
 import { getConfig } from '@/lib/config';
 import { generatePageMetadata } from '@/lib/seo';
-import type { Lang, SeasonData } from '@/types';
+import type { Lang } from '@/types';
 import MatchesAllCompetitions from '@/components/MatchesAllCompetitions';
 import MatchesContent from '@/components/MatchesContent';
-import MatchesServerPreview from '@/components/MatchesServerPreview';
 import { homeIntroParagraphs } from '@/lib/home-intro';
 import JsonLd from '@/components/JsonLd';
 import { resolveMatchesLeagueLists } from '@/lib/matches-leagues';
 import { getCachedSeasonData } from '@/lib/scorelab-cache';
 import { buildMatchesSportsEventsJsonLd } from '@/lib/json-ld';
+import { PUBLIC_ISR_REVALIDATE } from '@/lib/public-isr';
+
+export const revalidate = PUBLIC_ISR_REVALIDATE;
 
 interface MatchesPageProps {
   params: { lang: string };
@@ -25,7 +27,7 @@ export async function generateMetadata({
   return generatePageMetadata(lang, config, config.seo.matches, '/matches');
 }
 
-/** 比赛页面 */
+/** 比赛页面 — 首屏 HTML 精簡；賽季數據由客戶端 API 懶載 */
 export default async function MatchesPage({ params }: MatchesPageProps) {
   const lang = params.lang as Lang;
   const config = getConfig();
@@ -36,12 +38,10 @@ export default async function MatchesPage({ params }: MatchesPageProps) {
     leagueLists.latest[0];
 
   let jsonLdEvents: object[] = [];
-  let initialSeasonData: SeasonData | null = null;
   if (defaultLeague) {
     try {
       const seasonData = await getCachedSeasonData(defaultLeague.url);
-      initialSeasonData = seasonData;
-      jsonLdEvents = buildMatchesSportsEventsJsonLd(seasonData);
+      jsonLdEvents = buildMatchesSportsEventsJsonLd(seasonData, 6);
     } catch {
       jsonLdEvents = [];
     }
@@ -51,7 +51,7 @@ export default async function MatchesPage({ params }: MatchesPageProps) {
 
   return (
     <>
-      {jsonLdEvents.length > 0 && <JsonLd data={jsonLdEvents} />}
+      {jsonLdEvents.length > 0 ? <JsonLd data={jsonLdEvents} /> : null}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <p className="text-gray-700 leading-relaxed max-w-3xl">{intro}</p>
       </div>
@@ -59,21 +59,11 @@ export default async function MatchesPage({ params }: MatchesPageProps) {
         lang={lang}
         scorelabLeagues={[...config.matches.leagues, ...config.matches.archiveLeagues]}
       />
-      {defaultLeague && initialSeasonData ? (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <MatchesServerPreview
-            lang={lang}
-            league={defaultLeague}
-            seasonData={initialSeasonData}
-          />
-        </div>
-      ) : null}
       <MatchesContent
         lang={lang}
         config={config}
         leagueLists={leagueLists}
         initialLeagueId={defaultLeague?.id}
-        initialSeasonData={initialSeasonData ?? undefined}
       />
     </>
   );

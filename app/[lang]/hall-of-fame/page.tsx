@@ -6,6 +6,10 @@ import HallOfFameContent from '@/components/HallOfFameContent';
 import JsonLd from '@/components/JsonLd';
 import { buildHallOfFameItemListJsonLd } from '@/lib/json-ld';
 import { getHallOfFameData } from '@/lib/hall-of-fame-data';
+import { PUBLIC_ISR_REVALIDATE } from '@/lib/public-isr';
+
+export const revalidate = PUBLIC_ISR_REVALIDATE;
+
 
 interface PageProps {
   params: { lang: string };

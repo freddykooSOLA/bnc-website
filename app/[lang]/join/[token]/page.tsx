@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import type { Lang } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 const COPY: Record<
   Lang,
   {

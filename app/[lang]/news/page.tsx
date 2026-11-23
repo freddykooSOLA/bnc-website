@@ -9,6 +9,10 @@ import {
   fetchCompletedNewsMatches,
 } from '@/lib/match-news';
 import NewsListContent from '@/components/NewsListContent';
+import { PUBLIC_ISR_REVALIDATE } from '@/lib/public-isr';
+
+export const revalidate = PUBLIC_ISR_REVALIDATE;
+
 
 interface PageProps {
   params: { lang: string };

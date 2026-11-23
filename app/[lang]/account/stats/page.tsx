@@ -18,6 +18,8 @@ import {
 import { getCachedSeasonData } from '@/lib/scorelab-cache';
 import type { Lang } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 const TITLE: Record<Lang, string> = {
   'zh-hk': '我的籃球數據',
   'zh-cn': '我的篮球数据',

@@ -12,6 +12,10 @@ import { countRegistrationsForEvent } from '@/lib/ledger';
 import type { Lang } from '@/types';
 import CompetitionPromoCard from '@/components/CompetitionPromoCard';
 import { getCompetition } from '@/lib/competitions';
+import { PUBLIC_ISR_REVALIDATE } from '@/lib/public-isr';
+
+export const revalidate = PUBLIC_ISR_REVALIDATE;
+
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   if (!isValidLang(params.lang)) return {};

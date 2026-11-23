@@ -4,6 +4,10 @@ import Hero from '@/components/Hero';
 import HomeIntro from '@/components/HomeIntro';
 import HomeOpenRegistrations from '@/components/HomeOpenRegistrations';
 import dynamic from 'next/dynamic';
+import { PUBLIC_ISR_REVALIDATE } from '@/lib/public-isr';
+
+export const revalidate = PUBLIC_ISR_REVALIDATE;
+
 
 const LeagueSelector = dynamic(() => import('@/components/LeagueSelector'), {
   loading: () => (

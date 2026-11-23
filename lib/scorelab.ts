@@ -64,7 +64,10 @@ interface RawSeasonStage {
 }
 
 /** 从 ScoreLab 赛季页面获取并解析数据 */
-export async function fetchSeasonData(seasonUrl: string): Promise<SeasonData> {
+export async function fetchSeasonData(
+  seasonUrl: string,
+  options?: { forIsr?: boolean }
+): Promise<SeasonData> {
   const url = new URL(seasonUrl);
   url.searchParams.set('_', String(Date.now()));
 
@@ -75,7 +78,9 @@ export async function fetchSeasonData(seasonUrl: string): Promise<SeasonData> {
       'Cache-Control': 'no-cache',
       Pragma: 'no-cache',
     },
-    cache: 'no-store',
+    ...(options?.forIsr
+      ? { next: { revalidate: 300 } }
+      : { cache: 'no-store' as const }),
   });
 
   if (!response.ok) {

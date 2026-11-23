@@ -5,6 +5,8 @@ import { isValidLang } from '@/lib/i18n';
 import { findMemberById } from '@/lib/users';
 import type { Lang } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 const COPY: Record<
   Lang,
   {

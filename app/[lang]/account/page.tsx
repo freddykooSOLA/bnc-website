@@ -12,6 +12,8 @@ import { databaseEnabled, prisma } from '@/lib/prisma';
 import type { Lang } from '@/types';
 import type { MemberRoleType } from '@prisma/client';
 
+export const dynamic = 'force-dynamic';
+
 const COPY: Record<
   Lang,
   {

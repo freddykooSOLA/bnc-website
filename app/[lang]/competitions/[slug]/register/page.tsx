@@ -11,6 +11,8 @@ import { isValidLang } from '@/lib/i18n';
 import { generatePageMetadata } from '@/lib/seo';
 import type { Lang } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({
   params,
 }: {

@@ -11,6 +11,8 @@ import { databaseEnabled } from '@/lib/prisma';
 import { assertLeaderOwnsTeam } from '@/lib/team-roster';
 import type { Lang } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 const TITLE: Record<Lang, string> = {
   'zh-hk': '管理球隊名單',
   'zh-cn': '管理球队名单',

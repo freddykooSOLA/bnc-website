@@ -7,6 +7,9 @@ import type { Lang } from '@/types';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SessionProvider from '@/components/SessionProvider';
+import { PUBLIC_ISR_REVALIDATE } from '@/lib/public-isr';
+
+export const revalidate = PUBLIC_ISR_REVALIDATE;
 
 interface LangLayoutProps {
   children: React.ReactNode;

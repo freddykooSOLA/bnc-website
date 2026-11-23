@@ -13,6 +13,8 @@ import { teamPagePath } from '@/lib/team-links';
 import TeamCalendarLinks from '@/components/TeamCalendarLinks';
 import TeamLogo from '@/components/TeamLogo';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: { lang: string };
 }

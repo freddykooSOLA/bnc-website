@@ -5,6 +5,10 @@ import { generatePageMetadata } from '@/lib/seo';
 import { UI_TEXT } from '@/lib/i18n';
 import type { Lang } from '@/types';
 import HomeFaqBlocks from '@/components/HomeFaqBlocks';
+import { PUBLIC_ISR_REVALIDATE } from '@/lib/public-isr';
+
+export const revalidate = PUBLIC_ISR_REVALIDATE;
+
 
 interface AboutPageProps {
   params: { lang: string };
