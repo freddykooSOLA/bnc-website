@@ -15,19 +15,26 @@ export default function Hero({ lang, config }: HeroProps) {
   if (hasCustomBg) {
     return (
       <section className="relative w-full overflow-hidden bg-primary">
-        <div className="relative w-full aspect-[1024/267] min-h-[220px] sm:min-h-[200px] md:min-h-[280px]">
-          <Image
-            src={config.hero.backgroundImage}
-            alt={HOME_H1[lang]}
-            fill
-            priority
-            className="object-cover object-[center_22%] sm:object-[center_30%] md:object-center bnc-hero-push"
-            sizes="(max-width: 768px) 100vw, 1200px"
-            fetchPriority="high"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-          <div className="absolute bottom-4 md:bottom-8 left-0 right-0 flex justify-center px-4">
-            <Link href={`/${lang}/matches`} className="btn-primary text-sm md:text-lg shadow-lg min-h-11">
+        <div className="flex flex-col md:relative md:block">
+          <div className="relative w-full aspect-[1024/267] md:min-h-[280px]">
+            <Image
+              src={config.hero.backgroundImage}
+              alt={HOME_H1[lang]}
+              fill
+              priority
+              className="object-contain md:object-cover md:object-center bnc-hero-push"
+              sizes="(max-width: 768px) 100vw, 1200px"
+              fetchPriority="high"
+            />
+            <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-black/40 via-transparent to-transparent md:block" />
+          </div>
+          <div className="flex justify-center bg-primary px-4 py-3 md:hidden">
+            <Link href={`/${lang}/matches`} className="btn-primary min-h-11 text-sm shadow-lg">
+              {config.hero.ctaText[lang]}
+            </Link>
+          </div>
+          <div className="absolute bottom-4 left-0 right-0 hidden justify-center px-4 md:bottom-8 md:flex">
+            <Link href={`/${lang}/matches`} className="btn-primary min-h-11 text-lg shadow-lg">
               {config.hero.ctaText[lang]}
             </Link>
           </div>
