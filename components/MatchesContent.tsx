@@ -16,7 +16,6 @@ interface MatchesContentProps {
   config: SiteConfig;
   leagueLists: MatchesLeagueLists;
   initialLeagueId?: string;
-  initialSeasonData?: SeasonData;
 }
 
 /** 比赛页面 — 在本站直接展示赛季排名与赛程（实时从 ScoreLab 抓取） */
@@ -25,7 +24,6 @@ function MatchesContentInner({
   config,
   leagueLists,
   initialLeagueId,
-  initialSeasonData,
 }: MatchesContentProps) {
   const t = UI_TEXT[lang];
   const searchParams = useSearchParams();
@@ -45,13 +43,8 @@ function MatchesContentInner({
     config.matches.defaultLeagueId;
 
   const [selectedId, setSelectedId] = useState(initialLeagueIdResolved);
-  const [seasonData, setSeasonData] = useState<SeasonData | null>(
-    initialSeasonData &&
-      initialLeagueIdResolved === (initialLeagueId ?? config.matches.defaultLeagueId)
-      ? initialSeasonData
-      : null
-  );
-  const [loading, setLoading] = useState(!seasonData);
+  const [seasonData, setSeasonData] = useState<SeasonData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   const selectedLeague =
@@ -134,7 +127,7 @@ function MatchesContentInner({
       <div className="flex gap-6 border-b border-gray-200 mb-6">
         <button
           onClick={() => handleTabChange('latest')}
-          className={`pb-3 text-sm md:text-base transition-colors ${
+          className={`pb-3 min-h-11 inline-flex items-center text-sm md:text-base transition-colors ${
             activeTab === 'latest' ? 'tab-active' : 'tab-inactive'
           }`}
         >
@@ -143,7 +136,7 @@ function MatchesContentInner({
         {showArchiveTab ? (
           <button
             onClick={() => handleTabChange('archive')}
-            className={`pb-3 text-sm md:text-base transition-colors ${
+            className={`pb-3 min-h-11 inline-flex items-center text-sm md:text-base transition-colors ${
               activeTab === 'archive' ? 'tab-active' : 'tab-inactive'
             }`}
           >
