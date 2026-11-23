@@ -11,6 +11,10 @@ import { PUBLIC_ISR_REVALIDATE } from '@/lib/public-isr';
 
 export const revalidate = PUBLIC_ISR_REVALIDATE;
 
+export function generateStaticParams() {
+  return [{ lang: 'zh-hk' }, { lang: 'zh-cn' }, { lang: 'en' }];
+}
+
 interface LangLayoutProps {
   children: React.ReactNode;
   params: { lang: string };
